@@ -1,0 +1,36 @@
+title: Revert previous GGOS version artifacts
+# Revert ledger (spec B4; Revi Tasks/revert.yml semantics, re-implemented — no upstream code).
+# Runs only during AME Wizard upgrades so artifacts left by an older GGOS version are
+# cleaned before the new version applies its own values.
+# privilege: Admin — removes values under HKLM\SOFTWARE\Microsoft\Windows\Dwm (docs do
+# not define a task-level `privilege` param; declaration is per GGOS spec B6).
+onUpgrade: true
+actions:
+  # ---- Reverse-diff convention for future GGOS versions -----------------------------------
+  # Every time a GGOS version renames, moves, or stops setting a registry value or
+  # scheduled task that an EARLIER version may have written, add an entry HERE (not in
+  # the applying task) describing the reverse diff:
+  #   * exact path/value (or task path) to remove or restore,
+  #   * the GGOS version range that wrote it,
+  #   * the reason (breakage evidence or recall semantics).
+  # Shape (do not enable this example):
+  #   - !registryValue: {path: 'HKLM\...', value: 'ExampleValue', operation: delete, onUpgrade: true}
+  # Entries must be idempotent (no-op when absent) and must never delete anything
+  # GGOS did not write. Default-apply behavior stays in the owning task file.
+  # ------------------------------------------------------------------------------------------
+
+  # Spec C5 MPO decision: GGOS never sets OverlayTestMode; stale MPO override values
+  # (OverlayTestMode / DisableOverlays) left under HKLM Dwm are removed on upgrade so
+  # the per-version MPO recall re-runs cleanly. Idempotent: no-op when absent.
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Log
+    command: |
+      $dwm = 'HKLM:\SOFTWARE\Microsoft\Windows\Dwm'
+      foreach ($value in @('OverlayTestMode', 'DisableOverlays')) {
+        if (Get-ItemProperty -Path $dwm -Name $value -ErrorAction SilentlyContinue) {
+          Remove-ItemProperty -Path $dwm -Name $value -Force
+          Write-Output ('GGOS revert: removed stale MPO override ' + $value)
+        }
+      }

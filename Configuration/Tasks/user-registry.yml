@@ -1,7 +1,15 @@
 title: Per-user tweaks
-# Applies per-user registry settings to every loaded profile hive and to the Default
-# profile hive (future users). Implemented in PowerShell because the !registryValue
-# action cannot mount/unmount offline hives or export per-hive backups.
+privilege: Admin
+# Applies per-user registry settings via a triple sweep (spec B1):
+#   1. every loaded interactive user hive (S-1-5-21-* SIDs with a
+#      'Volatile Environment' marker; service/virtual accounts excluded),
+#   2. HKU\.DEFAULT (logon-screen-visible values),
+#   3. the Default profile template (C:\Users\Default\NTUSER.DAT), reusing
+#      AME Wizard's AME_UserHive_Default mount when present.
+# Implemented in PowerShell because the !registryValue action cannot mount/
+# unmount offline hives or export per-hive backups. per-user.ps1 also stages
+# %SystemRoot%\GGOS\first-logon.ps1 and writes the B5 RunOnce hook into the
+# Default template hive so brand-new accounts get the cosmetic subset.
 actions:
   - !powerShell:
     exeDir: true

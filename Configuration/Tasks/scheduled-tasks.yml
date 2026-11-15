@@ -1,4 +1,7 @@
 title: Scheduled tasks
+# privilege: Admin — disabling entries in the machine Task Scheduler store requires
+# elevation (docs do not define a task-level `privilege` param; declaration is per
+# GGOS spec B6 and may be informational in current Wizard builds).
 # Wasteful scheduled tasks disabled (never deleted, so they can be re-enabled manually).
 # Ported from TBOK's active DisableTask list.
 actions:

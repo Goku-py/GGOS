@@ -1,4 +1,7 @@
 title: WinGet updates
+# privilege: Admin — declared as minimum (spec B6); the action itself runs winget as
+# the current elevated user (see comment below) since the winget alias is not
+# resolvable for SYSTEM/trustedInstaller.
 # Updates all installed applications through winget.
 # Runs as the current elevated user because winget is a per-user app execution
 # alias that is not resolvable for the SYSTEM/trustedInstaller account.

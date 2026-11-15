@@ -1,4 +1,5 @@
 title: Gaming
+privilege: Admin
 # Gaming-focused registry values plus chassis-aware power configuration.
 # Registry values below are machine-wide; the chassis-aware logic (power plan,
 # processor boost mode, power throttling, bcdedit) lives in gaming-power.ps1.
@@ -91,9 +92,11 @@ actions:
 
   # ---- Chassis-aware power configuration ----
   # - Removes a bcdedit useplatformclock override (reset HPET dependency detection)
-  # - Desktop: disables power throttling lazy mode, activates Ultimate Performance,
-  #   sets processor boost mode "Aggressive"
-  # - Laptop: keeps the current power plan, sets boost mode "Efficient Aggressive"
+  # - Desktop: disables power throttling lazy mode, imports the fixed-GUID "GGOS
+  #   Performance" plan (previous plan recorded for restore), sets processor boost
+  #   mode "Aggressive", sets Win32PrioritySeparation to the documented default
+  # - Laptop: keeps the current power plan (battery management preserved), sets
+  #   boost mode "Efficient Aggressive"
   - !powerShell:
     exeDir: true
     wait: true

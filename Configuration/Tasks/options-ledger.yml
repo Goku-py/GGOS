@@ -1,0 +1,184 @@
+title: Option ledger
+privilege: Admin
+# Spec B3: records which playbook options the user selected into
+# %SystemRoot%\GGOS\ggos-options.txt. The first action is ungated and clears
+# the ledger; every other action is gated by its option and appends the option
+# name. Tasks/verify.yml cross-checks this ledger at the end of the run.
+# bloat-oem (spec C6) and network-latency (spec C7) are forward-declared:
+# their CheckboxPages land with C6/C7 in playbook.conf; the gated actions are
+# no-ops until those pages exist.
+actions:
+  # ---- Ledger initialisation (always runs) ----
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    timeout: 120
+    command: |-
+      New-Item -ItemType Directory -Path $env:SystemRoot\GGOS -Force | Out-Null
+      New-Item -ItemType File -Path $env:SystemRoot\GGOS\ggos-options.txt -Force | Out-Null
+      Clear-Content -Path $env:SystemRoot\GGOS\ggos-options.txt
+      Write-Output 'GGOS: option ledger initialised'
+
+  # ---- One gated append per playbook option ----
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'system-optimization'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'system-optimization'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'services'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'services'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'telemetry'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'telemetry'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'ads-ui'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'ads-ui'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'per-user'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'per-user'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'f8-boot'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'f8-boot'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'verbose-logon'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'verbose-logon'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'pagefile'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'pagefile'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'bloat-copilot'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'bloat-copilot'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'bloat-bing'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'bloat-bing'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'bloat-widgets'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'bloat-widgets'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'bloat-oem'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'bloat-oem'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'office-telemetry'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'office-telemetry'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'gaming'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'gaming'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'cleanup'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'cleanup'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'cleanup-aggressive'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'cleanup-aggressive'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'winget-update'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'winget-update'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'network-latency'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'network-latency'

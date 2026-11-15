@@ -1,0 +1,21 @@
+title: Network latency tuning
+privilege: Admin
+# C7 (opt-in, default OFF): per-interface TCP latency tuning, XOS semantics
+# re-expressed (no upstream code copied). Sets TcpAckFrequency=1, TCPNoDelay=1 and
+# TcpDelAckTicks=0 (DWORD) on wired/physical interfaces only. WiFi (native 802.11,
+# *PhysicalMediaType 0x09/0x0A) and virtual/VPN/Bluetooth adapters are excluded by
+# design. Prior values (or an ABSENT marker) are recorded under
+# HKLM\SOFTWARE\GGOS\NetworkUndo\<interface-guid> for manual restore.
+#
+# Default OFF because the benefit is game/protocol dependent (some servers and
+# applications behave worse with Nagle disabled).
+# NOTE: wired into main.yml by the orchestration owner; actions here are
+# self-gated via the 'network-latency' option.
+actions:
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Notify
+    option: 'network-latency'
+    timeout: 120
+    command: '.\network-latency.ps1'

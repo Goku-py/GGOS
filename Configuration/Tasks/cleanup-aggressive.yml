@@ -1,4 +1,5 @@
 title: Cleanup aggressive
+# privilege: Admin — DISM handlers, SoftwareDistribution and Windows.old removal require elevation (spec B6).
 # Aggressive cleanup, opt-in only: Windows Search index reset, Disk Cleanup with
 # update/component-store handlers, SoftwareDistribution cache, previous Windows
 # installations (Windows.old / $Windows.~BT / $Windows.~WS).

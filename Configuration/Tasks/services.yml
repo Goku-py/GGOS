@@ -1,4 +1,5 @@
 title: Services
+# privilege: Admin — SCM startup-type changes via !service require elevation (spec B6).
 # Service startup tuning - SAFE subset ported from TBOK's resolved service plan.
 # Everything here is set to Manual (demand) or Disabled; no service is deleted or
 # stopped from this file. Startup types are written with the !service action.

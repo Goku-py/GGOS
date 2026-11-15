@@ -1,0 +1,14 @@
+title: Verification
+privilege: Admin
+# Spec B3: final verification pass. Cross-checks the option ledger
+# (%SystemRoot%\GGOS\ggos-options.txt) against representative registry marker
+# values, writes PASS/DRIFT lines to %SystemRoot%\GGOS\ggos-verify.txt and
+# stamps HKLM\SOFTWARE\GGOS (Installed, AppliedVersion, LastVerify).
+# verify.ps1 always exits 0 - verification reports, it never fails the run.
+actions:
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Notify
+    timeout: 900
+    command: '.\verify.ps1'

@@ -1,9 +1,18 @@
 title: Rollback protection
+# privilege: not declared — amelabs docs define no task-level `privilege` parameter
+# (tasks.html lists only option/options/builds), and the !powerShell default
+# `runas` is trustedInstaller, so elevation is implied by the action itself.
 actions:
   # Restore point + registry export before anything changes.
   # If restore-point creation fails, registry exports are created instead; if both fail the
   # playbook halts rather than applying changes without any rollback method.
+  # Docs (developers/actions/PowerShell.html): the only required parameter is `command`;
+  # `exe:` is an !run parameter, not a !powerShell parameter. `exeDir: true` sets the
+  # working directory to the Playbook executables folder, so '.\rollback.ps1' resolves.
+  # `wait: true` is added because !powerShell defaults to wait: false (fire-and-forget);
+  # the playbook must not proceed until rollback protection has actually been created.
   - !powerShell:
+    command: '.\rollback.ps1'
     exeDir: true
-    exe: 'rollback.ps1'
+    wait: true
     errorAction: Halt

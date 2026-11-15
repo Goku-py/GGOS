@@ -1,4 +1,5 @@
 title: System registry
+# privilege: Admin — HKLM writes and policy paths require elevation (spec B6).
 # Machine-level registry writes.
 # Sources: TBOK machine-wide registry semantics (reference only, re-expressed);
 # paths/values cross-checked against CTT WinUtil where noted.

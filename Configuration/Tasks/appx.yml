@@ -21,3 +21,43 @@ actions:
   # Clear shell component caches after widget removal.
   - !appx: {operation: clearCache, name: '*Client.CBS*', errorAction: Log, option: 'bloat-widgets'}
   - !appx: {operation: clearCache, name: '*StartMenuExperienceHost*', errorAction: Log, option: 'bloat-widgets'}
+
+  # ---- OEM bundled apps (opt-in; option: 'bloat-oem') ----
+  # Conservative explicit family list. Names verified against CTT WinUtil
+  # config/appx.json (MIT, fetched 2026-11-15) - discrepancies with the v0.2 spec
+  # list, current upstream names take precedence and the legacy names are kept
+  # alongside (removing an absent family is a no-op with errorAction: Log):
+  #   Microsoft.News        -> current: Microsoft.BingNews
+  #   Microsoft.Weather     -> current: Microsoft.BingWeather
+  #   Microsoft.FeedbackHub -> current: Microsoft.WindowsFeedbackHub
+  #   Microsoft.SolitaireCollection -> current: Microsoft.MicrosoftSolitaireCollection
+  # Legacy Win10-era families (not in the current WinUtil list): Getstarted,
+  # Messaging, 3DBuilder, Print3D, MixedReality.Portal, People, SkypeApp.
+  #
+  # Explicit keep-list - these are never matched by this sweep:
+  #   Store, Paint, Notepad, Photos, Terminal, Calculator, SecurityHealthUI,
+  #   YourPhone (Phone Link).
+  - !appx: {name: 'Microsoft.BingNews', type: family, errorAction: Log, option: 'bloat-oem'}
+  - !appx: {name: 'Microsoft.News', type: family, errorAction: Log, option: 'bloat-oem'}
+  - !appx: {name: 'Microsoft.BingWeather', type: family, errorAction: Log, option: 'bloat-oem'}
+  - !appx: {name: 'Microsoft.Weather', type: family, errorAction: Log, option: 'bloat-oem'}
+  - !appx: {name: 'Microsoft.WindowsFeedbackHub', type: family, errorAction: Log, option: 'bloat-oem'}
+  - !appx: {name: 'Microsoft.FeedbackHub', type: family, errorAction: Log, option: 'bloat-oem'}
+  - !appx: {name: 'Microsoft.MicrosoftSolitaireCollection', type: family, errorAction: Log, option: 'bloat-oem'}
+  - !appx: {name: 'Microsoft.Getstarted', type: family, errorAction: Log, option: 'bloat-oem'}
+  - !appx: {name: 'Microsoft.Messaging', type: family, errorAction: Log, option: 'bloat-oem'}
+  - !appx: {name: 'Microsoft.3DBuilder', type: family, errorAction: Log, option: 'bloat-oem'}
+  - !appx: {name: 'Microsoft.Print3D', type: family, errorAction: Log, option: 'bloat-oem'}
+  - !appx: {name: 'Microsoft.MixedReality.Portal', type: family, errorAction: Log, option: 'bloat-oem'}
+  - !appx: {name: 'Microsoft.People', type: family, errorAction: Log, option: 'bloat-oem'}
+  - !appx: {name: 'Microsoft.SkypeApp', type: family, errorAction: Log, option: 'bloat-oem'}
+  - !appx: {name: 'Microsoft.Todos', type: family, errorAction: Log, option: 'bloat-oem'}
+
+  # Publisher-prefix families for OEM pre-installs (vendor helper suites, trial
+  # antivirus, WildTangent game trials, Adobe notification service).
+  - !appx: {name: '*HP*', type: family, errorAction: Log, option: 'bloat-oem'}
+  - !appx: {name: '*Dell*', type: family, errorAction: Log, option: 'bloat-oem'}
+  - !appx: {name: '*Lenovo*', type: family, errorAction: Log, option: 'bloat-oem'}
+  - !appx: {name: '*McAfee*', type: family, errorAction: Log, option: 'bloat-oem'}
+  - !appx: {name: '*WildTangent*', type: family, errorAction: Log, option: 'bloat-oem'}
+  - !appx: {name: '*AdobeNotification*', type: family, errorAction: Log, option: 'bloat-oem'}

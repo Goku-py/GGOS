@@ -1,4 +1,5 @@
 title: Telemetry
+# privilege: Admin — machine-level HKLM/policy writes require elevation (spec B6).
 # Telemetry and tracking hardening at machine level. All actions are gated by the
 # telemetry feature option. Per-user telemetry/ad values live in per-user.ps1.
 #

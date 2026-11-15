@@ -13,6 +13,9 @@
 #     referenced from any task file; it permanently removes update-uninstall data).
 #   - Office auto-recover/unsaved-work locations are never cleaned.
 #   - iTunes mobile-device backups are never cleaned.
+#
+# B2: all external process calls are routed through Invoke-GGCommand
+# (ggos-common.psm1) with bounded timeouts - log and continue on failure.
 
 param(
     [switch]$Aggressive,
@@ -25,6 +28,40 @@ $ErrorActionPreference = 'Continue'
 function Write-GGLog {
     param([string]$Message)
     Write-Output "GGOS cleanup: $Message"
+}
+
+# ---------------------------------------------------------------------------
+# Shared command wrapper (B2): every external process call below (reg.exe,
+# cleanmgr, DISM, rundll32, takeown, icacls) runs through Invoke-GGCommand
+# (ggos-common.psm1) with a bounded timeout; on failure or timeout the item is
+# logged and the sweep continues (never halts the playbook). Timeouts: 20 s
+# default; DISM / cleanmgr / takeown / icacls 900 s.
+# ArgumentList elements are passed as raw tokens; the wrapper is responsible for
+# quoting any token that contains spaces when it builds the command line.
+# ---------------------------------------------------------------------------
+$ggCommonPath = Join-Path $PSScriptRoot 'ggos-common.psm1'
+if (Test-Path -LiteralPath $ggCommonPath) {
+    Import-Module $ggCommonPath -Force
+}
+if (-not (Get-Command Invoke-GGCommand -ErrorAction SilentlyContinue)) {
+    # Fallback shim when the shared module is absent: run the command directly
+    # (without the bounded timeout) so cleanup still works instead of failing.
+    function Invoke-GGCommand {
+        param(
+            [Parameter(Mandatory = $true)][string]$FilePath,
+            [string[]]$ArgumentList = @(),
+            [int]$TimeoutSeconds = 20,
+            [string]$Description = $FilePath
+        )
+        Write-GGLog "Warning: ggos-common module not found - running without timeout: $Description"
+        try {
+            $out = (& $FilePath @ArgumentList 2>&1) -join "`n"
+            return ($LASTEXITCODE -eq 0), [string]$out
+        }
+        catch {
+            return $false, $_.Exception.Message
+        }
+    }
 }
 
 function Get-FreeBytes {
@@ -102,7 +139,10 @@ if (-not $SkipSafe) {
     Write-GGLog 'Starting safe cleanup (caches, temp files, logs only).'
 
     # Remove orphaned Appx installer leftovers (built-in Appx deployment helper).
-    & rundll32.exe AppxDeploymentClient.dll,AppxCleanupOrphanPackages 2>&1 | Out-Null
+    $okAppxCleanup, $appxCleanupOut = Invoke-GGCommand -FilePath rundll32.exe -ArgumentList @('AppxDeploymentClient.dll,AppxCleanupOrphanPackages') -TimeoutSeconds 20 -Description 'Appx orphan package cleanup (rundll32)'
+    if (-not $okAppxCleanup) {
+        Write-GGLog 'Warning: Appx orphan package cleanup failed or timed out; continuing.'
+    }
 
     # Stuck spooler print jobs (print-queue files only, not user documents).
     $spooler = Stop-ServiceForCleanup 'Spooler'
@@ -258,6 +298,7 @@ if ($Aggressive) {
 
     # ---- Disk Cleanup (safe handlers; Recycle Bin explicitly excluded) ----
     $flags = 'StateFlags0069'
+    $volumeCachesRoot = 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches'
     $handlers = @(
         'Active Setup Temp Folders', 'BranchCache', 'Content Indexer Cleaner',
         'Delivery Optimization Files', 'Diagnostic Data Viewer database Files',
@@ -269,22 +310,41 @@ if ($Aggressive) {
         'Windows Error Reporting Files', 'Windows Upgrade Log Files'
     )
     foreach ($handler in $handlers) {
-        & reg.exe add ("HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\" + $handler) /v $flags /t REG_DWORD /d 2 /f 2>&1 | Out-Null
+        $okFlag, $flagOut = Invoke-GGCommand -FilePath reg.exe -ArgumentList @('add', ($volumeCachesRoot + '\' + $handler), '/v', $flags, '/t', 'REG_DWORD', '/d', '2', '/f') -TimeoutSeconds 20 -Description "flag cleanup handler '$handler'"
+        if (-not $okFlag) {
+            Write-GGLog "Warning: could not flag cleanup handler '$handler' (it will be skipped by cleanmgr); continuing."
+        }
     }
     # Remove any Recycle Bin flag from earlier versions so cleanmgr never empties it.
-    & reg.exe delete ("HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Recycle Bin") /v $flags /f 2>&1 | Out-Null
-    Write-GGLog 'Running Disk Cleanup (this can take a while).'
-    $cleanmgr = Start-Process -FilePath (Join-Path $env:SystemRoot 'System32\cleanmgr.exe') -ArgumentList '/sagerun:69' -PassThru
-    try {
-        Wait-Process -Id $cleanmgr.Id -Timeout 1800 -ErrorAction Stop
-        Write-GGLog 'Disk Cleanup completed.'
+    $skipCleanmgr = $false
+    $okRecycleFlag, $recycleFlagOut = Invoke-GGCommand -FilePath reg.exe -ArgumentList @('delete', ($volumeCachesRoot + '\Recycle Bin'), '/v', $flags, '/f') -TimeoutSeconds 20 -Description 'remove Recycle Bin cleanup flag'
+    if ($okRecycleFlag) {
+        Write-GGLog 'Recycle Bin cleanup flag removed (cleanmgr will not empty it).'
     }
-    catch {
-        if (-not $cleanmgr.HasExited) { Stop-Process -Id $cleanmgr.Id -Force -ErrorAction SilentlyContinue }
-        Write-GGLog 'Warning: Disk Cleanup exceeded 30 minutes and was terminated.'
+    else {
+        # The flag could not be proven gone, so Disk Cleanup is skipped entirely:
+        # the Recycle Bin is NEVER emptied by this script.
+        $skipCleanmgr = $true
+        Write-GGLog 'Warning: Recycle Bin cleanup flag could not be removed - Disk Cleanup is skipped entirely (Recycle Bin is never emptied by GGOS).'
+    }
+    if ($skipCleanmgr) {
+        Write-GGLog 'Disk Cleanup skipped.'
+    }
+    else {
+        Write-GGLog 'Running Disk Cleanup (this can take a while).'
+        $okCleanmgr, $cleanmgrOut = Invoke-GGCommand -FilePath (Join-Path $env:SystemRoot 'System32\cleanmgr.exe') -ArgumentList @('/sagerun:69') -TimeoutSeconds 900 -Description 'Disk Cleanup (cleanmgr /sagerun:69, Recycle Bin excluded)'
+        if ($okCleanmgr) {
+            Write-GGLog 'Disk Cleanup completed.'
+        }
+        else {
+            Write-GGLog 'Warning: Disk Cleanup failed or hit the 15-minute timeout; continuing.'
+        }
     }
     foreach ($handler in $handlers) {
-        & reg.exe delete ("HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\" + $handler) /v $flags /f 2>&1 | Out-Null
+        $okUnflag, $unflagOut = Invoke-GGCommand -FilePath reg.exe -ArgumentList @('delete', ($volumeCachesRoot + '\' + $handler), '/v', $flags, '/f') -TimeoutSeconds 20 -Description "unflag cleanup handler '$handler'"
+        if (-not $okUnflag) {
+            Write-GGLog "Warning: could not unflag cleanup handler '$handler'; continuing."
+        }
     }
 
     # ---- Component store cleanup ----
@@ -298,15 +358,12 @@ if ($Aggressive) {
     else {
         Write-GGLog 'Running component store cleanup without /ResetBase (updates stay uninstallable).'
     }
-    $dism = Start-Process -FilePath (Join-Path $env:SystemRoot 'System32\Dism.exe') -ArgumentList $dismArgs -PassThru
-    try {
-        Wait-Process -Id $dism.Id -Timeout 1800 -ErrorAction Stop
-        if ($dism.ExitCode -eq 0) { Write-GGLog 'Component store cleanup completed.' }
-        else { Write-GGLog "Warning: component store cleanup returned exit code $($dism.ExitCode)." }
+    $okDism, $dismOut = Invoke-GGCommand -FilePath (Join-Path $env:SystemRoot 'System32\Dism.exe') -ArgumentList $dismArgs -TimeoutSeconds 900 -Description 'component store cleanup (DISM /Cleanup-Image /StartComponentCleanup)'
+    if ($okDism) {
+        Write-GGLog 'Component store cleanup completed.'
     }
-    catch {
-        if (-not $dism.HasExited) { Stop-Process -Id $dism.Id -Force -ErrorAction SilentlyContinue }
-        Write-GGLog 'Warning: component store cleanup exceeded 30 minutes and was terminated.'
+    else {
+        Write-GGLog 'Warning: component store cleanup failed or hit the 15-minute timeout; continuing.'
     }
 
     # ---- Previous Windows installation folders ----
@@ -315,8 +372,10 @@ if ($Aggressive) {
         $legacyPath = Join-Path $systemDrive $legacy
         if (Test-Path -LiteralPath $legacyPath) {
             Write-GGLog "Removing previous Windows installation folder: $legacyPath"
-            & takeown.exe /F $legacyPath /A /R /D Y 2>&1 | Out-Null
-            & icacls.exe $legacyPath /grant '*S-1-5-32-544:F' /T /C /Q 2>&1 | Out-Null
+            $okTakeown, $takeownOut = Invoke-GGCommand -FilePath takeown.exe -ArgumentList @('/F', $legacyPath, '/A', '/R', '/D', 'Y') -TimeoutSeconds 900 -Description "take ownership of $legacyPath"
+            if (-not $okTakeown) { Write-GGLog "Warning: takeown on $legacyPath failed or timed out; attempting removal anyway." }
+            $okAcl, $aclOut = Invoke-GGCommand -FilePath icacls.exe -ArgumentList @($legacyPath, '/grant', '*S-1-5-32-544:F', '/T', '/C', '/Q') -TimeoutSeconds 900 -Description "grant Administrators full control on $legacyPath"
+            if (-not $okAcl) { Write-GGLog "Warning: icacls on $legacyPath failed or timed out; attempting removal anyway." }
             Remove-Tree $legacyPath
         }
     }

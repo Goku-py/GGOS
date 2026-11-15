@@ -2,6 +2,8 @@ title: Main
 actions:
   - !writeStatus: {status: 'Creating rollback protection'}
   - !task: {path: 'Tasks/rollback.yml'}
+  - !task: {path: 'Tasks/revert.yml'}
+  - !task: {path: 'Tasks/options-ledger.yml'}
   - !writeStatus: {status: 'Modifying system registry', option: 'system-optimization'}
   - !task: {path: 'Tasks/system-registry.yml'}
   - !writeStatus: {status: 'Tuning services', option: 'services'}
@@ -22,4 +24,6 @@ actions:
   - !task: {path: 'Tasks/cleanup-aggressive.yml'}
   - !writeStatus: {status: 'Updating applications', option: 'winget-update'}
   - !task: {path: 'Tasks/winget.yml'}
+  - !task: {path: 'Tasks/network.yml'}
+  - !task: {path: 'Tasks/verify.yml'}
   - !writeStatus: {status: 'GGOS finished - restart when convenient'}
