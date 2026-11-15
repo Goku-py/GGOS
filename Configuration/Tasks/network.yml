@@ -19,3 +19,29 @@ actions:
     option: 'network-latency'
     timeout: 120
     command: '.\network-latency.ps1'
+  # Bufferbloat relief: TCP pacing + ECN + auto-tuning Normal (research-backed;
+  # the full fix is router-side SQM - noted in README and script comments).
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Notify
+    option: 'network-bufferbloat'
+    timeout: 120
+    command: '.\network-tuning.ps1 -Mode bufferbloat'
+  # NIC low-latency without speed cost: EEE/Green Ethernet/Power Saving + Flow Control off.
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Notify
+    option: 'network-nic'
+    timeout: 180
+    command: '.\network-tuning.ps1 -Mode nic'
+  # Ultra mode: Interrupt Moderation + RSC + UDP RSC (URO, 24H2+) off - lowest latency,
+  # slightly higher CPU under load. Separate opt-in so speeds stay maintained by default.
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Notify
+    option: 'network-ultra'
+    timeout: 180
+    command: '.\network-tuning.ps1 -Mode ultra'

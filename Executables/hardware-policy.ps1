@@ -36,7 +36,15 @@ if ($chassis -eq 'Unknown') {
     $battery = Get-CimInstance -ClassName Win32_Battery -ErrorAction SilentlyContinue
     if ($battery) { $chassis = 'Laptop'; Write-GGLog 'Battery detected - treating as laptop.' }
 }
-Write-GGLog "Chassis category: $chassis"
+# User override from the option ledger (RadioPage selection): pc-desktop/pc-laptop
+# beat detection when the user explicitly chose a device type in the wizard.
+$ledgerFile = Join-Path $env:SystemRoot 'GGOS\ggos-options.txt'
+if (Test-Path $ledgerFile) {
+    $choices = @(Get-Content $ledgerFile -ErrorAction SilentlyContinue | ForEach-Object { $_.Trim() })
+    if ($choices -contains 'pc-desktop') { $chassis = 'Desktop'; Write-GGLog 'User selected Desktop in the wizard - overriding detection.' }
+    elseif ($choices -contains 'pc-laptop') { $chassis = 'Laptop'; Write-GGLog 'User selected Laptop in the wizard - overriding detection.' }
+}
+Write-GGLog "Resolved chassis category: $chassis"
 
 # ---- 2. System drive type ----
 $driveType = 'Unknown'
