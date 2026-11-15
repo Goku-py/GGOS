@@ -25,7 +25,7 @@ GGOS/
 Build the `.apbx` with `..\Build-Playbook.ps1 -Path .\GGOS` (7-Zip, password `malte`,
 AME-native 7z/AES format, round-trip verified).
 
-## Feature pages (v0.3.0)
+## Feature pages (v0.3.1)
 
 1. **PC type** — Auto-detect / Desktop / Laptop (radio; explicit choice overrides detection)
 2. **Core** — system tweaks · service tuning (~140 to manual) · telemetry hardening · ads/clutter
@@ -93,6 +93,7 @@ AME-native 7z/AES format, round-trip verified).
 
 ## Status
 
-v0.3.0 — ten feature pages, hardware-aware desktop/laptop branching, rollback gate,
+v0.3.1 — ten feature pages, hardware-aware desktop/laptop branching, rollback gate,
 option ledger + verification pass, native timer-resolution helper, researched network
 stack. Runtime smoke-testing in AME Wizard on a disposable VM is the final gate.
+
