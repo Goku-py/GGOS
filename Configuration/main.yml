@@ -4,6 +4,8 @@ actions:
   - !task: {path: 'Tasks/rollback.yml'}
   - !task: {path: 'Tasks/revert.yml'}
   - !task: {path: 'Tasks/options-ledger.yml'}
+  - !writeStatus: {status: 'Detecting hardware policy'}
+  - !task: {path: 'Tasks/hardware-policy.yml'}
   - !writeStatus: {status: 'Modifying system registry', option: 'system-optimization'}
   - !task: {path: 'Tasks/system-registry.yml'}
   - !writeStatus: {status: 'Tuning services', option: 'services'}
