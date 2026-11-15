@@ -236,3 +236,75 @@ actions:
     timeout: 120
     command: |-
       Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'network-ultra'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'epp-perf'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'epp-perf'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'desktop-device-power'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'desktop-device-power'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'nvme-latency'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'nvme-latency'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'laptop-power'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'laptop-power'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'wifi-tuning'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'wifi-tuning'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'input-accel'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'input-accel'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'input-queue'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'input-queue'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'wireless-input'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'wireless-input'

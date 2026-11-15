@@ -1,0 +1,43 @@
+title: Hardware tuning
+# Research-backed device/CPU/storage/input-radio power settings. Each action is
+# gated by its own option; AC/DC scoping is enforced inside the script (battery
+# is never touched on DC power).
+privilege: Admin
+actions:
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Notify
+    option: 'epp-perf'
+    timeout: 120
+    command: '.\hardware-tuning.ps1 -Mode epp'
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Notify
+    option: 'desktop-device-power'
+    timeout: 120
+    command: '.\hardware-tuning.ps1 -Mode devices'
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Notify
+    option: 'nvme-latency'
+    timeout: 120
+    command: '.\hardware-tuning.ps1 -Mode nvme'
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Notify
+    option: 'wireless-input'
+    timeout: 180
+    command: '.\hardware-tuning.ps1 -Mode wireless'
+  # GGOS Laptop power plan (opt-in) - invocation wired to the -LaptopPlan switch
+  # implemented in gaming-power.ps1 (fixed GUID, Balanced duplicate, DC preserved).
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Notify
+    option: 'laptop-power'
+    timeout: 180
+    command: '.\gaming-power.ps1 -LaptopPlan'

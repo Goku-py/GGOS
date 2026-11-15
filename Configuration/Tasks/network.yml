@@ -10,7 +10,16 @@ privilege: Admin
 # Default OFF because the benefit is game/protocol dependent (some servers and
 # applications behave worse with Nagle disabled).
 # NOTE: wired into main.yml by the orchestration owner; actions here are
-# self-gated via the 'network-latency' option.
+# self-gated via their own options ('network-latency', 'network-bufferbloat',
+# 'network-nic', 'network-ultra', 'wifi-tuning').
+#
+# V03 Wi-Fi addition (wifi-tuning.ps1, self-gated via the 'wifi-tuning'
+# option from the laptop page): Wi-Fi-ONLY driver settings - MIMO Power Save
+# -> No SMPS, U-APSD off, roaming aggressiveness lowest (sticky-client
+# trade-off on multi-AP homes), adapter power management off, and per-WLAN
+# profile powerManagement=disabled where the netsh build accepts it. Uses the
+# inverse of the wired filter above; originals are recorded under
+# HKLM\SOFTWARE\GGOS\NetworkUndo\WifiUndo\<adapter> for a future revert task.
 actions:
   - !powerShell:
     exeDir: true
@@ -45,3 +54,14 @@ actions:
     option: 'network-ultra'
     timeout: 180
     command: '.\network-tuning.ps1 -Mode ultra'
+  # Wi-Fi latency (V03): driver power-save off - MIMO 'No SMPS', U-APSD off,
+  # roaming aggressiveness lowest (sticky-client trade-off on multi-AP homes),
+  # device power management off, per-profile powerManagement=disabled (runtime-
+  # verified). Wi-Fi adapters only; originals recorded under WifiUndo\<adapter>.
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Notify
+    option: 'wifi-tuning'
+    timeout: 180
+    command: '.\wifi-tuning.ps1'

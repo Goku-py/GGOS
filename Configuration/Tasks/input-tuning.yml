@@ -1,0 +1,21 @@
+title: Input tuning
+# Per-user mouse acceleration off (shared per-user engine: loaded hives +
+# HKU\.DEFAULT + Default template, accel subset only) and machine-level
+# mouse/keyboard class driver data queue sizes. Each action is gated by its
+# own option; the queue tweak is community-contested (see input-tuning.ps1).
+privilege: Admin
+actions:
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Notify
+    option: 'input-accel'
+    timeout: 120
+    command: '.\input-tuning.ps1 -Mode accel'
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Notify
+    option: 'input-queue'
+    timeout: 180
+    command: '.\input-tuning.ps1 -Mode queue'

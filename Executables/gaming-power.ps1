@@ -14,12 +14,23 @@
 #     laptop's plan trades away the OS's own AC/DC power management on battery for a
 #     marginal performance gain, so only processor boost mode "Efficient Aggressive"
 #     is applied to the current plan (battery-life-preserving policy).
+#   - V03 opt-in (-LaptopPlan): instead of the default laptop path above, the
+#     script builds and activates a custom "GGOS Laptop" plan (fixed GUID,
+#     duplicated from Balanced) with battery-safe AC/DC value pairs.
 #   - Unknown chassis: boot and power-plan changes are skipped; MMCS registry
 #     values are applied by the YAML task either way.
 #
 # B2: every external process call (bcdedit, reg.exe, powercfg) runs through
 # Invoke-GGCommand (ggos-common.psm1) with a bounded timeout; on failure or timeout
 # the item is logged and the script continues (never halts the playbook).
+#
+# V03: opt-in -LaptopPlan switch. Without it the script runs exactly as before
+# (chassis-branched desktop/laptop policy); with it, only the "GGOS Laptop"
+# custom power-plan routine runs (see sections 5b/5c).
+
+param(
+    [switch]$LaptopPlan
+)
 
 $ErrorActionPreference = 'Continue'
 $hadCritical = $false
@@ -61,7 +72,11 @@ if (-not (Get-Command Invoke-GGCommand -ErrorAction SilentlyContinue)) {
 
 # ---------------------------------------------------------------------------
 # 1. bcdedit useplatformclock
+# (desktop path - skipped in -LaptopPlan mode so the opt-in laptop routine runs
+#  alone; the guard wraps the original block with its indentation preserved
+#  verbatim so the no-param diff stays addition-only)
 # ---------------------------------------------------------------------------
+if (-not $LaptopPlan) {
 try {
     $okBcd, $bcd = Invoke-GGCommand -FilePath bcdedit.exe -ArgumentList @('/enum', '{default}') -TimeoutSeconds 20 -Description 'query default boot entry (useplatformclock)'
     if (-not $okBcd) {
@@ -80,6 +95,7 @@ try {
 catch {
     Write-GGLog "Warning: bcdedit query failed: $($_.Exception.Message)"
 }
+} # -not $LaptopPlan
 
 # ---------------------------------------------------------------------------
 # 2. Chassis detection
@@ -283,6 +299,135 @@ function Set-GGOSDesktopPlan {
         $pairsOk = $false
     }
     return $pairsOk
+}
+
+# ---------------------------------------------------------------------------
+# 5b. Opt-in laptop plan: custom "GGOS Laptop" fixed-GUID plan (battery-safe).
+# ---------------------------------------------------------------------------
+# Only reachable with -LaptopPlan (dispatch in 5c). Duplicated from the built-in
+# Balanced scheme so the baseline is neutral; every changed setting has an
+# explicit DC counterpart (or its DC rail is deliberately untouched), so the
+# plan is battery-safe by construction.
+#   - PERFEPP (SUB_PROCESSOR): DO NOT TOUCH on either rail. On hybrid laptops
+#     Intel Thread Director owns per-class EPP guidance; pinning a static EPP
+#     in the plan would fight the driver's decisions.
+#   - Min processor state (SUB_PROCESSOR PROCTHROTTLEMIN): DO NOT TOUCH on
+#     either rail - no invented numbers. The Balanced baseline already scales
+#     min state down on DC; pinning it higher trades battery for idle power
+#     with no measured gain.
+$script:GGOSLaptopPlanGuid = 'c7d3a1e9-8b4f-4c62-9d5a-3f2e1b4a7c8d'
+$script:GGOSLaptopPlanName = 'GGOS Laptop'
+# Duplicate source: the built-in Balanced scheme (stable GUID, present on every
+# Windows install; neutral baseline for a battery-aware plan).
+$script:BalancedSchemeGuid = '381b4222-f694-41f0-9685-ff5bb260df2e'
+
+function Set-GGOSLaptopPlan {
+    $fixedGuid = $script:GGOSLaptopPlanGuid.ToLowerInvariant()
+
+    # a. Record the user's prior active plan GUID for manual restore - the same
+    #    HKLM\SOFTWARE\GGOS\PreviousPowerPlan record/restore mechanism as the
+    #    desktop plan (section 5a). Skipped when a GGOS plan is already active:
+    #    an earlier GGOS run recorded the user's original then, and overwriting
+    #    that record with one of our own plan GUIDs would lose it.
+    $activeGuid = Get-ActiveSchemeGuid
+    $ggosGuids = @($script:GGOSPlanGuid.ToLowerInvariant(), $fixedGuid)
+    if ($activeGuid -and ($activeGuid -notin $ggosGuids)) {
+        $okRec, $recOut = Invoke-GGCommand -FilePath reg.exe -ArgumentList @('add', 'HKLM\SOFTWARE\GGOS\PreviousPowerPlan', '/v', 'PreviousPlanGuid', '/t', 'REG_SZ', '/d', $activeGuid, '/f') -TimeoutSeconds 20 -Description 'record previous power plan GUID (laptop plan)'
+        if ($okRec) { Write-GGLog "Previous active plan recorded for restore: $activeGuid" }
+        else { Write-GGLog 'Warning: previous power plan GUID could not be recorded.' }
+    }
+
+    # b. Ensure the fixed-GUID plan exists (duplicate from Balanced). On re-runs
+    #    the existing plan is re-used; only stray "GGOS Laptop (N)" copies are
+    #    removed (Remove-GGOSPlanDuplicates anchors on our plan's own name, so
+    #    the user's plans are never matched).
+    $listText = Get-PowerSchemeList
+    if ($null -eq $listText) {
+        Write-GGLog 'Warning: could not enumerate power plans.'
+        return $false
+    }
+    if ($listText -match [regex]::Escape($fixedGuid)) {
+        Write-GGLog 'GGOS Laptop plan already present - re-using it.'
+        Remove-GGOSPlanDuplicates $listText $fixedGuid
+    }
+    else {
+        $okDup, $dupOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('-duplicatescheme', $script:BalancedSchemeGuid, $script:GGOSLaptopPlanGuid) -TimeoutSeconds 20 -Description 'create GGOS Laptop plan from Balanced scheme'
+        if (-not $okDup) {
+            Write-GGLog 'Warning: could not create the GGOS Laptop plan.'
+            return $false
+        }
+        Write-GGLog 'GGOS Laptop plan created (Balanced scheme copy).'
+        Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('-changename', $script:GGOSLaptopPlanGuid, $script:GGOSLaptopPlanName, 'GGOS laptop plan - battery-safe AC/DC values (prior plan recorded under HKLM\SOFTWARE\GGOS\PreviousPowerPlan)') -TimeoutSeconds 20 -Description 'rename GGOS Laptop plan' | Out-Null
+    }
+
+    # c. AC/DC value pairs on the plan GUID (powercfg accepts a scheme GUID, so
+    #    this works before activation). Every call goes through the bounded
+    #    timeout wrapper. Rails without a call below are untouched by design.
+    $pairsOk = $true
+
+    # Processor boost mode: AC = 3 (Efficient Aggressive), DC untouched.
+    # Subgroup/setting aliases and the attribute-unhide call mirror
+    # Set-BoostMode (SUB_PROCESSOR / PERFBOOSTMODE); DC stays on the Balanced
+    # baseline so battery keeps the OS default boost behaviour.
+    Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('-attributes', 'SUB_PROCESSOR', 'PERFBOOSTMODE', '-ATTRIB_HIDE') -TimeoutSeconds 20 -Description 'unhide processor boost mode setting (laptop plan)' | Out-Null
+    $okBoostAc, $boostAcOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setacvalueindex', $script:GGOSLaptopPlanGuid, 'SUB_PROCESSOR', 'PERFBOOSTMODE', '3') -TimeoutSeconds 20 -Description 'set AC SUB_PROCESSOR\PERFBOOSTMODE = 3 (GGOS Laptop plan)'
+    if (-not $okBoostAc) { Write-GGLog 'Warning: could not set AC processor boost mode = 3 (Efficient Aggressive).'; $pairsOk = $false }
+
+    # Display off (SUB_VIDEO VIDEOIDLE): AC 900 s (15 min), DC 300 s (5 min).
+    $okVidAc, $vidAcOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setacvalueindex', $script:GGOSLaptopPlanGuid, 'SUB_VIDEO', 'VIDEOIDLE', '900') -TimeoutSeconds 20 -Description 'set AC SUB_VIDEO\VIDEOIDLE = 900 (GGOS Laptop plan)'
+    if (-not $okVidAc) { Write-GGLog 'Warning: could not set AC SUB_VIDEO VIDEOIDLE = 900.'; $pairsOk = $false }
+    $okVidDc, $vidDcOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setdcvalueindex', $script:GGOSLaptopPlanGuid, 'SUB_VIDEO', 'VIDEOIDLE', '300') -TimeoutSeconds 20 -Description 'set DC SUB_VIDEO\VIDEOIDLE = 300 (GGOS Laptop plan)'
+    if (-not $okVidDc) { Write-GGLog 'Warning: could not set DC SUB_VIDEO VIDEOIDLE = 300.'; $pairsOk = $false }
+
+    # Standby (SUB_SLEEP STANDBYIDLE): AC 1800 s (30 min), DC 900 s (15 min).
+    $okSlpAc, $slpAcOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setacvalueindex', $script:GGOSLaptopPlanGuid, 'SUB_SLEEP', 'STANDBYIDLE', '1800') -TimeoutSeconds 20 -Description 'set AC SUB_SLEEP\STANDBYIDLE = 1800 (GGOS Laptop plan)'
+    if (-not $okSlpAc) { Write-GGLog 'Warning: could not set AC SUB_SLEEP STANDBYIDLE = 1800.'; $pairsOk = $false }
+    $okSlpDc, $slpDcOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setdcvalueindex', $script:GGOSLaptopPlanGuid, 'SUB_SLEEP', 'STANDBYIDLE', '900') -TimeoutSeconds 20 -Description 'set DC SUB_SLEEP\STANDBYIDLE = 900 (GGOS Laptop plan)'
+    if (-not $okSlpDc) { Write-GGLog 'Warning: could not set DC SUB_SLEEP STANDBYIDLE = 900.'; $pairsOk = $false }
+
+    # Hibernate idle (SUB_SLEEP HIBERNATEIDLE): DC 3600 s (60 min); AC untouched
+    # (the plugged-in hibernate timeout stays on the Balanced baseline).
+    $okHibDc, $hibDcOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setdcvalueindex', $script:GGOSLaptopPlanGuid, 'SUB_SLEEP', 'HIBERNATEIDLE', '3600') -TimeoutSeconds 20 -Description 'set DC SUB_SLEEP\HIBERNATEIDLE = 3600 (GGOS Laptop plan)'
+    if (-not $okHibDc) { Write-GGLog 'Warning: could not set DC SUB_SLEEP HIBERNATEIDLE = 3600.'; $pairsOk = $false }
+
+    # SUB_PROCESSOR PERFEPP and PROCTHROTTLEMIN (min processor state): untouched
+    # on both rails - see the policy comment above (Thread Director on hybrid
+    # laptops; no invented numbers for min state).
+
+    # d. Activate the plan (applies the values set above).
+    $okAct, $actOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setactive', $script:GGOSLaptopPlanGuid) -TimeoutSeconds 20 -Description 'activate GGOS Laptop plan'
+    if (-not $okAct) {
+        Write-GGLog 'Warning: failed to activate the GGOS Laptop plan.'
+        return $false
+    }
+    Write-GGLog "GGOS Laptop plan activated: $($script:GGOSLaptopPlanGuid)."
+
+    # e. Applied values record + battery-safe closing line.
+    Write-GGLog 'GGOS Laptop plan values: VIDEOIDLE AC=900/DC=300, STANDBYIDLE AC=1800/DC=900, HIBERNATEIDLE DC=3600, PERFBOOSTMODE AC=3 (DC untouched).'
+    Write-GGLog 'GGOS Laptop plan applied - DC rail preserved.'
+    return $pairsOk
+}
+
+# ---------------------------------------------------------------------------
+# 5c. Opt-in laptop-plan dispatch (-LaptopPlan): runs the laptop routine alone
+#     and exits before the chassis switch below, so the desktop path never
+#     executes in laptop-plan mode.
+# ---------------------------------------------------------------------------
+if ($LaptopPlan) {
+    if ($chassis -ne 'Laptop') {
+        Write-GGLog 'not a laptop - GGOS Laptop plan skipped.'
+        exit 0
+    }
+    # Write-GGLog emits via Write-Output, so the boolean is the LAST pipeline
+    # element of the function - Select-Object -Last 1 keeps the log lines and
+    # still tests the real result (same pattern as the desktop plan call).
+    $laptopPlanOk = (Set-GGOSLaptopPlan) | Select-Object -Last 1
+    if (-not $laptopPlanOk) { $hadCritical = $true }
+    if ($hadCritical) {
+        Write-GGLog 'GGOS Laptop plan completed with critical warnings (see above).'
+        exit 0
+    }
+    exit 0
 }
 
 # ---------------------------------------------------------------------------

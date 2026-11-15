@@ -1,4 +1,8 @@
-# GGOS per-user tweaks (v0.2) - triple sweep (spec B1) + first-logon hook (B5).
+# GGOS per-user tweaks (v0.3, spec V03-B) - triple sweep (spec B1) + first-logon hook (B5).
+# The sweep machinery (hive enumeration, per-hive backups, value application,
+# template hive load/unload with AME_UserHive_Default reuse) lives in the shared
+# engine Apply-GGUserValues in ggos-common.psm1; this script owns the value
+# table and the B5 RunOnce hook.
 # Applies per-user registry settings to three sweep targets, in order:
 #   1. Every loaded interactive user hive under HKU: SIDs matching
 #      S-1-5-21-<domain>-<a>-<b>-<rid> that carry a 'Volatile Environment'
@@ -31,9 +35,7 @@ $ErrorActionPreference = 'Stop'
 Import-Module (Join-Path $PSScriptRoot 'ggos-common.psm1') -Force
 
 $reg = Join-Path $env:SystemRoot 'System32\reg.exe'
-$stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 $dataDir = Join-Path $env:SystemRoot 'GGOS'
-$backupDir = Join-Path $dataDir 'hive-backups'
 
 # ---------------------------------------------------------------------------
 # Per-user value set. Paths are relative to the target hive root.
@@ -120,210 +122,22 @@ $UserValues = @(
 # Accessibility (StickyKeys) is deliberately not changed.
 # Explorer Bags/BagMRU reset is deliberately not performed (opt-in only).
 
-$script:Failures = 0
-$script:Applied  = 0
-$script:HivesTouched = 0
-
-function Backup-HiveKey {
-    param([string]$RegKey, [string]$HiveName)
-    New-Item -ItemType Directory -Path $backupDir -Force | Out-Null
-    $file = Join-Path $backupDir ('{0}-{1}.reg' -f $HiveName, $stamp)
-    # reg.exe writes the .reg file itself (UTF-16 LE BOM is reg.exe's own
-    # format); the output is never re-encoded.
-    # Invoke-GGCommand reports "completed within timeout", not the exit code,
-    # so success is confirmed by the export file existing.
-    $ok, $out = Invoke-GGCommand -FilePath $reg -ArgumentList @('export', $RegKey, $file, '/y') -TimeoutSeconds 60 -Description ('hive export ' + $RegKey)
-    if ($ok -and (Test-Path -LiteralPath $file)) {
-        Write-GGLog ('Exported ' + $RegKey + ' to ' + $file + '.')
-        return $true
-    }
-    Write-GGLog ('Warning: export of ' + $RegKey + ' failed (continuing without that backup).')
-    return $false
-}
-
-function Apply-ToHive {
-    param([string]$Root, [string[]]$Groups = @('core', 'office'))
-    foreach ($entry in $UserValues) {
-        if ($entry.Group -notin $Groups) { continue }
-        try {
-            $keyPath = 'Registry::' + $Root + '\' + $entry.Path
-            if ($entry.Op -eq 'del') {
-                if (Test-Path -LiteralPath $keyPath) {
-                    Remove-ItemProperty -LiteralPath $keyPath -Name $entry.Name -ErrorAction Stop
-                }
-                $script:Applied++
-                continue
-            }
-            if ($entry.Type -eq 'Key') {
-                # Value-less key creation (classic context menu override).
-                if (-not (Test-Path -LiteralPath $keyPath)) {
-                    New-Item -Path $keyPath -Force -ErrorAction Stop | Out-Null
-                }
-                $script:Applied++
-                continue
-            }
-            if (-not (Test-Path -LiteralPath $keyPath)) {
-                New-Item -Path $keyPath -Force -ErrorAction Stop | Out-Null
-            }
-            $kind = if ($entry.Type -eq 'DWord') { 'DWord' } else { 'String' }
-            New-ItemProperty -LiteralPath $keyPath -Name $entry.Name -PropertyType $kind -Value $entry.Data -Force -ErrorAction Stop | Out-Null
-            $script:Applied++
-        }
-        catch {
-            $script:Failures++
-            Write-GGLog ('Warning: ''' + $entry.Path + '\' + $entry.Name + ''' failed on ' + $Root + ': ' + $_.Exception.Message)
-        }
-    }
-}
-
-function Test-ServiceSid {
-    param([string]$Sid)
-    $profile = Get-CimInstance -ClassName Win32_UserProfile -ErrorAction SilentlyContinue |
-        Where-Object { $_.SID -eq $Sid } | Select-Object -First 1
-    if ($profile -and $profile.Special) { return $true }
-    # Service accounts that are not tracked by Win32_UserProfile (defence in
-    # depth; the SID regex already excludes these).
-    if ($Sid -match '^S-1-5-(18|19|20)$') { return $true }
-    return $false
-}
-
-function Test-GGRegSuccess {
-    # Invoke-GGCommand reports "completed within timeout", not the exit code.
-    # reg.exe prints "The operation completed successfully." on success, so
-    # validate from the captured output.
-    param([bool]$Completed, [object[]]$Output)
-    if (-not $Completed) { return $false }
-    return [bool](@($Output) | Where-Object { $_ -match 'operation completed successfully' })
-}
-
-function Unload-GGHive {
-    # reg unload can fail transiently while a handle is still open; retry with
-    # a delay (community TryUnload pattern, re-expressed).
-    param([string]$MountName)
-    for ($attempt = 1; $attempt -le 5; $attempt++) {
-        $ok, $out = Invoke-GGCommand -FilePath $reg -ArgumentList @('unload', ('HKU\' + $MountName)) -TimeoutSeconds 30 -Description ('hive unload ' + $MountName)
-        if (Test-GGRegSuccess $ok $out) { return $true }
-        [GC]::Collect()
-        [GC]::WaitForPendingFinalizers()
-        Start-Sleep -Seconds 2
-    }
-    return $false
-}
-
-try {
-    New-Item -ItemType Directory -Path $backupDir -Force | Out-Null
-}
-catch {
-    Write-GGLog ('Could not create backup directory ''' + $backupDir + ''': ' + $_.Exception.Message)
-    exit 1
-}
-
 # ---------------------------------------------------------------------------
-# Sweep 1: loaded interactive user hives
+# Apply the full value set through the shared per-user engine in
+# ggos-common (Apply-GGUserValues): the triple sweep (loaded interactive
+# hives with the 'Volatile Environment' marker and special-profile
+# exclusion, HKU\.DEFAULT with the core-only subset, and the Default
+# template hive with AME_UserHive_Default reuse / reg load + unload retry),
+# the per-hive reg export backups and the bounded-timeout reg.exe calls all
+# live there now. This script keeps the value table above and the B5
+# first-logon hook below.
 # ---------------------------------------------------------------------------
-Write-GGLog 'Sweep 1: applying per-user settings to loaded interactive profile hives.'
-$loadedSids = @()
-try {
-    $loadedSids = @(Get-ChildItem -LiteralPath 'Registry::HKEY_USERS' -ErrorAction Stop |
-        Where-Object { $_.PSChildName -match '^S-1-5-21-\d+-\d+-\d+-\d+$' -and $_.PSChildName -notmatch '_Classes$' } |
-        Select-Object -ExpandProperty PSChildName)
-}
-catch {
-    Write-GGLog ('Could not enumerate loaded hives: ' + $_.Exception.Message)
-}
-
-foreach ($sid in $loadedSids) {
-    if (-not (Test-Path -LiteralPath ('Registry::HKEY_USERS\' + $sid + '\Volatile Environment'))) {
-        # No interactive-profile marker: likely a disconnected or partial mount.
-        Write-GGLog ('Skipping SID without an interactive profile marker: ' + $sid)
-        continue
-    }
-    if (Test-ServiceSid $sid) {
-        Write-GGLog ('Skipping service/special profile SID: ' + $sid)
-        continue
-    }
-    Write-GGLog ('Processing loaded hive ' + $sid + '.')
-    Backup-HiveKey ('HKU\' + $sid) $sid | Out-Null
-    Apply-ToHive ('HKEY_USERS\' + $sid)
-    $script:HivesTouched++
-}
-
-if ($loadedSids.Count -eq 0) {
-    Write-GGLog 'No loaded interactive user SID hives were found.'
-}
-
-# ---------------------------------------------------------------------------
-# Sweep 2: HKU\.DEFAULT (LocalSystem hive, logon-screen-visible values)
-# ---------------------------------------------------------------------------
-if (Test-Path -LiteralPath 'Registry::HKEY_USERS\.DEFAULT') {
-    Write-GGLog 'Sweep 2: applying per-user settings to HKU\.DEFAULT (logon-screen values).'
-    Backup-HiveKey 'HKU\.DEFAULT' 'DEFAULT-hive' | Out-Null
-    Apply-ToHive 'HKEY_USERS\.DEFAULT' -Groups @('core')
-    $script:HivesTouched++
-}
-else {
-    Write-GGLog 'HKU\.DEFAULT was not available; logon-screen values were skipped.'
-}
-
-# ---------------------------------------------------------------------------
-# Sweep 3: Default profile template (future users)
-# ---------------------------------------------------------------------------
-$defaultDat = Join-Path $env:SystemDrive 'Users\Default\NTUSER.DAT'
-$ameMount = 'HKEY_USERS\AME_UserHive_Default'
-$ggosMountName = 'GGOS_DefaultHive'
-$hookTarget = $null   # template mount the RunOnce hook is written into
-
-if (Test-Path -LiteralPath $defaultDat) {
-    if (Test-Path -LiteralPath ('Registry::' + $ameMount)) {
-        # AME Wizard loaded the Default template itself; reuse the mount and
-        # never unload it (AME owns that lifecycle).
-        Write-GGLog 'Sweep 3: reusing the existing AME_UserHive_Default mount for the Default template.'
-        Backup-HiveKey 'HKU\AME_UserHive_Default' 'Default-template' | Out-Null
-        Apply-ToHive $ameMount
-        $hookTarget = $ameMount
-        $script:HivesTouched++
-    }
-    else {
-        # Clear a leftover mount from an earlier interrupted run.
-        if (Test-Path -LiteralPath ('Registry::HKEY_USERS\' + $ggosMountName)) {
-            Write-GGLog ('Clearing a leftover ' + $ggosMountName + ' mount from an earlier run.')
-            $cleared = Unload-GGHive $ggosMountName
-            if (-not $cleared) {
-                Write-GGLog ('Warning: leftover ' + $ggosMountName + ' mount could not be unloaded; Default template was skipped.')
-            }
-        }
-        if (-not (Test-Path -LiteralPath ('Registry::HKEY_USERS\' + $ggosMountName))) {
-            $ok, $out = Invoke-GGCommand -FilePath $reg -ArgumentList @('load', ('HKU\' + $ggosMountName), $defaultDat) -TimeoutSeconds 60 -Description 'Default template hive load'
-            if (-not (Test-GGRegSuccess $ok $out)) {
-                Write-GGLog 'Warning: loading the Default profile hive failed; future users were not configured.'
-            }
-            else {
-                try {
-                    Write-GGLog 'Sweep 3: applying per-user settings to the Default template hive.'
-                    Backup-HiveKey ('HKU\' + $ggosMountName) 'Default-template' | Out-Null
-                    Apply-ToHive ('HKEY_USERS\' + $ggosMountName)
-                    $hookTarget = 'HKEY_USERS\' + $ggosMountName
-                    $script:HivesTouched++
-                }
-                finally {
-                    Start-Sleep -Seconds 1
-                    $unloaded = Unload-GGHive $ggosMountName
-                    if (-not $unloaded) {
-                        Write-GGLog 'ERROR: could not unload the Default template hive. A reboot clears the mount.'
-                        $script:Failures++
-                    }
-                }
-            }
-        }
-    }
-}
-else {
-    Write-GGLog 'Default profile NTUSER.DAT was not found; future users were not configured.'
-}
+$result = Apply-GGUserValues -ValueTable $UserValues -Groups @('core', 'office') -DefaultGroups @('core')
 
 # ---------------------------------------------------------------------------
 # B5: RunOnce first-logon hook into the Default template hive
 # ---------------------------------------------------------------------------
+$hookTarget = $result.TemplateMount
 if ($null -ne $hookTarget) {
     $hookDest = Join-Path $dataDir 'first-logon.ps1'
     $hookSrc = Join-Path $PSScriptRoot 'first-logon.ps1'
@@ -357,15 +171,15 @@ if ($null -ne $hookTarget) {
 # ---------------------------------------------------------------------------
 # Summary
 # ---------------------------------------------------------------------------
-Write-GGLog ('Hives processed: ' + $script:HivesTouched + '; values applied: ' + $script:Applied + '; failures: ' + $script:Failures + '.')
-Write-GGLog ('Per-hive exports are in ' + $backupDir + '.')
+Write-GGLog ('Hives processed: ' + $result.HivesTouched + '; values applied: ' + $result.Applied + '; failures: ' + $result.Failures + '.')
+Write-GGLog ('Per-hive exports are in ' + $result.BackupDir + '.')
 
-if ($script:Failures -gt 0) {
+if ($result.Failures -gt 0) {
     Write-GGLog 'Completed with warnings (failed values above).'
     exit 0
 }
 
-if ($script:HivesTouched -eq 0) {
+if ($result.HivesTouched -eq 0) {
     Write-GGLog 'No profile hives could be processed.'
     exit 1
 }
