@@ -1,0 +1,28 @@
+# Build output and release artifacts.
+# The packaged playbook is attached to a GitHub Release, not committed:
+# Build-Playbook.ps1 writes dist/GGOS-v<version>.apbx.
+dist/
+*.apbx
+
+# Native helper build output (the shipped binary lives in Executables/)
+Native/bin/
+Native/obj/
+Native/*.exe
+Native/*.pdb
+
+# OS metadata
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Editor / IDE
+.vscode/
+.idea/
+.vs/
+*.swp
+*.swo
+
+# Local logs and scratch files
+*.log
+*.tmp
+*.bak
