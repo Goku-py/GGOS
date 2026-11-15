@@ -1,0 +1,23 @@
+title: Appx
+# Appx debloat. Each entry removes the whole package family (installed packages for
+# all users plus provisioned/staged packages), covering TBOK's separate
+# installed + provisioned handling in one action per family.
+#
+# Package IDs cross-checked against CTT WinUtil config/appx.json.
+# Portions derived from ChrisTitusTech/winutil (MIT License, (c) 2022 CT Tech Group LLC).
+actions:
+  # ---- Copilot (consumer; M365 Copilot is not affected) ----
+  - !appx: {name: '*Microsoft.Copilot*', type: family, errorAction: Log, option: 'bloat-copilot'}
+  # Clear the Start menu cache so the removed taskbar/Start entries disappear.
+  - !appx: {operation: clearCache, name: '*StartMenuExperienceHost*', errorAction: Log, option: 'bloat-copilot'}
+
+  # ---- Bing Search app (Start menu web search provider) ----
+  - !appx: {name: '*Microsoft.BingSearch*', type: family, errorAction: Log, option: 'bloat-bing'}
+  - !appx: {operation: clearCache, name: '*Windows.Search*', errorAction: Log, option: 'bloat-bing'}
+
+  # ---- Widgets (Widgets Platform Runtime + Web Experience Pack) ----
+  - !appx: {name: 'Microsoft.WidgetsPlatformRuntime', type: family, errorAction: Log, option: 'bloat-widgets'}
+  - !appx: {name: 'MicrosoftWindows.Client.WebExperience', type: family, errorAction: Log, option: 'bloat-widgets'}
+  # Clear shell component caches after widget removal.
+  - !appx: {operation: clearCache, name: '*Client.CBS*', errorAction: Log, option: 'bloat-widgets'}
+  - !appx: {operation: clearCache, name: '*StartMenuExperienceHost*', errorAction: Log, option: 'bloat-widgets'}

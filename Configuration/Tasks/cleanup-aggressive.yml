@@ -1,0 +1,15 @@
+title: Cleanup aggressive
+# Aggressive cleanup, opt-in only: Windows Search index reset, Disk Cleanup with
+# update/component-store handlers, SoftwareDistribution cache, previous Windows
+# installations (Windows.old / $Windows.~BT / $Windows.~WS).
+#
+# NEVER included: Recycle Bin emptying (at any level), DISM /ResetBase by default.
+# -SkipSafe avoids re-running the safe sweep when the cleanup option was also selected.
+actions:
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Notify
+    option: 'cleanup-aggressive'
+    timeout: 7200
+    command: '.\cleanup-sweep.ps1 -Aggressive -SkipSafe'

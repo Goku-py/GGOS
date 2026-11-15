@@ -1,0 +1,326 @@
+title: System registry
+# Machine-level registry writes.
+# Sources: TBOK machine-wide registry semantics (reference only, re-expressed);
+# paths/values cross-checked against CTT WinUtil where noted.
+# Portions derived from ChrisTitusTech/winutil (MIT License, (c) 2022 CT Tech Group LLC).
+#
+# TBOK writes several values across every control set (Current, Default and
+# LastKnownGood). The !registryValue action targets one path only, so each
+# control-set-wide item is written to CurrentControlSet here and mirrored to the
+# remaining control sets by the !powerShell block at the end of this file.
+actions:
+  # ---- Storage / file system ----
+  # Enable long path support (>260 chars) - WinUtil cross-check, same path/value.
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\FileSystem', value: 'LongPathsEnabled', type: REG_DWORD, data: 1, option: 'system-optimization'}
+
+  # ---- Network responsiveness ----
+  # Disable multimedia network throttling during media playback.
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile', value: 'NetworkThrottlingIndex', type: REG_DWORD, data: 4294967295, option: 'system-optimization'}
+  # Restore the SMB server IRP stack size for better network flow (TBOK: do not exceed 32).
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters', value: 'IRPStackSize', type: REG_DWORD, data: 30, option: 'system-optimization'}
+  # Repair the network data-usage graph (Ndu service startup = Automatic).
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\Ndu', value: 'Start', type: REG_DWORD, data: 2, option: 'system-optimization'}
+
+  # ---- Shutdown behaviour ----
+  # Restore the Windows default 5000 ms service shutdown timeout so services with
+  # pending writes are not cut off earlier than the OS default.
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control', value: 'WaitToKillServiceTimeout', type: REG_SZ, data: '5000', option: 'system-optimization'}
+
+  # ---- Firmware / boot environment ----
+  # Block Windows Platform Binary Table boot execution (vendor code run at boot).
+  # WinUtil cross-check: same path/value under Essential Tweaks.
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager', value: 'DisableWpbtExecution', type: REG_DWORD, data: 1, option: 'system-optimization'}
+  # The WPBT firmware resource itself is deliberately NOT touched (OEM boot utilities preserved).
+
+  # ---- Hardware/driver behaviour ----
+  # Stop the OS from installing companion software when hardware is plugged in.
+  # WinUtil cross-check: same path/value.
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Device Metadata', value: 'PreventDeviceMetadataFromNetwork', type: REG_DWORD, data: 1, option: 'system-optimization'}
+
+  # ---- Defender ----
+  # Cap Defender's scheduled/manual scan CPU usage at 25%. Real-time protection is untouched.
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Scan', value: 'ScanAvgCPULoadFactor', type: REG_DWORD, data: 25, option: 'system-optimization'}
+
+  # ---- Storage Sense ----
+  # Allow Storage Sense to run and clean temporary files when disk space runs low.
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\StorageSense', value: 'AllowStorageSenseGlobal', type: REG_DWORD, data: 1, option: 'system-optimization'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\StorageSense', value: 'AllowStorageSenseTemporaryFilesCleanup', type: REG_DWORD, data: 1, option: 'system-optimization'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\StorageSense', value: 'ConfigStorageSenseGlobalCadence', type: REG_DWORD, data: 0, option: 'system-optimization'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\StorageSense', value: 'ConfigStorageSenseRecycleBinCleanupThreshold', type: REG_DWORD, data: 30, option: 'system-optimization'}
+
+  # ---- Delivery Optimization (bandwidth) ----
+  # WinUtil cross-check: same policy path/value.
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization', value: 'DODownloadMode', type: REG_DWORD, data: 0, option: 'system-optimization'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config', value: 'DODownloadMode', type: REG_DWORD, data: 0, option: 'system-optimization'}
+
+  # ---- Edge performance (machine policy) ----
+  # Stop Edge from starting with the system and running after close.
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Edge', value: 'StartupBoostEnabled', type: REG_DWORD, data: 0, option: 'system-optimization'}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Edge', value: 'BackgroundModeEnabled', type: REG_DWORD, data: 0, option: 'system-optimization'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Edge', value: 'EfficiencyModeEnabled', type: REG_DWORD, data: 1, option: 'system-optimization'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Edge', value: 'SleepingTabsEnabled', type: REG_DWORD, data: 1, option: 'system-optimization'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Edge', value: 'SleepingTabsTimeout', type: REG_DWORD, data: 900, option: 'system-optimization'}
+
+  # ---- Start menu / Search UI ----
+  # Classic search results: disable the web-view dependency for Search via the
+  # feature-override key TBOK uses (written across control sets below).
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\FeatureManagement\Overrides\8\1694661260', value: 'EnabledState', type: REG_DWORD, data: 1, option: 'system-optimization'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\FeatureManagement\Overrides\8\1694661260', value: 'EnabledStateOptions', type: REG_DWORD, data: 0, option: 'system-optimization'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\FeatureManagement\Overrides\8\1694661260', value: 'Variant', type: REG_DWORD, data: 0, option: 'system-optimization'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\FeatureManagement\Overrides\8\1694661260', value: 'VariantPayload', type: REG_DWORD, data: 0, option: 'system-optimization'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\FeatureManagement\Overrides\8\1694661260', value: 'VariantPayloadKind', type: REG_DWORD, data: 0, option: 'system-optimization'}
+
+  # ---- Ads and UI clutter (machine level) ----
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds', value: 'EnableFeeds', type: REG_DWORD, data: 0, option: 'ads-ui'}
+  # Advertising ID disabled via group policy (per-user AdvertisingInfo is in per-user.ps1).
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo', value: 'DisabledByGroupPolicy', type: REG_DWORD, data: 1, option: 'ads-ui'}
+  # Edge annoyances: shopping assistant pop-ups, feedback prompts, first-run flow.
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Edge', value: 'EdgeShoppingAssistantEnabled', type: REG_DWORD, data: 0, option: 'ads-ui'}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Edge', value: 'UserFeedbackAllowed', type: REG_DWORD, data: 0, option: 'ads-ui'}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Edge', value: 'HideFirstRunExperience', type: REG_DWORD, data: 1, option: 'ads-ui'}
+
+  # ---- Copilot policy keys (machine level, consumer Copilot only) ----
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot', value: 'TurnOffWindowsCopilot', type: REG_DWORD, data: 1, option: 'bloat-copilot'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\Shell\Copilot', value: 'IsCopilotAvailable', type: REG_DWORD, data: 0, option: 'bloat-copilot'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\Shell\Copilot', value: 'CopilotDisabledReason', type: REG_SZ, data: 'IsEnabledForGeographicRegionFailed', option: 'bloat-copilot'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked', value: '{CB3B0003-8088-4EDE-8769-8B354AB2FF8C}', type: REG_SZ, data: '1', option: 'bloat-copilot'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\Shell\Copilot\BingChat', value: 'IsUserEligible', type: REG_DWORD, data: 0, option: 'bloat-copilot'}
+
+  # ---- OOBE privacy experience (applies to new accounts / feature updates) ----
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\OOBE', value: 'DisablePrivacyExperience', type: REG_DWORD, data: 1, option: 'telemetry'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\OOBE', value: 'PrivacyConsentStatus', type: REG_DWORD, data: 1, option: 'telemetry'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\OOBE', value: 'Protectyourpc', type: REG_DWORD, data: 3, option: 'telemetry'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\OOBE', value: 'HideEULAPage', type: REG_DWORD, data: 1, option: 'telemetry'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\OOBE', value: 'DisableVoice', type: REG_DWORD, data: 1, option: 'telemetry'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\OOBE', value: 'BypassNRO', type: REG_DWORD, data: 1, option: 'telemetry'}
+
+  # ---- Verbose logon messages ----
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', value: 'VerboseStatus', type: REG_DWORD, data: 1, option: 'verbose-logon'}
+
+  # ---- RAM-aware memory policy ----
+  # SvcHostSplitThresholdInKB: disable service-host splitting by setting the split
+  # threshold above installed RAM (RAM KB + 256 MB, capped at 32-bit max).
+  # WinUtil cross-check: WinUtil uses the full physical RAM size for the same value.
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'system-optimization'
+    timeout: 300
+    command: |-
+      $ErrorActionPreference = 'Stop'
+      Write-Output 'GGOS registry: configuring svchost splitting threshold'
+      try {
+          $ramKb = [uint64]((Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property Capacity -Sum).Sum / 1KB)
+          $threshold = $ramKb + 262144
+          if ($threshold -gt 4294967295) { $threshold = [uint64]4294967295 }
+          $path = 'HKLM:\SYSTEM\CurrentControlSet\Control'
+          if (-not (Test-Path $path)) { New-Item -Path $path -Force | Out-Null }
+          New-ItemProperty -Path $path -Name SvcHostSplitThresholdInKB -Value $threshold -PropertyType DWord -Force | Out-Null
+          Write-Output "GGOS registry: SvcHostSplitThresholdInKB set to $threshold KB"
+          exit 0
+      } catch {
+          Write-Output "GGOS registry: svchost splitting threshold failed: $($_.Exception.Message)"
+          exit 0
+      }
+
+  # ---- Prefetch / SysMain memory policy ----
+  # RAM + system-drive-type aware policy ported from TBOK's resolved targets:
+  #   <=12 GB RAM: SSD -> prefetcher 0; HDD -> prefetcher 2; unknown -> unchanged
+  #   > 12 GB RAM: SSD -> prefetcher 2; HDD -> prefetcher 3; unknown -> unchanged
+  #   PreLaunch (EnableSuperfetch) off except on >12 GB with unknown storage.
+  #   SysMain stays Automatic; memory compression and page combining enabled.
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'system-optimization'
+    timeout: 300
+    command: |-
+      $ErrorActionPreference = 'Continue'
+      Write-Output 'GGOS registry: resolving prefetch / SysMain policy'
+      $lowRam = $true
+      $driveType = 'UNKNOWN'
+      try {
+          $ramKb = [uint64]((Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property Capacity -Sum).Sum / 1KB)
+          $lowRam = ($ramKb -le 12582912)
+      } catch {
+          Write-Output "GGOS registry: installed RAM unavailable: $($_.Exception.Message)"
+          exit 0
+      }
+      try {
+          $partition = Get-Partition -DriveLetter ($env:SystemDrive.TrimEnd(':')) -ErrorAction Stop
+          $disk = $partition | Get-Disk -ErrorAction Stop
+          if ($disk.MediaType -match 'SSD|SCM' -or $disk.BusType -eq 'NVMe') { $driveType = 'SSD' }
+          elseif ($disk.MediaType -eq 'HDD') { $driveType = 'HDD' }
+      } catch {
+          Write-Output "GGOS registry: system drive type unavailable: $($_.Exception.Message)"
+      }
+      $prefetch = $null
+      $prelaunch = 0
+      if ($lowRam) {
+          if ($driveType -eq 'SSD') { $prefetch = 0 }
+          elseif ($driveType -eq 'HDD') { $prefetch = 2 }
+      } else {
+          if ($driveType -eq 'SSD') { $prefetch = 2 }
+          elseif ($driveType -eq 'HDD') { $prefetch = 3 }
+          else { $prelaunch = $null }
+      }
+      $prefetchPath = 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters'
+      try {
+          if ($null -ne $prefetch) {
+              New-ItemProperty -Path $prefetchPath -Name EnablePrefetcher -Value $prefetch -PropertyType DWord -Force | Out-Null
+              Write-Output "GGOS registry: EnablePrefetcher set to $prefetch (RAM low=$lowRam, drive=$driveType)"
+          } else {
+              Write-Output 'GGOS registry: EnablePrefetcher left unchanged (storage type unknown)'
+          }
+          if ($null -ne $prelaunch) {
+              New-ItemProperty -Path $prefetchPath -Name EnableSuperfetch -Value $prelaunch -PropertyType DWord -Force | Out-Null
+              Write-Output "GGOS registry: EnableSuperfetch set to $prelaunch"
+          }
+      } catch {
+          Write-Output "GGOS registry: prefetch policy failed: $($_.Exception.Message)"
+      }
+      try {
+          Set-Service -Name SysMain -StartupType Automatic -ErrorAction Stop
+          $svc = Get-Service -Name SysMain -ErrorAction Stop
+          if ($svc.Status -ne 'Running') { Start-Service -Name SysMain -ErrorAction Stop; $svc.WaitForStatus('Running', (New-TimeSpan -Seconds 15)) }
+          Enable-MMAgent -MemoryCompression -ErrorAction Stop
+          Enable-MMAgent -PageCombining -ErrorAction Stop
+          Write-Output 'GGOS registry: SysMain automatic; memory compression and page combining enabled'
+      } catch {
+          Write-Output "GGOS registry: SysMain/MMAgent configuration failed: $($_.Exception.Message)"
+      }
+      exit 0
+
+  # ---- Legacy F8 boot menu (boot-behaviour change; opt-in) ----
+  # Skipped automatically when BitLocker protection is on or unknown: using the
+  # legacy boot menu on an encrypted drive prompts for the recovery key.
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'f8-boot'
+    timeout: 300
+    command: |-
+      $ErrorActionPreference = 'Continue'
+      $status = 'Unknown'
+      try { $status = (Get-BitLockerVolume -MountPoint $env:SystemDrive -ErrorAction Stop).ProtectionStatus.ToString() }
+      catch { Write-Output "GGOS registry: BitLocker status could not be determined: $($_.Exception.Message)" }
+      if ($status -ne 'Off') {
+          Write-Output "GGOS registry: BitLocker status is $status - legacy F8 boot menu skipped to avoid recovery-key prompts."
+          exit 0
+      }
+      & bcdedit.exe /set '{default}' bootmenupolicy legacy 2>&1 | Out-Null
+      if ($LASTEXITCODE -eq 0) { Write-Output 'GGOS registry: legacy F8 boot menu enabled.' }
+      else { Write-Output 'GGOS registry: warning - failed to enable the legacy F8 boot menu.' }
+      exit 0
+
+  # ---- Page file auto-configuration (opt-in; restart required) ----
+  # RAM-aware target sizes: <8 GB -> 4096/16384 MB, <16 GB -> 8192/24576 MB,
+  # <32 GB -> 8192/32768 MB, >=32 GB -> left unchanged. Existing page-file
+  # locations are kept; the setting is only created/updated on the system drive
+  # when free space allows.
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'pagefile'
+    timeout: 300
+    command: |-
+      $ErrorActionPreference = 'Continue'
+      try {
+          $ramMb = [uint64]((Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property Capacity -Sum).Sum / 1MB)
+      } catch {
+          Write-Output "GGOS registry: installed RAM unavailable - page file unchanged: $($_.Exception.Message)"
+          exit 0
+      }
+      if ($ramMb -ge 32768) {
+          Write-Output "GGOS registry: $ramMb MB RAM - page file left unchanged."
+          exit 0
+      }
+      if ($ramMb -lt 8192) { $initial = 4096; $maximum = 16384 }
+      elseif ($ramMb -lt 16384) { $initial = 8192; $maximum = 24576 }
+      else { $initial = 8192; $maximum = 32768 }
+      $target = "$env:SystemDrive\pagefile.sys"
+      try {
+          $drive = Get-CimInstance Win32_LogicalDisk -Filter ("DeviceID='" + $env:SystemDrive + "'") -ErrorAction Stop
+          if ($drive.FreeSpace -lt ($maximum * 1MB * 0.5)) {
+              Write-Output "GGOS registry: insufficient free space for the page-file target - left unchanged."
+              exit 0
+          }
+          $cs = Get-CimInstance Win32_ComputerSystem -ErrorAction Stop
+          $existing = @(Get-CimInstance Win32_PageFileSetting -ErrorAction SilentlyContinue)
+          if ($existing.Count -eq 0) {
+              if ($cs.AutomaticManagedPagefile) {
+                  Set-CimInstance -InputObject $cs -Property @{ AutomaticManagedPagefile = $false } -ErrorAction Stop | Out-Null
+              }
+              New-CimInstance -ClassName Win32_PageFileSetting -Property @{ Name = $target; InitialSize = [uint32]$initial; MaximumSize = [uint32]$maximum } -ErrorAction Stop | Out-Null
+          } else {
+              $setting = $existing | Where-Object { $_.Name -like ($env:SystemDrive + '\*') } | Select-Object -First 1
+              if (-not $setting) { $setting = $existing | Sort-Object Name | Select-Object -First 1 }
+              $target = $setting.Name
+              Set-CimInstance -InputObject $setting -Property @{ InitialSize = [uint32]$initial; MaximumSize = [uint32]$maximum } -ErrorAction Stop | Out-Null
+          }
+          Write-Output "GGOS registry: page file set to $initial-$maximum MB at $target. A restart is required."
+      } catch {
+          Write-Output "GGOS registry: page file configuration failed (left unchanged): $($_.Exception.Message)"
+          try {
+              $cs = Get-CimInstance Win32_ComputerSystem -ErrorAction SilentlyContinue
+              if ($cs -and -not $cs.AutomaticManagedPagefile) { Set-CimInstance -InputObject $cs -Property @{ AutomaticManagedPagefile = $true } -ErrorAction SilentlyContinue | Out-Null }
+          } catch { }
+      }
+      exit 0
+
+  # ---- Mirror control-set-wide values to Default / LastKnownGood control sets ----
+  # !registryValue above wrote CurrentControlSet. The OS selects its boot control set
+  # from HKLM\SYSTEM\Select, so mirror the same values to the Default and
+  # LastKnownGood control sets when they differ.
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'system-optimization'
+    timeout: 300
+    command: |-
+      $ErrorActionPreference = 'Continue'
+      function Write-CsValue {
+          param([string]$ControlSet, [string]$RelPath, [string]$Name, [string]$Type, [string]$Data)
+          & reg.exe add ("HKLM\SYSTEM\" + $ControlSet + "\" + $RelPath) /v $Name /t $Type /d $Data /f 2>&1 | Out-Null
+          if ($LASTEXITCODE -ne 0) {
+              Write-Output "GGOS registry: warning - could not write $ControlSet\$RelPath\$Name"
+          }
+      }
+      function Get-SelectNumber {
+          param([string]$ValueName)
+          $row = (& reg.exe query 'HKLM\SYSTEM\Select' /v $ValueName 2>$null) -join ' '
+          if ($row -match '0x([0-9a-fA-F]+)') { return [int]('0x' + $Matches[1]) }
+          return 0
+      }
+      $current = Get-SelectNumber 'Current'
+      $default = Get-SelectNumber 'Default'
+      $lkg = Get-SelectNumber 'LastKnownGood'
+      if ($current -le 0) { Write-Output 'GGOS registry: control-set mapping unavailable - skipping mirror'; exit 0 }
+      $sets = @('ControlSet{0:D3}' -f $current)
+      foreach ($n in @($default, $lkg)) {
+          if ($n -gt 0 -and ('ControlSet{0:D3}' -f $n) -notin $sets) { $sets += ('ControlSet{0:D3}' -f $n) }
+      }
+      $mirrors = @(
+          @('Control', 'WaitToKillServiceTimeout', 'REG_SZ', '5000'),
+          @('Control\FileSystem', 'LongPathsEnabled', 'REG_DWORD', '1'),
+          @('Control\Session Manager', 'DisableWpbtExecution', 'REG_DWORD', '1'),
+          @('Services\LanmanServer\Parameters', 'IRPStackSize', 'REG_DWORD', '30'),
+          @('Services\Ndu', 'Start', 'REG_DWORD', '2'),
+          @('Control\FeatureManagement\Overrides\8\1694661260', 'EnabledState', 'REG_DWORD', '1'),
+          @('Control\FeatureManagement\Overrides\8\1694661260', 'EnabledStateOptions', 'REG_DWORD', '0'),
+          @('Control\FeatureManagement\Overrides\8\1694661260', 'Variant', 'REG_DWORD', '0'),
+          @('Control\FeatureManagement\Overrides\8\1694661260', 'VariantPayload', 'REG_DWORD', '0'),
+          @('Control\FeatureManagement\Overrides\8\1694661260', 'VariantPayloadKind', 'REG_DWORD', '0')
+      )
+      foreach ($cs in $sets) {
+          foreach ($m in $mirrors) {
+              Write-CsValue $cs $m[0] $m[1] $m[2] $m[3]
+          }
+          Write-Output "GGOS registry: mirrored control-set-wide values to $cs"
+      }
+      exit 0

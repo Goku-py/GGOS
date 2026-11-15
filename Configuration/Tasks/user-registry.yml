@@ -1,0 +1,12 @@
+title: Per-user tweaks
+# Applies per-user registry settings to every loaded profile hive and to the Default
+# profile hive (future users). Implemented in PowerShell because the !registryValue
+# action cannot mount/unmount offline hives or export per-hive backups.
+actions:
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Notify
+    option: 'per-user'
+    timeout: 1800
+    command: '.\per-user.ps1'

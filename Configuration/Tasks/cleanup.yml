@@ -1,0 +1,11 @@
+title: Cleanup
+# Safe disk cleanup: caches, temp files and logs only.
+# See cleanup-sweep.ps1 for the exact paths and their safety annotations.
+actions:
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Notify
+    option: 'cleanup'
+    timeout: 3600
+    command: '.\cleanup-sweep.ps1'

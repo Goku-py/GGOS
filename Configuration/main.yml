@@ -18,6 +18,8 @@ actions:
   - !task: {path: 'Tasks/gaming.yml'}
   - !writeStatus: {status: 'Running disk cleanup', option: 'cleanup'}
   - !task: {path: 'Tasks/cleanup.yml'}
+  - !writeStatus: {status: 'Running aggressive cleanup', option: 'cleanup-aggressive'}
+  - !task: {path: 'Tasks/cleanup-aggressive.yml'}
   - !writeStatus: {status: 'Updating applications', option: 'winget-update'}
   - !task: {path: 'Tasks/winget.yml'}
   - !writeStatus: {status: 'GGOS finished - restart when convenient'}

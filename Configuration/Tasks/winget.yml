@@ -1,0 +1,32 @@
+title: WinGet updates
+# Updates all installed applications through winget.
+# Runs as the current elevated user because winget is a per-user app execution
+# alias that is not resolvable for the SYSTEM/trustedInstaller account.
+actions:
+  - !powerShell:
+    runas: currentUserElevated
+    wait: true
+    errorAction: Notify
+    option: 'winget-update'
+    timeout: 7200
+    command: |-
+      $wingetExe = $null
+      $cmd = Get-Command winget.exe -ErrorAction SilentlyContinue
+      if ($cmd) {
+          $wingetExe = $cmd.Source
+      } elseif (Test-Path -LiteralPath (Join-Path $env:LOCALAPPDATA 'Microsoft\WindowsApps\winget.exe')) {
+          $wingetExe = Join-Path $env:LOCALAPPDATA 'Microsoft\WindowsApps\winget.exe'
+      }
+      if (-not $wingetExe) {
+          Write-Output 'GGOS winget: winget was not found - nothing updated.'
+          exit 0
+      }
+      Write-Output "GGOS winget: updating packages with $wingetExe"
+      & $wingetExe upgrade --all --include-unknown --accept-source-agreements --accept-package-agreements --silent --disable-interactivity
+      $code = $LASTEXITCODE
+      if ($code -ne 0) {
+          Write-Output "GGOS winget: winget exited with code $code (some packages may have failed)."
+      } else {
+          Write-Output 'GGOS winget: package updates completed.'
+      }
+      exit 0
