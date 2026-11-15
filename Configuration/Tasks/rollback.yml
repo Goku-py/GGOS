@@ -1,0 +1,9 @@
+title: Rollback protection
+actions:
+  # Restore point + registry export before anything changes.
+  # If restore-point creation fails, registry exports are created instead; if both fail the
+  # playbook halts rather than applying changes without any rollback method.
+  - !powerShell:
+    exeDir: true
+    exe: 'rollback.ps1'
+    errorAction: Halt

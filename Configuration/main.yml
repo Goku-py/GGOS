@@ -1,0 +1,23 @@
+title: Main
+actions:
+  - !writeStatus: {status: 'Creating rollback protection'}
+  - !task: {path: 'Tasks/rollback.yml'}
+  - !writeStatus: {status: 'Modifying system registry', option: 'system-optimization'}
+  - !task: {path: 'Tasks/system-registry.yml'}
+  - !writeStatus: {status: 'Tuning services', option: 'services'}
+  - !task: {path: 'Tasks/services.yml'}
+  - !writeStatus: {status: 'Disabling wasteful scheduled tasks', option: 'system-optimization'}
+  - !task: {path: 'Tasks/scheduled-tasks.yml'}
+  - !writeStatus: {status: 'Removing bloatware', option: 'bloat-copilot'}
+  - !task: {path: 'Tasks/appx.yml'}
+  - !writeStatus: {status: 'Applying telemetry hardening', option: 'telemetry'}
+  - !task: {path: 'Tasks/telemetry.yml'}
+  - !writeStatus: {status: 'Applying per-user tweaks', option: 'per-user'}
+  - !task: {path: 'Tasks/user-registry.yml'}
+  - !writeStatus: {status: 'Applying gaming optimizations', option: 'gaming'}
+  - !task: {path: 'Tasks/gaming.yml'}
+  - !writeStatus: {status: 'Running disk cleanup', option: 'cleanup'}
+  - !task: {path: 'Tasks/cleanup.yml'}
+  - !writeStatus: {status: 'Updating applications', option: 'winget-update'}
+  - !task: {path: 'Tasks/winget.yml'}
+  - !writeStatus: {status: 'GGOS finished - restart when convenient'}
