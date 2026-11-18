@@ -56,13 +56,16 @@ GGOS/
 ```
 
 `Build-Playbook.ps1` reads `<Version>` from `playbook.conf`, writes
-`GGOS\dist\GGOS-v<version>.apbx`, and round-trip extracts the archive to confirm
-`playbook.conf` is present. It excludes `Native\`, `dist\`, `.git\` and
-`.gitignore`. The archive is 7z format with LZMA2 + AES-256 and **header
+`GGOS\dist\GGOS-v<version>.apbx`, and round-trip extracts the archive to a
+temporary directory and compares the full extracted file manifest against the
+expected source (git-tracked files minus the archive exclusions) — any
+missing or unexpected file fails the build. It also verifies the shipped
+timer helper against the hash pinned in `Native\timer-hash.txt`. The archive
+is 7z format with LZMA2 + AES-256 and **header
 encryption on**, which is what AME Beta's loader accepts (a legacy ZipCrypto
 archive is rejected with "Wrong password").
 
-## Feature pages (v0.3.2, in the order AME shows them)
+## Feature pages (v0.4.0, in the order AME shows them)
 
 | # | Page | Options |
 |---|------|---------|
@@ -98,7 +101,7 @@ archive is rejected with "Wrong password").
 | `gaming` | `gaming.yml` | registry + timer task + `gaming-power.ps1` |
 | `cleanup` · `cleanup-aggressive` | `cleanup.yml`, `cleanup-aggressive.yml` | `cleanup-sweep.ps1` (`-Aggressive`) |
 | `winget-update` | `winget.yml` | `winget upgrade --all` as current user |
-| `epp-perf` · `desktop-device-power` · `nvme-latency` · `wireless-input` | `hardware-tuning.yml` | `hardware-tuning.ps1 -Mode …` (AC only) |
+| `epp-perf` · `desktop-device-power` · `nvme-latency` · `nvme-latency-laptop` · `wireless-input` | `hardware-tuning.yml` | `hardware-tuning.ps1 -Mode …` (AC only; `epp`/`devices` refuse laptop chassis) |
 | `laptop-power` | `hardware-tuning.yml` | `gaming-power.ps1 -LaptopPlan` |
 | `wifi-tuning` | `network.yml` | `wifi-tuning.ps1` |
 | `input-accel` · `input-queue` | `input-tuning.yml` | `input-tuning.ps1 -Mode …` |
@@ -130,8 +133,9 @@ archive is rejected with "Wrong password").
    `%SystemRoot%\GGOS\`: `ggos-options.txt` (ledger), `hive-backups\` (per-hive
    `.reg` exports), `skipped.txt` (bounded-timeout skips),
    `rollback-manifest.txt`, and `ggos-verify.txt` (PASS/DRIFT/NOTE). HKLM stamps
-   live under `HKLM\SOFTWARE\GGOS`. Verification only maps the 18 options that
-   have a defined marker; the other 14 report `NOTE`, not `PASS`.
+   live under `HKLM\SOFTWARE\GGOS`. Verification maps **all 33 options**;
+   only the five by-design dynamic areas (`bloat-oem`, `cleanup`,
+   `cleanup-aggressive`, `winget-update`, `network-ultra`) report `NOTE`.
 
 ## Verification and logging
 

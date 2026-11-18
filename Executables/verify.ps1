@@ -360,8 +360,14 @@ foreach ($area in $selected) {
                 # v0.4.0 (audit F7): pc-auto / pc-desktop / pc-laptop. Informational
                 # correlation with the 'Chassis' stamp written by hardware-policy.ps1
                 # (ground truth: hardware-policy.ps1 section 6). PASS = stamp exists.
+                # Review fix (0.4.0): when system-optimization was NOT selected,
+                # hardware-policy.yml is gated off and the stamp is legitimately
+                # absent - that is NOTE, not DRIFT.
                 $exists, $type, $data = Get-GGRegValue -Path 'HKLM\SOFTWARE\GGOS\HardwarePolicy' -Name 'Chassis'
                 if ($exists) { $status = 'PASS' }
+                elseif ($selected -notcontains 'system-optimization') {
+                    $status = 'NOTE'; $detail = 'hardware-policy did not run (system-optimization not selected) - no chassis stamp expected'
+                }
                 else { $status = 'DRIFT'; $detail = 'HKLM\SOFTWARE\GGOS\HardwarePolicy Chassis stamp missing (hardware-policy.ps1 did not run or failed)' }
             }
             'powercfg-index' {
@@ -382,6 +388,19 @@ foreach ($area in $selected) {
                 # block header is that block's value.
                 $ok, $exit, $out = Invoke-GGCommand -FilePath 'powercfg.exe' -ArgumentList @('/q', 'SCHEME_CURRENT', $c.Subgroup) -TimeoutSeconds 20 -Description "powercfg query $($c.Subgroup)"
                 $index = $null
+                # Review fix (0.4.0): epp-perf and desktop-device-power are
+                # desktop-only; on a laptop/unknown chassis the tuning script's
+                # chassis guard skips them by design (skipped.txt), so a missing
+                # marker is the EXPECTED outcome - report NOTE, not DRIFT.
+                if ($c.Area -in 'epp-perf', 'desktop-device-power') {
+                    $stampExists, $stampType, $stampData = Get-GGRegValue -Path 'HKLM\SOFTWARE\GGOS\HardwarePolicy' -Name 'Chassis'
+                    if (-not $stampExists -or $stampData -ne 'Desktop') {
+                        $resolvedChassis = if ($stampExists) { $stampData } else { 'Unknown' }
+                        $status = 'NOTE'
+                        $detail = ('desktop-only option skipped by the chassis guard (resolved chassis: {0}) - setting left untouched by design' -f $resolvedChassis)
+                        break
+                    }
+                }
                 if ($ok -and $exit -eq 0) {
                     $inTarget = $false
                     foreach ($line in @($out)) {
