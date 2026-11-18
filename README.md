@@ -11,21 +11,21 @@ tuning, per-user tweaks), CTT WinUtil (MIT) and community playbook patterns
 **Version 0.4.0** · 10 feature pages · 33 unique options · 18 task files ·
 rollback gate → option ledger → verification pass.
 
-> Current state, known defects and proposed fixes are recorded in
-> [`docs/AUDIT-2026-11-15.md`](docs/AUDIT-2026-11-15.md). Read that before
-> changing feature pages or claiming a release is verified.
+> This repository is intentionally minimal: it contains only the playbook
+> content AME Wizard consumes. Release notes double as the changelog (see the
+> GitHub Releases), and packaging/build tooling is maintained locally and is
+> not published.
 
 ## Requirements
 
 - **Windows 11 22H2 (build 22621) through 26H2 (26300).** The playbook declares
   `<SupportedBuilds>` and AME Wizard refuses unlisted builds. Several values are
   build-gated (24H2 timer semantics, Recall policies, Widgets packages).
-  Windows 10 is **not** a supported target — see audit finding F8.
+  Windows 10 is **not** a supported target.
 - **AME Wizard Beta** (the `.apbx` format is 7z/AES-256, password `malte`).
 - **Administrator / TrustedInstaller** — supplied by AME's `!powerShell` default
   `runas`; no separate elevation tool is shipped.
 - Free disk space for a System Restore point plus registry exports.
-- 7-Zip on the build machine only (not required on the target machine).
 
 ## Structure
 
@@ -37,31 +37,17 @@ GGOS/
 │   ├── main.yml             # Task orchestration (rollback gate first)
 │   └── Tasks/               # 18 action files (registry, services, appx, power, ...)
 ├── Executables/             # 13 PowerShell files + GGOSSetTimerResolution.exe
-├── Native/                  # C# source + logo renderer (repo-only, not packaged)
-├── docs/                    # Specification, audit, changelog
-└── dist/                    # Built .apbx artifacts
+└── dist/                    # Built .apbx artifacts (untracked)
 ```
 
-## Build
+## Packaging
 
-```powershell
-# Double-click friendly
-.\Build-Playbook.cmd
-
-# Explicit
-.\Build-Playbook.ps1 -Path .\GGOS
-
-# Custom password
-.\Build-Playbook.ps1 -Path .\GGOS -Password 'malte'
-```
-
-`Build-Playbook.ps1` reads `<Version>` from `playbook.conf`, writes
-`GGOS\dist\GGOS-v<version>.apbx`, and round-trip extracts the archive to a
-temporary directory and compares the full extracted file manifest against the
-expected source (git-tracked files minus the archive exclusions) — any
-missing or unexpected file fails the build. It also verifies the shipped
-timer helper against the hash pinned in `Native\timer-hash.txt`. The archive
-is 7z format with LZMA2 + AES-256 and **header
+The released `.apbx` is built with maintainer-local tooling that is
+deliberately not part of this repository. The package contains only what AME
+Wizard requires: `playbook.conf`, `playbook.png`, `Configuration\` and
+`Executables\`. The shipped timer helper binary is pinned by SHA-256 and the
+packaging tool fails closed if the shipped bytes differ from the pin. The
+archive is 7z format with LZMA2 + AES-256 and **header
 encryption on**, which is what AME Beta's loader accepts (a legacy ZipCrypto
 archive is rejected with "Wrong password").
 
@@ -195,21 +181,17 @@ archive is rejected with "Wrong password").
 
 ## Documentation
 
-| File | Purpose |
-|---|---|
-| [`docs/AUDIT-2026-11-15.md`](docs/AUDIT-2026-11-15.md) | Full audit: findings, severities, evidence, proposed fixes (+ 2026-11-18 addendum) |
-| [`docs/VM-TEST-CHECKLIST.md`](docs/VM-TEST-CHECKLIST.md) | Release-gate VM smoke test procedure |
-| [`docs/CHANGELOG.md`](docs/CHANGELOG.md) | Release history |
-| [`docs/SPEC-v0.2.md`](docs/SPEC-v0.2.md) | Historical v0.2 design specification (kept for provenance) |
+The historical design documents (v0.2 specification, project audit with
+findings and dispositions, changelog, VM smoke-test checklist) live in the
+git history and in the v0.4.0 release notes on GitHub — the working tree
+intentionally keeps only playbook content.
 
 ## Status
 
 **v0.4.0** — feature-page repairs (F1/F2/F3/F9), engine-verified option-gating
 semantics (F14), exit-code-aware command wrapper (F4), `SupportedBuilds`
 (F8), reproducible timer helper + strict package manifest (F10/F11), full
-verification coverage (F7). Build tooling recovered and committed (F15).
+verification coverage (F7).
 
-Still open before a release claim: the AME Wizard smoke test on a disposable
-VM (`docs/VM-TEST-CHECKLIST.md` — defaults run + gaming/cleanup run + GUI
-page-visibility checks). Everything above is statically verified; the runtime
-verification is deliberately the last gate.
+The runtime AME Wizard smoke test on a disposable VM remains the open gate;
+see the v0.4.0 release notes for the verification status of every item.
