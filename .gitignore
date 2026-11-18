@@ -4,6 +4,16 @@
 dist/
 *.apbx
 
+# Maintainer tooling and non-shipped material - kept locally, never committed.
+# (Packaging script, helper build step + source pin, CLI smoke harness,
+#  historical docs. The released .apbx contains only playbook content.)
+Build-Playbook.ps1
+Build-Playbook.cmd
+Native/
+tools/
+docs/
+timer-hash.txt
+
 # Native helper build output (the shipped binary lives in Executables/)
 Native/bin/
 Native/obj/
