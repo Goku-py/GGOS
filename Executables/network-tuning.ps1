@@ -60,21 +60,24 @@ switch ($Mode) {
             Write-GGLog "Set-NetTCPSetting pacing failed: $($_.Exception.Message)"
         }
         if (-not $ok) {
-            $discard, $ggOut = Invoke-GGCommand -FilePath 'netsh.exe' -ArgumentList @('int', 'tcp', 'set', 'global', 'pacingprofile=always') -Description 'netsh pacingprofile=always'
+            $discard, $discardExit, $ggOut = Invoke-GGCommand -FilePath 'netsh.exe' -ArgumentList @('int', 'tcp', 'set', 'global', 'pacingprofile=always') -Description 'netsh pacingprofile=always'
+            if (-not ($discard -and $discardExit -eq 0)) { Write-GGLog "netsh pacingprofile=always fallback $(if ($discard) { "failed (exit $discardExit)" } else { 'timed out' })." }
         }
         # ---- ECN: congestion routers mark instead of drop -> fewer packet losses ----
         try {
             Set-NetTCPSetting -SettingName Internet -EcnCapability Enabled -ErrorAction Stop
             Write-GGLog 'ECN capability enabled on the Internet TCP template.'
         } catch {
-            $discard, $ggOut = Invoke-GGCommand -FilePath 'netsh.exe' -ArgumentList @('int', 'tcp', 'set', 'global', 'ecncapability=enabled') -Description 'netsh ecncapability=enabled'
+            $discard, $discardExit, $ggOut = Invoke-GGCommand -FilePath 'netsh.exe' -ArgumentList @('int', 'tcp', 'set', 'global', 'ecncapability=enabled') -Description 'netsh ecncapability=enabled'
+            Write-GGLog "ECN capability fallback via netsh $(if ($discard -and $discardExit -eq 0) { 'applied' } else { "did not succeed (exit $discardExit)" })."
         }
         # ---- Auto-tuning pinned to Normal: speed-preserving default ----
         try {
             Set-NetTCPSetting -SettingName Internet -AutoTuningLevelLocal Normal -ErrorAction Stop
             Write-GGLog 'Receive-window auto-tuning set to Normal (speed preserved).'
         } catch {
-            $discard, $ggOut = Invoke-GGCommand -FilePath 'netsh.exe' -ArgumentList @('int', 'tcp', 'set', 'global', 'autotuninglevel=normal') -Description 'netsh autotuninglevel=normal'
+            $discard, $discardExit, $ggOut = Invoke-GGCommand -FilePath 'netsh.exe' -ArgumentList @('int', 'tcp', 'set', 'global', 'autotuninglevel=normal') -Description 'netsh autotuninglevel=normal'
+            Write-GGLog "Auto-tuning fallback via netsh $(if ($discard -and $discardExit -eq 0) { 'applied' } else { "did not succeed (exit $discardExit)" })."
         }
         Write-GGLog 'Bufferbloat stack applied. Full fix is router SQM (fq_codel/CAKE/PIE) - see README.'
     }

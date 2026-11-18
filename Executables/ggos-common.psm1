@@ -10,22 +10,45 @@ function Write-GGLog {
 }
 
 # B2 bounded-timeout wrapper. Runs an external command inside a job with a hard
-# timeout. On success returns ($true, outputLines); on timeout the job is
-# stopped, the item is appended to %SystemRoot%\GGOS\skipped.txt, and
-# ($false, @()) is returned. Every reg.exe / schtasks / sc / DISM / powercfg
-# call in GGOS scripts must go through this wrapper.
+# timeout. v0.4.0 (audit F4): the job also records the child process exit code,
+# and the wrapper returns a THREE-tuple: ($completed, $exitCode, $outputLines).
+#   - $completed - $true when the job finished within TimeoutSeconds
+#   - $exitCode  - the child process exit code, or $null on timeout or when the
+#                  command could not be started inside the job at all
+#   - $outputLines - the command's combined output (stdout+stderr), or @()
+# On timeout the job is stopped, the item is appended to
+# %SystemRoot%\GGOS\skipped.txt, and ($false, $null, @()) is returned. Every
+# reg.exe / schtasks / sc / DISM / powercfg call in GGOS scripts must go
+# through this wrapper.
+# NOTE for callers: $completed alone means "finished in time", NOT "succeeded".
+# Before logging a change as applied, check ($completed -and $exitCode -eq 0)
+# (or Test-GGRegSuccess for reg.exe paths).
 function Invoke-GGCommand {
     param([string]$FilePath, [string[]]$ArgumentList = @(), [int]$TimeoutSeconds = 20, [string]$Description)
-    $job = Start-Job -ScriptBlock { param($fp, $al) & $fp @al 2>&1 } -ArgumentList $FilePath, $ArgumentList
+    # The job returns ONE hashtable so the output lines and $LASTEXITCODE travel
+    # together across the job boundary ($LASTEXITCODE cannot be read from the
+    # parent once the job process is gone).
+    $job = Start-Job -ScriptBlock {
+        param($fp, $al)
+        $out = & $fp @al 2>&1
+        @{ Out = @($out); Exit = $LASTEXITCODE }
+    } -ArgumentList $FilePath, $ArgumentList
     if (Wait-Job $job -Timeout $TimeoutSeconds) {
-        $out = @(Receive-Job $job); Remove-Job $job -Force
-        return $true, $out
+        $result = Receive-Job $job
+        Remove-Job $job -Force
+        # $null exit (command never started inside the job) stays $null so
+        # callers fail closed; empty output deserialized from the job is
+        # normalized back to @().
+        $exit = $null
+        if ($null -ne $result['Exit']) { $exit = [int]$result['Exit'] }
+        $outLines = @($result['Out']) | Where-Object { $null -ne $_ }
+        return $true, $exit, @($outLines)
     }
     Stop-Job $job; Remove-Job $job -Force
     $dir = Join-Path $env:SystemRoot 'GGOS'
     New-Item -ItemType Directory -Path $dir -Force | Out-Null
     Add-Content -Path (Join-Path $dir 'skipped.txt') -Value ('{0} SKIPPED(timeout {1}s): {2}' -f (Get-Date -Format s), $TimeoutSeconds, $Description)
-    return $false, @()
+    return $false, $null, @()
 }
 
 # ---------------------------------------------------------------------------
@@ -59,8 +82,8 @@ function Invoke-GGCommand {
 # write, or $null) and BackupDir. Logging is done through Write-GGPrefixLog
 # so the caller controls the prefix: 'GGOS' (per-user.ps1) reproduces the
 # original per-user output exactly; 'GGOS input' (input-tuning.ps1) brands
-# the same sweep for the input-tuning log. Invoke-GGCommand itself is
-# untouched (spec B2 contract).
+# the same sweep for the input-tuning log. Invoke-GGCommand returns the
+# (completed, exitCode, output) triple since v0.4.0 (audit F4).
 # ---------------------------------------------------------------------------
 
 $script:GGRegExe = Join-Path $env:SystemRoot 'System32\reg.exe'
@@ -73,11 +96,15 @@ function Write-GGPrefixLog {
 }
 
 function Test-GGRegSuccess {
-    # Invoke-GGCommand reports "completed within timeout", not the exit code.
-    # reg.exe prints "The operation completed successfully." on success, so
-    # validate from the captured output.
-    param([bool]$Completed, [object[]]$Output)
+    # v0.4.0 (audit F4): Invoke-GGCommand returns ($completed, $exitCode, $output).
+    # Success means: completed within timeout AND reg.exe exited 0. The
+    # output-text parse is only a DEFENSIVE fallback for a null exit code (the
+    # command could not be launched inside the job, so no exit code was
+    # captured); when a real exit code exists, the output text is not consulted.
+    param([bool]$Completed, [object]$ExitCode, [object[]]$Output)
     if (-not $Completed) { return $false }
+    if ($null -ne $ExitCode) { return ($ExitCode -eq 0) }
+    # Fallback (legacy behaviour): no exit code available - decide from output.
     return [bool](@($Output) | Where-Object { $_ -match 'operation completed successfully' })
 }
 
@@ -98,10 +125,9 @@ function Backup-GGHiveKey {
     $file = Join-Path $BackupDir ('{0}-{1}.reg' -f $HiveName, $Stamp)
     # reg.exe writes the .reg file itself (UTF-16 LE BOM is reg.exe's own
     # format); the output is never re-encoded.
-    # Invoke-GGCommand reports "completed within timeout", not the exit code,
-    # so success is confirmed by the export file existing.
-    $ok, $out = Invoke-GGCommand -FilePath $script:GGRegExe -ArgumentList @('export', $RegKey, $file, '/y') -TimeoutSeconds 60 -Description ('hive export ' + $RegKey)
-    if ($ok -and (Test-Path -LiteralPath $file)) {
+    # Success is confirmed from the exit code AND the export file existing.
+    $ok, $exit, $out = Invoke-GGCommand -FilePath $script:GGRegExe -ArgumentList @('export', $RegKey, $file, '/y') -TimeoutSeconds 60 -Description ('hive export ' + $RegKey)
+    if ($ok -and $exit -eq 0 -and (Test-Path -LiteralPath $file)) {
         Write-GGPrefixLog $Prefix ('Exported ' + $RegKey + ' to ' + $file + '.')
         return $true
     }
@@ -153,8 +179,8 @@ function Unload-GGHive {
     # a delay (community TryUnload pattern, re-expressed).
     param([string]$MountName)
     for ($attempt = 1; $attempt -le 5; $attempt++) {
-        $ok, $out = Invoke-GGCommand -FilePath $script:GGRegExe -ArgumentList @('unload', ('HKU\' + $MountName)) -TimeoutSeconds 30 -Description ('hive unload ' + $MountName)
-        if (Test-GGRegSuccess -Completed $ok -Output $out) { return $true }
+        $ok, $exit, $out = Invoke-GGCommand -FilePath $script:GGRegExe -ArgumentList @('unload', ('HKU\' + $MountName)) -TimeoutSeconds 30 -Description ('hive unload ' + $MountName)
+        if (Test-GGRegSuccess -Completed $ok -ExitCode $exit -Output $out) { return $true }
         [GC]::Collect()
         [GC]::WaitForPendingFinalizers()
         Start-Sleep -Seconds 2
@@ -273,8 +299,8 @@ function Apply-GGUserValues {
                     }
                 }
                 if (-not (Test-Path -LiteralPath ('Registry::HKEY_USERS\' + $ggosMountName))) {
-                    $ok, $out = Invoke-GGCommand -FilePath $script:GGRegExe -ArgumentList @('load', ('HKU\' + $ggosMountName), $defaultDat) -TimeoutSeconds 60 -Description 'Default template hive load'
-                    if (-not (Test-GGRegSuccess -Completed $ok -Output $out)) {
+                    $ok, $exit, $out = Invoke-GGCommand -FilePath $script:GGRegExe -ArgumentList @('load', ('HKU\' + $ggosMountName), $defaultDat) -TimeoutSeconds 60 -Description 'Default template hive load'
+                    if (-not (Test-GGRegSuccess -Completed $ok -ExitCode $exit -Output $out)) {
                         Write-GGPrefixLog $LogPrefix 'Warning: loading the Default profile hive failed; future users were not configured.'
                     }
                     else {

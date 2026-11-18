@@ -1,5 +1,5 @@
 title: Network latency tuning
-privilege: Admin
+# privilege: Admin — INERT (engine ignores task-level privilege; v0.4.0 audit).
 # C7 (opt-in, default OFF): per-interface TCP latency tuning, XOS semantics
 # re-expressed (no upstream code copied). Sets TcpAckFrequency=1, TCPNoDelay=1 and
 # TcpDelAckTicks=0 (DWORD) on wired/physical interfaces only. WiFi (native 802.11,

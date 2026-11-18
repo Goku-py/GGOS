@@ -3,7 +3,7 @@ title: Input tuning
 # HKU\.DEFAULT + Default template, accel subset only) and machine-level
 # mouse/keyboard class driver data queue sizes. Each action is gated by its
 # own option; the queue tweak is community-contested (see input-tuning.ps1).
-privilege: Admin
+# privilege: Admin — INERT (engine ignores task-level privilege; v0.4.0 audit).
 actions:
   - !powerShell:
     exeDir: true

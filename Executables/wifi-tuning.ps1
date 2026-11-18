@@ -256,8 +256,8 @@ foreach ($adapter in $targets) {
 # The powerManagement parameter may not exist (or not be accepted) on every
 # netsh build; each attempt is read first, then set with try/catch, and any
 # rejection is logged and skipped - never fatal.
-$okShow, $showOut = Invoke-GGCommand -FilePath 'netsh.exe' -ArgumentList @('wlan', 'show', 'profiles') -TimeoutSeconds 20 -Description 'netsh wlan show profiles'
-if ($okShow) {
+$okShow, $exitShow, $showOut = Invoke-GGCommand -FilePath 'netsh.exe' -ArgumentList @('wlan', 'show', 'profiles') -TimeoutSeconds 20 -Description 'netsh wlan show profiles'
+if ($okShow -and $exitShow -eq 0) {
     $profileNames = @()
     foreach ($line in $showOut) {
         # English builds only; on other locales nothing parses and we log + skip.
@@ -270,15 +270,15 @@ if ($okShow) {
         try {
             # Read the profile first so the log shows whether this netsh build
             # reports a power management state at all.
-            $discard, $readOut = Invoke-GGCommand -FilePath 'netsh.exe' -ArgumentList @('wlan', 'show', 'profile', "name=$profileName") -TimeoutSeconds 20 -Description "show profile $profileName"
+            $discard, $discardExit, $readOut = Invoke-GGCommand -FilePath 'netsh.exe' -ArgumentList @('wlan', 'show', 'profile', "name=$profileName") -TimeoutSeconds 20 -Description "show profile $profileName"
             $pmLine = $null
             foreach ($line in $readOut) {
                 if ($line -match 'Power\s*Manage\w*\s*:') { $pmLine = ([string]$line).Trim(); break }
             }
             if ($pmLine) { Write-GGLog "Profile '$profileName' current state: $pmLine" }
 
-            $okSet, $setOut = Invoke-GGCommand -FilePath 'netsh.exe' -ArgumentList @('wlan', 'set', 'profileparameter', "name=$profileName", 'powerManagement=disabled') -TimeoutSeconds 20 -Description "set profileparameter powerManagement=disabled ($profileName)"
-            if ($okSet) {
+            $okSet, $exitSet, $setOut = Invoke-GGCommand -FilePath 'netsh.exe' -ArgumentList @('wlan', 'set', 'profileparameter', "name=$profileName", 'powerManagement=disabled') -TimeoutSeconds 20 -Description "set profileparameter powerManagement=disabled ($profileName)"
+            if ($okSet -and $exitSet -eq 0) {
                 $firstOut = ''
                 foreach ($line in $setOut) {
                     if ([string]$line) { $firstOut = ([string]$line).Trim(); break }
@@ -286,7 +286,7 @@ if ($okShow) {
                 if ($firstOut) { Write-GGLog "Profile '${profileName}': netsh replied: $firstOut" }
                 else { Write-GGLog "Profile '${profileName}': powerManagement=disabled accepted." }
             } else {
-                Write-GGLog "Profile '${profileName}': netsh call timed out or failed - skipped."
+                Write-GGLog "Profile '${profileName}': netsh call timed out or failed (exit $exitSet) - skipped."
             }
         } catch {
             Write-GGLog "Profile '${profileName}': not accepted by netsh on this build - skipped ($($_.Exception.Message))."

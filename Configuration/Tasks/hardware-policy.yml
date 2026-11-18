@@ -2,7 +2,7 @@ title: Hardware policy
 # Desktop/laptop and SSD/HDD aware core settings (hibernation, fast startup,
 # defrag/TRIM). Runs whenever system optimizations are selected; results are
 # recorded under HKLM\SOFTWARE\GGOS\HardwarePolicy.
-privilege: Admin
+# privilege: Admin — INERT (engine ignores task-level privilege; v0.4.0 audit).
 actions:
   - !powerShell:
     exeDir: true

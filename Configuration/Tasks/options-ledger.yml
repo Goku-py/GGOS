@@ -1,5 +1,5 @@
 title: Option ledger
-privilege: Admin
+# privilege: Admin — INERT (engine ignores task-level privilege; v0.4.0 audit).
 # Spec B3: records which playbook options the user selected into
 # %SystemRoot%\GGOS\ggos-options.txt. The first action is ungated and clears
 # the ledger; every other action is gated by its option and appends the option
@@ -263,6 +263,15 @@ actions:
     timeout: 120
     command: |-
       Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'nvme-latency'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'nvme-latency-laptop'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'nvme-latency-laptop'
 
   - !powerShell:
     exeDir: false

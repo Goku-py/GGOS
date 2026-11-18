@@ -2,7 +2,10 @@ title: Hardware tuning
 # Research-backed device/CPU/storage/input-radio power settings. Each action is
 # gated by its own option; AC/DC scoping is enforced inside the script (battery
 # is never touched on DC power).
-privilege: Admin
+# privilege: Admin — task-level `privilege:` is INERT in the AME engine (parses
+# but has no consumer; source-verified, v0.4.0 audit). Elevation comes from the
+# !powerShell default runas: trustedInstaller. Kept as comment for the rationale
+# only: registry/powercfg writes here require elevation.
 actions:
   - !powerShell:
     exeDir: true
@@ -23,6 +26,15 @@ actions:
     wait: true
     errorAction: Notify
     option: 'nvme-latency'
+    timeout: 120
+    command: '.\hardware-tuning.ps1 -Mode nvme'
+  # Laptop-page NVMe option (renamed in 0.4.0 so both pages get distinct ledger
+  # entries). Same -Mode nvme invocation; the script writes AC values only.
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Notify
+    option: 'nvme-latency-laptop'
     timeout: 120
     command: '.\hardware-tuning.ps1 -Mode nvme'
   - !powerShell:

@@ -1,5 +1,5 @@
 title: Per-user tweaks
-privilege: Admin
+# privilege: Admin — INERT (engine ignores task-level privilege; v0.4.0 audit).
 # Applies per-user registry settings via a triple sweep (spec B1):
 #   1. every loaded interactive user hive (S-1-5-21-* SIDs with a
 #      'Volatile Environment' marker; service/virtual accounts excluded),

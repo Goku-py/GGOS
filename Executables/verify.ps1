@@ -24,6 +24,32 @@
 #   cleanup / cleanup-aggressive / winget-update -> file/process effects, no
 #                          static marker -> reported as NOTE
 #   network-latency     -> spec C7 (TcpAckFrequency=1 on any interface)
+#   pc-auto / pc-desktop / pc-laptop -> HKLM\SOFTWARE\GGOS\HardwarePolicy
+#                          'Chassis' stamp written by hardware-policy.ps1
+#                          (informational correlation - audit F7)
+#   epp-perf            -> hardware-tuning.ps1 mode 'epp': PERFEPP = 0 on the
+#                          active scheme (live AC index via powercfg /q)
+#   desktop-device-power -> hardware-tuning.ps1 mode 'devices': PCIe ASPM = 0
+#   nvme-latency / nvme-latency-laptop -> hardware-tuning.ps1 mode 'nvme':
+#                          Primary NVMe idle timeout = 60000 ms (0xEA60) on AC
+#   laptop-power        -> gaming-power.ps1: GGOS Laptop fixed-GUID plan
+#                          present in powercfg /list
+#   wifi-tuning         -> wifi-tuning.ps1: PnPCapabilities=24 on at least one
+#                          NIC class instance (fallback path; driver advanced
+#                          properties are live state, not statically verifiable)
+#   input-accel         -> input-tuning.ps1 mode 'accel': HKCU Control Panel\Mouse
+#                          MouseSpeed / MouseThreshold1 / MouseThreshold2 = '0'
+#   input-queue         -> input-tuning.ps1 mode 'queue': mouse/keyboard data
+#                          queue sizes = 8 under mouclass/kbdclass Parameters
+#   wireless-input      -> hardware-tuning.ps1 mode 'wireless': USB selective
+#                          suspend = 0 on AC + Bluetooth radio PnPCapabilities=24
+#   network-bufferbloat -> network-tuning.ps1 mode 'bufferbloat': live TCP
+#                          global pacing profile = always (netsh; English builds)
+#   network-nic         -> network-tuning.ps1 mode 'nic': the option's undo
+#                          record under NetworkUndo\NicUndo (driver props are
+#                          live state, so the run marker is the honest check)
+#   network-ultra       -> NOTE: interrupt moderation/RSC are live driver state
+#                          with driver-dependent exposure - no fixed marker
 # Results are written to %SystemRoot%\GGOS\ggos-verify.txt and echoed; HKLM
 # stamps (Installed, AppliedVersion, LastVerify) are written under
 # HKLM\SOFTWARE\GGOS with AppliedVersion parsed from playbook.conf.
@@ -63,7 +89,9 @@ foreach ($cand in $confCandidates) {
 # ---------------------------------------------------------------------------
 # Expected-marker map (area -> representative checks)
 # Kind: reg-dword | reg-sz | reg-key | bcdedit-f8 | pagefile | appx-allusers |
-#       appx-provisioned | build-gated-dword | tcpip-latency | note
+#       appx-provisioned | build-gated-dword | tcpip-latency | chassis-stamp |
+#       powercfg-index | power-plan | class-pnp | undo-record |
+#       netsh-tcp-global | note
 # ---------------------------------------------------------------------------
 $Checks = @(
     @{ Area = 'system-optimization'; Kind = 'reg-dword'; Path = 'HKLM\SYSTEM\CurrentControlSet\Control\FileSystem'; Name = 'LongPathsEnabled'; Expected = '1'; Desc = 'Long paths enabled' },
@@ -112,7 +140,65 @@ $Checks = @(
     @{ Area = 'cleanup-aggressive'; Kind = 'note'; Desc = 'no static marker - component store/DISM results are transient' },
     @{ Area = 'winget-update'; Kind = 'note'; Desc = 'no static marker - app update state changes continuously after the run' },
 
-    @{ Area = 'network-latency'; Kind = 'tcpip-latency'; Desc = 'TcpAckFrequency=1 present on at least one interface' }
+    @{ Area = 'network-latency'; Kind = 'tcpip-latency'; Desc = 'TcpAckFrequency=1 present on at least one interface' },
+
+    # ---- v0.4.0 (audit F7): hardware/input/network option coverage ----
+    # Every Expected value below was read from the cited ground-truth script,
+    # not invented.
+    @{ Area = 'pc-auto';    Kind = 'chassis-stamp'; Desc = 'chassis stamp recorded by hardware-policy.ps1' },
+    @{ Area = 'pc-desktop'; Kind = 'chassis-stamp'; Desc = 'chassis stamp recorded by hardware-policy.ps1' },
+    @{ Area = 'pc-laptop';  Kind = 'chassis-stamp'; Desc = 'chassis stamp recorded by hardware-policy.ps1' },
+
+    # Ground truth: hardware-tuning.ps1 mode 'epp' (Set-PowerValue PERFEPP = 0, AC).
+    # The PERFEPP alias is build-registered (not listed by powercfg /aliases on
+    # all builds), so no GUID exists in ground truth - the block is matched by
+    # its standard English friendly name (English-builds caveat, like netsh).
+    @{ Area = 'epp-perf'; Kind = 'powercfg-index'; Subgroup = 'SUB_PROCESSOR'; NamePattern = 'Energy Performance Preference'; Expected = '0'; Desc = 'EPP = 0 (max performance) on the active scheme' },
+    # Ground truth: hardware-tuning.ps1 mode 'devices' (SUB_PCIEXPRESS ASPM = 0, AC).
+    # ASPM GUID read from powercfg /aliases (ee12f906-...).
+    @{ Area = 'desktop-device-power'; Kind = 'powercfg-index'; Subgroup = 'SUB_PCIEXPRESS'; SettingGuid = 'ee12f906-d277-404b-b6da-e5fa1a576df5'; Expected = '0'; Desc = 'PCIe ASPM off on AC' },
+    # Ground truth: hardware-tuning.ps1 mode 'nvme' (Primary NVMe Idle Timeout =
+    # 60000 ms AC; the script cites the documented GUID D639518A-...; same value
+    # for the laptop-named option).
+    @{ Area = 'nvme-latency';        Kind = 'powercfg-index'; Subgroup = 'SUB_DISK'; SettingGuid = 'D639518A-E56D-4345-8AF2-B9F32FB26109'; Expected = '60000'; Desc = 'Primary NVMe idle timeout 60000 ms on AC' },
+    @{ Area = 'nvme-latency-laptop'; Kind = 'powercfg-index'; Subgroup = 'SUB_DISK'; SettingGuid = 'D639518A-E56D-4345-8AF2-B9F32FB26109'; Expected = '60000'; Desc = 'Primary NVMe idle timeout 60000 ms on AC (laptop option)' },
+    # Ground truth: hardware-tuning.ps1 mode 'wireless' (SUB_USB USBSELECTIVESUSPEND = 0 AC).
+    # No GUID in ground truth (alias build-registered) - friendly-name match.
+    @{ Area = 'wireless-input'; Kind = 'powercfg-index'; Subgroup = 'SUB_USB'; NamePattern = 'USB\s*Selective\s*Suspend'; Expected = '0'; Desc = 'USB selective suspend off on AC' },
+    # Ground truth: hardware-tuning.ps1 mode 'wireless' (Bluetooth radio PnPCapabilities = 24).
+    @{ Area = 'wireless-input'; Kind = 'class-pnp'; ClassKey = 'HKLM\SYSTEM\CurrentControlSet\Control\Class\{e0cbf06c-cd8b-4647-bb8a-263b43f0f974}'; Expected = '24'; Desc = 'Bluetooth radio power mgmt off (PnPCapabilities=24 on at least one radio)' },
+
+    # Ground truth: gaming-power.ps1 $script:GGOSLaptopPlanGuid ('GGOS Laptop').
+    @{ Area = 'laptop-power'; Kind = 'power-plan'; Guid = 'c7d3a1e9-8b4f-4c62-9d5a-3f2e1b4a7c8d'; Desc = 'GGOS Laptop plan present in powercfg /list' },
+
+    # Ground truth: wifi-tuning.ps1 Set-WifiPowerManagement (PnPCapabilities=24
+    # fallback on the NIC class instance key). The primary cmdlet path leaves no
+    # registry marker, so an absent value can also mean "applied via cmdlet" -
+    # the DRIFT detail says so.
+    @{ Area = 'wifi-tuning'; Kind = 'class-pnp'; ClassKey = 'HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e972-e325-11ce-bfc1-08002be10318}'; Expected = '24'; Desc = 'Wi-Fi/NIC adapter power mgmt off (PnPCapabilities=24 on at least one NIC)' },
+
+    # Ground truth: input-tuning.ps1 mode 'accel' (per-user.ps1 has no accel
+    # entries; the accel option applies through the shared Apply-GGUserValues
+    # engine with the values below, REG_SZ '0' - the native type Windows keeps).
+    @{ Area = 'input-accel'; Kind = 'reg-sz'; Path = 'HKCU\Control Panel\Mouse'; Name = 'MouseSpeed';      Expected = '0'; Desc = 'mouse acceleration off (MouseSpeed=0)' },
+    @{ Area = 'input-accel'; Kind = 'reg-sz'; Path = 'HKCU\Control Panel\Mouse'; Name = 'MouseThreshold1'; Expected = '0'; Desc = 'mouse threshold1 = 0' },
+    @{ Area = 'input-accel'; Kind = 'reg-sz'; Path = 'HKCU\Control Panel\Mouse'; Name = 'MouseThreshold2'; Expected = '0'; Desc = 'mouse threshold2 = 0' },
+
+    # Ground truth: input-tuning.ps1 mode 'queue' (REG_DWORD 8 under the class
+    # driver Parameters keys).
+    @{ Area = 'input-queue'; Kind = 'reg-dword'; Path = 'HKLM\SYSTEM\CurrentControlSet\Services\mouclass\Parameters'; Name = 'MouseDataQueueSize';     Expected = '8'; Desc = 'mouse data queue size 8' },
+    @{ Area = 'input-queue'; Kind = 'reg-dword'; Path = 'HKLM\SYSTEM\CurrentControlSet\Services\kbdclass\Parameters'; Name = 'KeyboardDataQueueSize'; Expected = '8'; Desc = 'keyboard data queue size 8' },
+
+    # Ground truth: network-tuning.ps1 mode 'bufferbloat' (PacingProfile Always
+    # via Set-NetTCPSetting, netsh fallback identical). Live-state check.
+    @{ Area = 'network-bufferbloat'; Kind = 'netsh-tcp-global'; Expected = 'always'; Desc = 'TCP pacing profile always (netsh int tcp show global)' },
+    # Ground truth: network-tuning.ps1 mode 'nic' (undo record written under
+    # NetworkUndo\NicUndo before each change; driver-level live state is not
+    # statically verifiable, so the run marker is the honest registry check).
+    @{ Area = 'network-nic'; Kind = 'undo-record'; Path = 'HKLM\SOFTWARE\GGOS\NetworkUndo\NicUndo'; MatchName = '::Flow Control'; Desc = 'NIC tuning ran (undo record in NetworkUndo\NicUndo)' },
+    # Ground truth: network-tuning.ps1 mode 'ultra' - interrupt moderation/RSC
+    # writes are driver-dependent live state with no fixed offline marker.
+    @{ Area = 'network-ultra'; Kind = 'note'; Desc = 'no fixed offline marker - interrupt moderation/RSC are live driver state (exposure varies by driver)' }
 )
 
 # ---------------------------------------------------------------------------
@@ -120,13 +206,14 @@ $Checks = @(
 # ---------------------------------------------------------------------------
 function Get-GGRegValue {
     # Returns $true, $type, $data when the value exists (reg.exe query).
-    # Note: Invoke-GGCommand reports "completed within timeout", not the exit
-    # code, so existence is decided from the parsed output, not from $ok.
+    # Since v0.4.0 (audit F4) Invoke-GGCommand returns the exit code; reg.exe
+    # exits 1 for a missing key/value, so existence is decided from the exit
+    # code first, then from the parsed output.
     param([string]$Path, [string]$Name)
     $qArgs = @('query', $Path)
     if ($Name) { $qArgs += @('/v', $Name) } else { $qArgs += '/ve' }
-    $ok, $out = Invoke-GGCommand -FilePath $reg -ArgumentList $qArgs -TimeoutSeconds 20 -Description ('registry query ' + $Path + ' ' + $Name)
-    if (-not $ok) { return $false, '', '' }
+    $ok, $exit, $out = Invoke-GGCommand -FilePath $reg -ArgumentList $qArgs -TimeoutSeconds 20 -Description ('registry query ' + $Path + ' ' + $Name)
+    if (-not ($ok -and $exit -eq 0)) { return $false, '', '' }
     $typePattern = 'REG_(SZ|EXPAND_SZ|MULTI_SZ|DWORD|QWORD|BINARY|NONE)'
     $dataLines = @(@($out) | Where-Object { $_ -match $typePattern })
     if ($dataLines.Count -eq 0) { return $false, '', '' }
@@ -212,9 +299,9 @@ foreach ($area in $selected) {
                 else { $status = 'DRIFT'; $detail = 'key missing' }
             }
             'bcdedit-f8' {
-                $ok, $out = Invoke-GGCommand -FilePath $bcdedit -ArgumentList @('/enum', '{current}') -TimeoutSeconds 30 -Description 'bcdedit boot menu policy check'
+                $ok, $exit, $out = Invoke-GGCommand -FilePath $bcdedit -ArgumentList @('/enum', '{current}') -TimeoutSeconds 30 -Description 'bcdedit boot menu policy check'
                 $found = $false
-                if ($ok) {
+                if ($ok -and $exit -eq 0) {
                     foreach ($line in @($out)) {
                         if ($line -match 'bootmenupolicy' -and $line -match 'Legacy') { $found = $true; break }
                     }
@@ -259,15 +346,117 @@ foreach ($area in $selected) {
                 }
             }
             'tcpip-latency' {
-                $ok, $out = Invoke-GGCommand -FilePath $reg -ArgumentList @('query', 'HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces', '/s', '/v', 'TcpAckFrequency') -TimeoutSeconds 30 -Description 'TcpAckFrequency recursive query'
+                $ok, $exit, $out = Invoke-GGCommand -FilePath $reg -ArgumentList @('query', 'HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces', '/s', '/v', 'TcpAckFrequency') -TimeoutSeconds 30 -Description 'TcpAckFrequency recursive query'
                 $found = $false
-                if ($ok) {
+                if ($ok -and $exit -eq 0) {
                     foreach ($line in @($out)) {
                         if ($line -match 'TcpAckFrequency' -and $line -match '0x1\b') { $found = $true; break }
                     }
                 }
                 if ($found) { $status = 'PASS' }
                 else { $status = 'DRIFT'; $detail = 'no interface with TcpAckFrequency=1 found' }
+            }
+            'chassis-stamp' {
+                # v0.4.0 (audit F7): pc-auto / pc-desktop / pc-laptop. Informational
+                # correlation with the 'Chassis' stamp written by hardware-policy.ps1
+                # (ground truth: hardware-policy.ps1 section 6). PASS = stamp exists.
+                $exists, $type, $data = Get-GGRegValue -Path 'HKLM\SOFTWARE\GGOS\HardwarePolicy' -Name 'Chassis'
+                if ($exists) { $status = 'PASS' }
+                else { $status = 'DRIFT'; $detail = 'HKLM\SOFTWARE\GGOS\HardwarePolicy Chassis stamp missing (hardware-policy.ps1 did not run or failed)' }
+            }
+            'powercfg-index' {
+                # v0.4.0 (audit F7): live AC index of a powercfg setting on the
+                # active scheme. Ground truth per entry: the option's tuning
+                # script (cited in $Checks).
+                # The SUBGROUP-WIDE query is used on purpose: a direct per-setting
+                # query (powercfg /q <scheme> <sub> <setting>) exits 0 with only
+                # the scheme header when the setting is hidden and never set, so
+                # it cannot distinguish "absent" from a real block. The subgroup
+                # enumeration lists every present setting as a block; the target
+                # block is matched by full GUID (SettingGuid, from ground truth)
+                # or by its English friendly name (NamePattern - English-builds
+                # caveat, same as the netsh parses). Hidden settings appear here
+                # once the tuning script has unhidden them. The Current AC/DC
+                # index lines print at a lower indent but belong to the preceding
+                # setting block, so the first AC-index line after a matching
+                # block header is that block's value.
+                $ok, $exit, $out = Invoke-GGCommand -FilePath 'powercfg.exe' -ArgumentList @('/q', 'SCHEME_CURRENT', $c.Subgroup) -TimeoutSeconds 20 -Description "powercfg query $($c.Subgroup)"
+                $index = $null
+                if ($ok -and $exit -eq 0) {
+                    $inTarget = $false
+                    foreach ($line in @($out)) {
+                        if ($line -match 'Power Setting GUID:\s*([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})') {
+                            $inTarget = ($null -ne $c.SettingGuid -and $Matches[1] -ieq $c.SettingGuid)
+                            if (-not $inTarget -and $c.NamePattern) { $inTarget = ($line -match $c.NamePattern) }
+                            continue
+                        }
+                        if ($inTarget -and $line -match 'Current (AC|Plugged) Power Setting Index:\s*(0x[0-9a-fA-F]+)') {
+                            $index = ConvertTo-GGDword $Matches[2]; break
+                        }
+                    }
+                }
+                $expectedNum = ConvertTo-GGDword $c.Expected
+                if ($null -eq $index) { $status = 'DRIFT'; $detail = 'setting not exposed in the subgroup enumeration or powercfg query failed' }
+                elseif ($index -ne $expectedNum) { $status = 'DRIFT'; $detail = ('found 0x{0:X} (expected 0x{1:X})' -f $index, $expectedNum) }
+                else { $status = 'PASS' }
+            }
+            'power-plan' {
+                # v0.4.0 (audit F7): fixed-GUID plan presence in powercfg /list
+                # (ground truth: gaming-power.ps1 fixed-GUID plan machinery).
+                $ok, $exit, $out = Invoke-GGCommand -FilePath 'powercfg.exe' -ArgumentList @('/list') -TimeoutSeconds 20 -Description 'powercfg list'
+                $found = $false
+                if ($ok -and $exit -eq 0) {
+                    foreach ($line in @($out)) {
+                        if ($line -match [regex]::Escape($c.Guid)) { $found = $true; break }
+                    }
+                }
+                if ($found) { $status = 'PASS' }
+                else { $status = 'DRIFT'; $detail = ('plan GUID {0} not present in powercfg /list' -f $c.Guid) }
+            }
+            'class-pnp' {
+                # v0.4.0 (audit F7): recursive PnPCapabilities scan over one device
+                # class key (mirrors the tcpip-latency pattern). PnPCapabilities is
+                # written as REG_DWORD, so reg query shows hex (24 -> 0x18).
+                $ok, $exit, $out = Invoke-GGCommand -FilePath $reg -ArgumentList @('query', $c.ClassKey, '/s', '/v', 'PnPCapabilities') -TimeoutSeconds 30 -Description ('PnPCapabilities recursive query ' + $c.ClassKey)
+                $found = $false
+                $pnpHex = '0x{0:X}' -f (ConvertTo-GGDword $c.Expected)
+                if ($ok -and $exit -eq 0) {
+                    foreach ($line in @($out)) {
+                        if ($line -match 'PnPCapabilities' -and $line -match ($pnpHex + '\b')) { $found = $true; break }
+                    }
+                }
+                if ($found) { $status = 'PASS' }
+                else { $status = 'DRIFT'; $detail = ('no device under {0} with PnPCapabilities={1} (not applied, no eligible device, or applied via cmdlet)' -f $c.ClassKey, $pnpHex) }
+            }
+            'undo-record' {
+                # v0.4.0 (audit F7): presence of the option script's own undo
+                # record - the honest registry-visible marker when the setting
+                # itself is live driver state. reg query of the key lists every
+                # value name; MatchName appears in the recorded value names.
+                $ok, $exit, $out = Invoke-GGCommand -FilePath $reg -ArgumentList @('query', $c.Path) -TimeoutSeconds 20 -Description ('undo-record query ' + $c.Path)
+                $found = $false
+                if ($ok -and $exit -eq 0) {
+                    foreach ($line in @($out)) {
+                        if ($line -match [regex]::Escape($c.MatchName)) { $found = $true; break }
+                    }
+                }
+                if ($found) { $status = 'PASS' }
+                else { $status = 'DRIFT'; $detail = ('no ''{0}'' record under {1} (option did not run or no eligible target)' -f $c.MatchName, $c.Path) }
+            }
+            'netsh-tcp-global' {
+                # v0.4.0 (audit F7): live TCP global state. English builds only
+                # (same locale caveat as the wifi profile parse in wifi-tuning).
+                # Pacing Profile is the non-default discriminator; ECN/auto-tuning
+                # are checked for information only (can be OS defaults).
+                $ok, $exit, $out = Invoke-GGCommand -FilePath 'netsh.exe' -ArgumentList @('int', 'tcp', 'show', 'global') -TimeoutSeconds 20 -Description 'netsh int tcp show global'
+                $found = $false
+                if ($ok -and $exit -eq 0) {
+                    foreach ($line in @($out)) {
+                        if ($line -match ('Pacing Profile\s*:\s*' + [regex]::Escape($c.Expected) + '\s*$')) { $found = $true; break }
+                    }
+                }
+                if ($found) { $status = 'PASS' }
+                else { $status = 'DRIFT'; $detail = ('Pacing Profile is not ''{0}'' (netsh int tcp show global)' -f $c.Expected) }
             }
             'note' {
                 $status = 'NOTE'; $detail = $c.Desc
@@ -309,11 +498,10 @@ foreach ($stampCmd in @(
     @{ Args = @('add', 'HKLM\SOFTWARE\GGOS', '/v', 'AppliedVersion', '/t', 'REG_SZ', '/d', $version, '/f'); Desc = 'HKLM\SOFTWARE\GGOS AppliedVersion stamp' },
     @{ Args = @('add', 'HKLM\SOFTWARE\GGOS', '/v', 'LastVerify', '/t', 'REG_SZ', '/d', $summary, '/f'); Desc = 'HKLM\SOFTWARE\GGOS LastVerify stamp' }
 )) {
-    $ok, $out = Invoke-GGCommand -FilePath $reg -ArgumentList $stampCmd.Args -TimeoutSeconds 20 -Description $stampCmd.Desc
-    # Invoke-GGCommand reports completion, not the exit code - reg add prints
-    # a success line, so validate from the output.
-    $succeeded = $ok -and (@($out) | Where-Object { $_ -match 'operation completed successfully' })
-    if (-not $succeeded) { $stampOk = $false }
+    $ok, $exit, $out = Invoke-GGCommand -FilePath $reg -ArgumentList $stampCmd.Args -TimeoutSeconds 20 -Description $stampCmd.Desc
+    # Success = completed within timeout AND reg.exe exited 0 (audit F4).
+    $succeeded = ($ok -and $exit -eq 0)
+    if (-not $succeeded) { $stampOk = $false; Write-GGLog "Warning: $($stampCmd.Desc) $(if ($ok) { "failed (exit $exit)" } else { 'timed out' })." }
 }
 
 if ($stampOk) {

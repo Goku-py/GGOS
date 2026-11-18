@@ -5,12 +5,16 @@ title: Scheduled tasks
 # Wasteful scheduled tasks disabled (never deleted, so they can be re-enabled manually).
 # Ported from TBOK's active DisableTask list.
 actions:
-  # ---- Office telemetry agents (only when office-telemetry is also selected) ----
-  - !scheduledTask: {path: '\Microsoft\Office\OfficeTelemetryAgent', operation: disable, errorAction: Log, options: ['telemetry', 'office-telemetry']}
-  - !scheduledTask: {path: '\Microsoft\Office\OfficeTelemetryAgentFallBack', operation: disable, errorAction: Log, options: ['telemetry', 'office-telemetry']}
-  - !scheduledTask: {path: '\Microsoft\Office\OfficeTelemetryAgentLogon', operation: disable, errorAction: Log, options: ['telemetry', 'office-telemetry']}
-  - !scheduledTask: {path: '\Microsoft\Office\OfficeTelemetryAgentFallBack2016', operation: disable, errorAction: Log, options: ['telemetry', 'office-telemetry']}
-  - !scheduledTask: {path: '\Microsoft\Office\OfficeTelemetryAgentLogOn2016', operation: disable, errorAction: Log, options: ['telemetry', 'office-telemetry']}
+  # ---- Office telemetry agents (only when telemetry AND office-telemetry are
+  #      both selected). v0.4.0: options: lists are OR in the engine (source-
+  #      verified IsApplicableOption); 'a&b' is the documented-in-source AND
+  #      conjunction. The old array disabled these tasks when EITHER option
+  #      was ticked - broader than intended.
+  - !scheduledTask: {path: '\Microsoft\Office\OfficeTelemetryAgent', operation: disable, errorAction: Log, option: 'telemetry&office-telemetry'}
+  - !scheduledTask: {path: '\Microsoft\Office\OfficeTelemetryAgentFallBack', operation: disable, errorAction: Log, option: 'telemetry&office-telemetry'}
+  - !scheduledTask: {path: '\Microsoft\Office\OfficeTelemetryAgentLogon', operation: disable, errorAction: Log, option: 'telemetry&office-telemetry'}
+  - !scheduledTask: {path: '\Microsoft\Office\OfficeTelemetryAgentFallBack2016', operation: disable, errorAction: Log, option: 'telemetry&office-telemetry'}
+  - !scheduledTask: {path: '\Microsoft\Office\OfficeTelemetryAgentLogOn2016', operation: disable, errorAction: Log, option: 'telemetry&office-telemetry'}
 
   # ---- Telemetry / CEIP tasks ----
   - !scheduledTask: {path: '\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser', operation: disable, errorAction: Log, option: 'telemetry'}

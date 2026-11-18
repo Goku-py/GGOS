@@ -8,7 +8,7 @@ tuning, per-user tweaks), CTT WinUtil (MIT) and community playbook patterns
 
 ![GGOS logo](playbook.png)
 
-**Version 0.3.2** · 10 feature pages · 32 unique options · 18 task files ·
+**Version 0.4.0** · 10 feature pages · 33 unique options · 18 task files ·
 rollback gate → option ledger → verification pass.
 
 > Current state, known defects and proposed fixes are recorded in
@@ -17,9 +17,10 @@ rollback gate → option ledger → verification pass.
 
 ## Requirements
 
-- **Windows 11 22H2 (build 22621) or later.** Several values are build-gated
-  (24H2 timer semantics, Recall policies, Widgets packages). Windows 10 is
-  **not** a tested target — see audit finding F8.
+- **Windows 11 22H2 (build 22621) through 26H2 (26300).** The playbook declares
+  `<SupportedBuilds>` and AME Wizard refuses unlisted builds. Several values are
+  build-gated (24H2 timer semantics, Recall policies, Widgets packages).
+  Windows 10 is **not** a supported target — see audit finding F8.
 - **AME Wizard Beta** (the `.apbx` format is 7z/AES-256, password `malte`).
 - **Administrator / TrustedInstaller** — supplied by AME's `!powerShell` default
   `runas`; no separate elevation tool is shipped.
@@ -71,16 +72,16 @@ archive is rejected with "Wrong password").
 | 4 | **Bloatware** | Copilot · Bing Search · Widgets · OEM trial apps |
 | 5 | **Office & gaming** | Office telemetry · Gaming mode |
 | 6 | **Cleanup & software** | Safe cleanup · Deep cleanup (cannot be undone) · WinGet updates |
-| 7 | **Desktop-only power** (`DependsOn` Desktop) | CPU EPP · PCIe ASPM off · NVMe idle timeout |
-| 8 | **Laptop-only** (`DependsOn` Laptop) | GGOS Laptop plan · Wi-Fi latency fix · NVMe idle timeout (AC) |
+| 7 | **Desktop power** | CPU EPP · PCIe ASPM off · NVMe idle timeout |
+| 8 | **Laptop** | GGOS Laptop plan · Wi-Fi latency fix · NVMe idle timeout (AC) |
 | 9 | **Input devices** | Mouse acceleration off · Input buffer latency · Wireless dongle fix |
 | 10 | **Network (wired)** | Lower ping (TCP) · Bufferbloat relief · NIC low-latency · Ultra NIC mode |
 
-> **Known defect (F1/F2/F3):** the two hardware pages are visible only when the
-> user explicitly picks Desktop or Laptop, so the default "Auto-detect" path
-> hides them; and the NVMe option is declared twice with the same `Name`. Both
-> are documented in the audit with proposed fixes and are **not** changed in
-> 0.3.2 (they need a VM-tested playbook change).
+> **Hardware pages (fixed in 0.4.0, audit F1–F3):** both hardware pages are now
+> always visible; desktop-only tweaks (EPP, ASPM) are refused on laptops by the
+> script-side chassis guard (`hardware-tuning.ps1`), and the laptop NVMe option
+> has its own `nvme-latency-laptop` name. The desktop/laptop *radio* choice
+> remains an override; auto-detect is the default.
 
 ## Option → task map
 
@@ -192,18 +193,19 @@ archive is rejected with "Wrong password").
 
 | File | Purpose |
 |---|---|
-| [`docs/AUDIT-2026-11-15.md`](docs/AUDIT-2026-11-15.md) | Full audit: findings, severities, evidence, proposed fixes |
+| [`docs/AUDIT-2026-11-15.md`](docs/AUDIT-2026-11-15.md) | Full audit: findings, severities, evidence, proposed fixes (+ 2026-11-18 addendum) |
+| [`docs/VM-TEST-CHECKLIST.md`](docs/VM-TEST-CHECKLIST.md) | Release-gate VM smoke test procedure |
 | [`docs/CHANGELOG.md`](docs/CHANGELOG.md) | Release history |
 | [`docs/SPEC-v0.2.md`](docs/SPEC-v0.2.md) | Historical v0.2 design specification (kept for provenance) |
 
 ## Status
 
-**v0.3.2** — restore-point gate hardened (verified creation, bounded runtime,
-practical fallback), documentation and audit pass, version bump. Ten feature
-pages, hardware-aware desktop/laptop branching, option ledger + verification
-pass, native timer-resolution helper, researched network stack.
+**v0.4.0** — feature-page repairs (F1/F2/F3/F9), engine-verified option-gating
+semantics (F14), exit-code-aware command wrapper (F4), `SupportedBuilds`
+(F8), reproducible timer helper + strict package manifest (F10/F11), full
+verification coverage (F7). Build tooling recovered and committed (F15).
 
-Still open before a release claim: an AME Wizard smoke test on a disposable VM
-(defaults run + gaming/cleanup run), and the feature-page fixes in audit findings
-F1–F3. Packaging is reproducible only once the timer helper build step (F10) is
-added.
+Still open before a release claim: the AME Wizard smoke test on a disposable
+VM (`docs/VM-TEST-CHECKLIST.md` — defaults run + gaming/cleanup run + GUI
+page-visibility checks). Everything above is statically verified; the runtime
+verification is deliberately the last gate.

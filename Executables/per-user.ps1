@@ -158,8 +158,8 @@ if ($null -ne $hookTarget) {
     if ($hookInstalled) {
         $runOnceKey = $hookTarget + '\Software\Microsoft\Windows\CurrentVersion\RunOnce'
         $hookCmd = 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File ' + $hookDest
-        $ok, $out = Invoke-GGCommand -FilePath $reg -ArgumentList @('add', $runOnceKey, '/v', 'GGOSFirstLogon', '/t', 'REG_SZ', '/d', $hookCmd, '/f') -TimeoutSeconds 30 -Description 'RunOnce first-logon hook write'
-        if (Test-GGRegSuccess $ok $out) {
+        $ok, $exit, $out = Invoke-GGCommand -FilePath $reg -ArgumentList @('add', $runOnceKey, '/v', 'GGOSFirstLogon', '/t', 'REG_SZ', '/d', $hookCmd, '/f') -TimeoutSeconds 30 -Description 'RunOnce first-logon hook write'
+        if (Test-GGRegSuccess $ok $exit $out) {
             Write-GGLog 'RunOnce first-logon hook written to the Default template hive.'
         }
         else {

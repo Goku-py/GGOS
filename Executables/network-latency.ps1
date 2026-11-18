@@ -36,6 +36,7 @@ if (Test-Path -LiteralPath $ggCommonPath) {
 if (-not (Get-Command Invoke-GGCommand -ErrorAction SilentlyContinue)) {
     # Fallback shim when the shared module is absent: run the command directly
     # (without the bounded timeout) so the tweak still applies instead of failing.
+    # Matches the module contract (audit F4): returns (completed, exitCode, output).
     function Invoke-GGCommand {
         param(
             [Parameter(Mandatory = $true)][string]$FilePath,
@@ -46,10 +47,11 @@ if (-not (Get-Command Invoke-GGCommand -ErrorAction SilentlyContinue)) {
         Write-GGLog "Warning: ggos-common module not found - running without timeout: $Description"
         try {
             $out = (& $FilePath @ArgumentList 2>&1) -join "`n"
-            return ($LASTEXITCODE -eq 0), [string]$out
+            $code = $LASTEXITCODE
+            return ($code -eq 0), $code, [string]$out
         }
         catch {
-            return $false, $_.Exception.Message
+            return $false, $null, $_.Exception.Message
         }
     }
 }
@@ -148,9 +150,9 @@ foreach ($key in (Get-ChildItem $tcpipInterfaces -ErrorAction SilentlyContinue))
     # 2b. Apply the tuning values (DWORD) via reg.exe through the B2 wrapper.
     $results = @()
     foreach ($pair in @(@('TcpAckFrequency', '1'), @('TCPNoDelay', '1'), @('TcpDelAckTicks', '0'))) {
-        $okSet, $setOut = Invoke-GGCommand -FilePath reg.exe -ArgumentList @('add', $regKeyPath, '/v', $pair[0], '/t', 'REG_DWORD', '/d', $pair[1], '/f') -TimeoutSeconds 20 -Description "set $($pair[0]) on $($adapter.Name)"
-        if ($okSet) { $results += "$($pair[0])=$($pair[1]) OK" }
-        else { $results += "$($pair[0]) FAILED" }
+        $okSet, $exitSet, $setOut = Invoke-GGCommand -FilePath reg.exe -ArgumentList @('add', $regKeyPath, '/v', $pair[0], '/t', 'REG_DWORD', '/d', $pair[1], '/f') -TimeoutSeconds 20 -Description "set $($pair[0]) on $($adapter.Name)"
+        if ($okSet -and $exitSet -eq 0) { $results += "$($pair[0])=$($pair[1]) OK" }
+        else { $results += "$($pair[0]) FAILED$(if ($okSet) { " (exit $exitSet)" })" }
     }
     Write-GGLog "Interface $($adapter.Name) (${guid}): " + ($results -join '; ')
 }

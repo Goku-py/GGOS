@@ -52,6 +52,7 @@ if (Test-Path -LiteralPath $ggCommonPath) {
 if (-not (Get-Command Invoke-GGCommand -ErrorAction SilentlyContinue)) {
     # Fallback shim when the shared module is absent: run the command directly
     # (without the bounded timeout) so the tweak still applies instead of failing.
+    # Matches the module contract (audit F4): returns (completed, exitCode, output).
     function Invoke-GGCommand {
         param(
             [Parameter(Mandatory = $true)][string]$FilePath,
@@ -62,10 +63,11 @@ if (-not (Get-Command Invoke-GGCommand -ErrorAction SilentlyContinue)) {
         Write-GGLog "Warning: ggos-common module not found - running without timeout: $Description"
         try {
             $out = (& $FilePath @ArgumentList 2>&1) -join "`n"
-            return ($LASTEXITCODE -eq 0), [string]$out
+            $code = $LASTEXITCODE
+            return ($code -eq 0), $code, [string]$out
         }
         catch {
-            return $false, $_.Exception.Message
+            return $false, $null, $_.Exception.Message
         }
     }
 }
@@ -78,15 +80,15 @@ if (-not (Get-Command Invoke-GGCommand -ErrorAction SilentlyContinue)) {
 # ---------------------------------------------------------------------------
 if (-not $LaptopPlan) {
 try {
-    $okBcd, $bcd = Invoke-GGCommand -FilePath bcdedit.exe -ArgumentList @('/enum', '{default}') -TimeoutSeconds 20 -Description 'query default boot entry (useplatformclock)'
-    if (-not $okBcd) {
-        Write-GGLog "Could not query the default boot entry: useplatformclock unchanged."
+    $okBcd, $exitBcd, $bcd = Invoke-GGCommand -FilePath bcdedit.exe -ArgumentList @('/enum', '{default}') -TimeoutSeconds 20 -Description 'query default boot entry (useplatformclock)'
+    if (-not ($okBcd -and $exitBcd -eq 0)) {
+        Write-GGLog "Could not query the default boot entry $(if ($okBcd) { "(exit $exitBcd)" } else { '(timed out)' }): useplatformclock unchanged."
         $hadCritical = $true
     }
     elseif (($bcd | Out-String) -match 'useplatformclock') {
-        $okDel, $delOut = Invoke-GGCommand -FilePath bcdedit.exe -ArgumentList @('/deletevalue', '{default}', 'useplatformclock') -TimeoutSeconds 20 -Description 'remove useplatformclock override'
-        if ($okDel) { Write-GGLog 'Removed explicit useplatformclock override.' }
-        else { Write-GGLog 'Warning: failed to remove the useplatformclock override.'; $hadCritical = $true }
+        $okDel, $exitDel, $delOut = Invoke-GGCommand -FilePath bcdedit.exe -ArgumentList @('/deletevalue', '{default}', 'useplatformclock') -TimeoutSeconds 20 -Description 'remove useplatformclock override'
+        if ($okDel -and $exitDel -eq 0) { Write-GGLog 'Removed explicit useplatformclock override.' }
+        else { Write-GGLog "Warning: failed to remove the useplatformclock override $(if ($okDel) { "(exit $exitDel)" } else { '(timed out)' })."; $hadCritical = $true }
     }
     else {
         Write-GGLog 'useplatformclock is not explicitly configured; no change needed.'
@@ -127,8 +129,8 @@ function Write-ControlSets {
     # Resolve Current, Default and LastKnownGood control sets from HKLM\SYSTEM\Select.
     $sets = @()
     foreach ($valueName in @('Current', 'Default', 'LastKnownGood')) {
-        $okSel, $row = Invoke-GGCommand -FilePath reg.exe -ArgumentList @('query', 'HKLM\SYSTEM\Select', '/v', $valueName) -TimeoutSeconds 20 -Description "query HKLM\SYSTEM\Select\$valueName"
-        if (-not $okSel) { continue }
+        $okSel, $exitSel, $row = Invoke-GGCommand -FilePath reg.exe -ArgumentList @('query', 'HKLM\SYSTEM\Select', '/v', $valueName) -TimeoutSeconds 20 -Description "query HKLM\SYSTEM\Select\$valueName"
+        if (-not ($okSel -and $exitSel -eq 0)) { continue }
         if (($row | Out-String) -match '0x([0-9a-fA-F]+)') {
             $n = [int]('0x' + $Matches[1])
             if ($n -gt 0) {
@@ -139,8 +141,8 @@ function Write-ControlSets {
     }
     $failed = $false
     foreach ($cs in $sets) {
-        $okAdd, $addOut = Invoke-GGCommand -FilePath reg.exe -ArgumentList @('add', ("HKLM\SYSTEM\" + $cs + "\" + $RelPath), '/v', $Name, '/t', $Type, '/d', $Data, '/f') -TimeoutSeconds 20 -Description "write $cs\$RelPath\$Name"
-        if (-not $okAdd) {
+        $okAdd, $exitAdd, $addOut = Invoke-GGCommand -FilePath reg.exe -ArgumentList @('add', ("HKLM\SYSTEM\" + $cs + "\" + $RelPath), '/v', $Name, '/t', $Type, '/d', $Data, '/f') -TimeoutSeconds 20 -Description "write $cs\$RelPath\$Name"
+        if (-not ($okAdd -and $exitAdd -eq 0)) {
             Write-GGLog "Warning: could not write $cs\$RelPath\$Name."
             $failed = $true
         }
@@ -161,10 +163,10 @@ $script:UltimatePerfTemplateGuid = 'e9a42b02-d5df-448d-aa00-03f14749eb61'
 function Set-BoostMode {
     param([int]$AcValue, [int]$DcValue, [string]$Description)
     Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('-attributes', 'SUB_PROCESSOR', 'PERFBOOSTMODE', '-ATTRIB_HIDE') -TimeoutSeconds 20 -Description 'unhide processor boost mode setting' | Out-Null
-    $okAc, $oAc = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('-setacvalueindex', 'SCHEME_CURRENT', 'SUB_PROCESSOR', 'PERFBOOSTMODE', "$AcValue") -TimeoutSeconds 20 -Description "boost mode AC=$AcValue"
-    $okDc, $oDc = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('-setdcvalueindex', 'SCHEME_CURRENT', 'SUB_PROCESSOR', 'PERFBOOSTMODE', "$DcValue") -TimeoutSeconds 20 -Description "boost mode DC=$DcValue"
-    $okRe, $oRe = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('-setactive', 'SCHEME_CURRENT') -TimeoutSeconds 20 -Description 're-apply current power scheme (boost mode)'
-    if ($okAc -and $okDc -and $okRe) {
+    $okAc, $exitAc, $oAc = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('-setacvalueindex', 'SCHEME_CURRENT', 'SUB_PROCESSOR', 'PERFBOOSTMODE', "$AcValue") -TimeoutSeconds 20 -Description "boost mode AC=$AcValue"
+    $okDc, $exitDc, $oDc = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('-setdcvalueindex', 'SCHEME_CURRENT', 'SUB_PROCESSOR', 'PERFBOOSTMODE', "$DcValue") -TimeoutSeconds 20 -Description "boost mode DC=$DcValue"
+    $okRe, $exitRe, $oRe = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('-setactive', 'SCHEME_CURRENT') -TimeoutSeconds 20 -Description 're-apply current power scheme (boost mode)'
+    if (($okAc -and $exitAc -eq 0) -and ($okDc -and $exitDc -eq 0) -and ($okRe -and $exitRe -eq 0)) {
         Write-GGLog "Processor boost mode configured: $Description."
         return $true
     }
@@ -191,16 +193,16 @@ function Unlock-HiddenPowerSettings {
 }
 
 function Get-ActiveSchemeGuid {
-    $okScheme, $out = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/getactivescheme') -TimeoutSeconds 20 -Description 'read active power scheme'
-    if (-not $okScheme) { return $null }
+    $okScheme, $exitScheme, $out = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/getactivescheme') -TimeoutSeconds 20 -Description 'read active power scheme'
+    if (-not ($okScheme -and $exitScheme -eq 0)) { return $null }
     $m = [regex]::Match(($out | Out-String), '([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})')
     if ($m.Success) { return $m.Groups[1].Value.ToLowerInvariant() }
     return $null
 }
 
 function Get-PowerSchemeList {
-    $okList, $out = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/list') -TimeoutSeconds 20 -Description 'enumerate power schemes'
-    if (-not $okList) { return $null }
+    $okList, $exitList, $out = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/list') -TimeoutSeconds 20 -Description 'enumerate power schemes'
+    if (-not ($okList -and $exitList -eq 0)) { return $null }
     return ($out | Out-String)
 }
 
@@ -222,8 +224,8 @@ function Remove-GGOSPlanDuplicates {
     # merely happen to end in "(2)" are never matched.
     $dupPattern = [regex]::Escape($ours.Name) + '\s*\((\d+)\)$'
     foreach ($s in ($schemes | Where-Object { $_.Guid -ne $FixedGuid -and $_.Name -match $dupPattern })) {
-        $okDel, $delOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('-delete', $s.Guid) -TimeoutSeconds 20 -Description "delete duplicate power plan copy '$($s.Name)'"
-        if ($okDel) { Write-GGLog "Removed duplicate power plan copy: $($s.Name)." }
+        $okDel, $exitDel, $delOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('-delete', $s.Guid) -TimeoutSeconds 20 -Description "delete duplicate power plan copy '$($s.Name)'"
+        if ($okDel -and $exitDel -eq 0) { Write-GGLog "Removed duplicate power plan copy: $($s.Name)." }
         else { Write-GGLog "Warning: could not remove duplicate power plan copy '$($s.Name)' (possibly active)."; }
     }
 }
@@ -239,8 +241,8 @@ function Set-GGOSDesktopPlan {
     #     would point at our own plan instead of the user's original.
     $activeGuid = Get-ActiveSchemeGuid
     if ($activeGuid -and $activeGuid -ne $fixedGuid) {
-        $okRec, $recOut = Invoke-GGCommand -FilePath reg.exe -ArgumentList @('add', 'HKLM\SOFTWARE\GGOS\PreviousPowerPlan', '/v', 'PreviousPlanGuid', '/t', 'REG_SZ', '/d', $activeGuid, '/f') -TimeoutSeconds 20 -Description 'record previous power plan GUID'
-        if ($okRec) { Write-GGLog "Previous active plan recorded for restore: $activeGuid" }
+        $okRec, $exitRec, $recOut = Invoke-GGCommand -FilePath reg.exe -ArgumentList @('add', 'HKLM\SOFTWARE\GGOS\PreviousPowerPlan', '/v', 'PreviousPlanGuid', '/t', 'REG_SZ', '/d', $activeGuid, '/f') -TimeoutSeconds 20 -Description 'record previous power plan GUID'
+        if ($okRec -and $exitRec -eq 0) { Write-GGLog "Previous active plan recorded for restore: $activeGuid" }
         else { Write-GGLog 'Warning: previous power plan GUID could not be recorded.' }
     }
 
@@ -260,8 +262,8 @@ function Set-GGOSDesktopPlan {
         Remove-GGOSPlanDuplicates $listText $fixedGuid
     }
     else {
-        $okDup, $dupOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('-duplicatescheme', $script:UltimatePerfTemplateGuid, $script:GGOSPlanGuid) -TimeoutSeconds 20 -Description 'create GGOS performance plan from Ultimate Performance template'
-        if (-not $okDup) {
+        $okDup, $exitDup, $dupOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('-duplicatescheme', $script:UltimatePerfTemplateGuid, $script:GGOSPlanGuid) -TimeoutSeconds 20 -Description 'create GGOS performance plan from Ultimate Performance template'
+        if (-not ($okDup -and $exitDup -eq 0)) {
             Write-GGLog 'Warning: could not create the GGOS performance plan.'
             return $false
         }
@@ -270,8 +272,8 @@ function Set-GGOSDesktopPlan {
     }
 
     # 5d. Activate the plan.
-    $okAct, $actOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setactive', $script:GGOSPlanGuid) -TimeoutSeconds 20 -Description 'activate GGOS performance plan'
-    if (-not $okAct) {
+    $okAct, $exitAct, $actOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setactive', $script:GGOSPlanGuid) -TimeoutSeconds 20 -Description 'activate GGOS performance plan'
+    if (-not ($okAct -and $exitAct -eq 0)) {
         Write-GGLog 'Warning: failed to activate the GGOS performance plan.'
         return $false
     }
@@ -287,14 +289,14 @@ function Set-GGOSDesktopPlan {
     )
     $pairsOk = $true
     foreach ($p in $pairs) {
-        $okPair, $pairOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setacvalueindex', 'SCHEME_CURRENT', $p[0], $p[1], $p[2]) -TimeoutSeconds 20 -Description "set AC $($p[0])\$($p[1]) = $($p[2])"
-        if (-not $okPair) {
+        $okPair, $exitPair, $pairOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setacvalueindex', 'SCHEME_CURRENT', $p[0], $p[1], $p[2]) -TimeoutSeconds 20 -Description "set AC $($p[0])\$($p[1]) = $($p[2])"
+        if (-not ($okPair -and $exitPair -eq 0)) {
             Write-GGLog "Warning: could not set AC $($p[0]) $($p[1]) = $($p[2])."
             $pairsOk = $false
         }
     }
-    $okApply, $applyOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setactive', 'SCHEME_CURRENT') -TimeoutSeconds 20 -Description 're-apply current power scheme (timeouts)'
-    if (-not $okApply) {
+    $okApply, $exitApply, $applyOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setactive', 'SCHEME_CURRENT') -TimeoutSeconds 20 -Description 're-apply current power scheme (timeouts)'
+    if (-not ($okApply -and $exitApply -eq 0)) {
         Write-GGLog 'Warning: re-applying the active power scheme after timeout changes failed.'
         $pairsOk = $false
     }
@@ -332,8 +334,8 @@ function Set-GGOSLaptopPlan {
     $activeGuid = Get-ActiveSchemeGuid
     $ggosGuids = @($script:GGOSPlanGuid.ToLowerInvariant(), $fixedGuid)
     if ($activeGuid -and ($activeGuid -notin $ggosGuids)) {
-        $okRec, $recOut = Invoke-GGCommand -FilePath reg.exe -ArgumentList @('add', 'HKLM\SOFTWARE\GGOS\PreviousPowerPlan', '/v', 'PreviousPlanGuid', '/t', 'REG_SZ', '/d', $activeGuid, '/f') -TimeoutSeconds 20 -Description 'record previous power plan GUID (laptop plan)'
-        if ($okRec) { Write-GGLog "Previous active plan recorded for restore: $activeGuid" }
+        $okRec, $exitRec, $recOut = Invoke-GGCommand -FilePath reg.exe -ArgumentList @('add', 'HKLM\SOFTWARE\GGOS\PreviousPowerPlan', '/v', 'PreviousPlanGuid', '/t', 'REG_SZ', '/d', $activeGuid, '/f') -TimeoutSeconds 20 -Description 'record previous power plan GUID (laptop plan)'
+        if ($okRec -and $exitRec -eq 0) { Write-GGLog "Previous active plan recorded for restore: $activeGuid" }
         else { Write-GGLog 'Warning: previous power plan GUID could not be recorded.' }
     }
 
@@ -351,8 +353,8 @@ function Set-GGOSLaptopPlan {
         Remove-GGOSPlanDuplicates $listText $fixedGuid
     }
     else {
-        $okDup, $dupOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('-duplicatescheme', $script:BalancedSchemeGuid, $script:GGOSLaptopPlanGuid) -TimeoutSeconds 20 -Description 'create GGOS Laptop plan from Balanced scheme'
-        if (-not $okDup) {
+        $okDup, $exitDup, $dupOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('-duplicatescheme', $script:BalancedSchemeGuid, $script:GGOSLaptopPlanGuid) -TimeoutSeconds 20 -Description 'create GGOS Laptop plan from Balanced scheme'
+        if (-not ($okDup -and $exitDup -eq 0)) {
             Write-GGLog 'Warning: could not create the GGOS Laptop plan.'
             return $false
         }
@@ -370,33 +372,33 @@ function Set-GGOSLaptopPlan {
     # Set-BoostMode (SUB_PROCESSOR / PERFBOOSTMODE); DC stays on the Balanced
     # baseline so battery keeps the OS default boost behaviour.
     Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('-attributes', 'SUB_PROCESSOR', 'PERFBOOSTMODE', '-ATTRIB_HIDE') -TimeoutSeconds 20 -Description 'unhide processor boost mode setting (laptop plan)' | Out-Null
-    $okBoostAc, $boostAcOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setacvalueindex', $script:GGOSLaptopPlanGuid, 'SUB_PROCESSOR', 'PERFBOOSTMODE', '3') -TimeoutSeconds 20 -Description 'set AC SUB_PROCESSOR\PERFBOOSTMODE = 3 (GGOS Laptop plan)'
-    if (-not $okBoostAc) { Write-GGLog 'Warning: could not set AC processor boost mode = 3 (Efficient Aggressive).'; $pairsOk = $false }
+    $okBoostAc, $exitBoostAc, $boostAcOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setacvalueindex', $script:GGOSLaptopPlanGuid, 'SUB_PROCESSOR', 'PERFBOOSTMODE', '3') -TimeoutSeconds 20 -Description 'set AC SUB_PROCESSOR\PERFBOOSTMODE = 3 (GGOS Laptop plan)'
+    if (-not ($okBoostAc -and $exitBoostAc -eq 0)) { Write-GGLog 'Warning: could not set AC processor boost mode = 3 (Efficient Aggressive).'; $pairsOk = $false }
 
     # Display off (SUB_VIDEO VIDEOIDLE): AC 900 s (15 min), DC 300 s (5 min).
-    $okVidAc, $vidAcOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setacvalueindex', $script:GGOSLaptopPlanGuid, 'SUB_VIDEO', 'VIDEOIDLE', '900') -TimeoutSeconds 20 -Description 'set AC SUB_VIDEO\VIDEOIDLE = 900 (GGOS Laptop plan)'
-    if (-not $okVidAc) { Write-GGLog 'Warning: could not set AC SUB_VIDEO VIDEOIDLE = 900.'; $pairsOk = $false }
-    $okVidDc, $vidDcOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setdcvalueindex', $script:GGOSLaptopPlanGuid, 'SUB_VIDEO', 'VIDEOIDLE', '300') -TimeoutSeconds 20 -Description 'set DC SUB_VIDEO\VIDEOIDLE = 300 (GGOS Laptop plan)'
-    if (-not $okVidDc) { Write-GGLog 'Warning: could not set DC SUB_VIDEO VIDEOIDLE = 300.'; $pairsOk = $false }
+    $okVidAc, $exitVidAc, $vidAcOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setacvalueindex', $script:GGOSLaptopPlanGuid, 'SUB_VIDEO', 'VIDEOIDLE', '900') -TimeoutSeconds 20 -Description 'set AC SUB_VIDEO\VIDEOIDLE = 900 (GGOS Laptop plan)'
+    if (-not ($okVidAc -and $exitVidAc -eq 0)) { Write-GGLog 'Warning: could not set AC SUB_VIDEO VIDEOIDLE = 900.'; $pairsOk = $false }
+    $okVidDc, $exitVidDc, $vidDcOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setdcvalueindex', $script:GGOSLaptopPlanGuid, 'SUB_VIDEO', 'VIDEOIDLE', '300') -TimeoutSeconds 20 -Description 'set DC SUB_VIDEO\VIDEOIDLE = 300 (GGOS Laptop plan)'
+    if (-not ($okVidDc -and $exitVidDc -eq 0)) { Write-GGLog 'Warning: could not set DC SUB_VIDEO VIDEOIDLE = 300.'; $pairsOk = $false }
 
     # Standby (SUB_SLEEP STANDBYIDLE): AC 1800 s (30 min), DC 900 s (15 min).
-    $okSlpAc, $slpAcOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setacvalueindex', $script:GGOSLaptopPlanGuid, 'SUB_SLEEP', 'STANDBYIDLE', '1800') -TimeoutSeconds 20 -Description 'set AC SUB_SLEEP\STANDBYIDLE = 1800 (GGOS Laptop plan)'
-    if (-not $okSlpAc) { Write-GGLog 'Warning: could not set AC SUB_SLEEP STANDBYIDLE = 1800.'; $pairsOk = $false }
-    $okSlpDc, $slpDcOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setdcvalueindex', $script:GGOSLaptopPlanGuid, 'SUB_SLEEP', 'STANDBYIDLE', '900') -TimeoutSeconds 20 -Description 'set DC SUB_SLEEP\STANDBYIDLE = 900 (GGOS Laptop plan)'
-    if (-not $okSlpDc) { Write-GGLog 'Warning: could not set DC SUB_SLEEP STANDBYIDLE = 900.'; $pairsOk = $false }
+    $okSlpAc, $exitSlpAc, $slpAcOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setacvalueindex', $script:GGOSLaptopPlanGuid, 'SUB_SLEEP', 'STANDBYIDLE', '1800') -TimeoutSeconds 20 -Description 'set AC SUB_SLEEP\STANDBYIDLE = 1800 (GGOS Laptop plan)'
+    if (-not ($okSlpAc -and $exitSlpAc -eq 0)) { Write-GGLog 'Warning: could not set AC SUB_SLEEP STANDBYIDLE = 1800.'; $pairsOk = $false }
+    $okSlpDc, $exitSlpDc, $slpDcOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setdcvalueindex', $script:GGOSLaptopPlanGuid, 'SUB_SLEEP', 'STANDBYIDLE', '900') -TimeoutSeconds 20 -Description 'set DC SUB_SLEEP\STANDBYIDLE = 900 (GGOS Laptop plan)'
+    if (-not ($okSlpDc -and $exitSlpDc -eq 0)) { Write-GGLog 'Warning: could not set DC SUB_SLEEP STANDBYIDLE = 900.'; $pairsOk = $false }
 
     # Hibernate idle (SUB_SLEEP HIBERNATEIDLE): DC 3600 s (60 min); AC untouched
     # (the plugged-in hibernate timeout stays on the Balanced baseline).
-    $okHibDc, $hibDcOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setdcvalueindex', $script:GGOSLaptopPlanGuid, 'SUB_SLEEP', 'HIBERNATEIDLE', '3600') -TimeoutSeconds 20 -Description 'set DC SUB_SLEEP\HIBERNATEIDLE = 3600 (GGOS Laptop plan)'
-    if (-not $okHibDc) { Write-GGLog 'Warning: could not set DC SUB_SLEEP HIBERNATEIDLE = 3600.'; $pairsOk = $false }
+    $okHibDc, $exitHibDc, $hibDcOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setdcvalueindex', $script:GGOSLaptopPlanGuid, 'SUB_SLEEP', 'HIBERNATEIDLE', '3600') -TimeoutSeconds 20 -Description 'set DC SUB_SLEEP\HIBERNATEIDLE = 3600 (GGOS Laptop plan)'
+    if (-not ($okHibDc -and $exitHibDc -eq 0)) { Write-GGLog 'Warning: could not set DC SUB_SLEEP HIBERNATEIDLE = 3600.'; $pairsOk = $false }
 
     # SUB_PROCESSOR PERFEPP and PROCTHROTTLEMIN (min processor state): untouched
     # on both rails - see the policy comment above (Thread Director on hybrid
     # laptops; no invented numbers for min state).
 
     # d. Activate the plan (applies the values set above).
-    $okAct, $actOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setactive', $script:GGOSLaptopPlanGuid) -TimeoutSeconds 20 -Description 'activate GGOS Laptop plan'
-    if (-not $okAct) {
+    $okAct, $exitAct, $actOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setactive', $script:GGOSLaptopPlanGuid) -TimeoutSeconds 20 -Description 'activate GGOS Laptop plan'
+    if (-not ($okAct -and $exitAct -eq 0)) {
         Write-GGLog 'Warning: failed to activate the GGOS Laptop plan.'
         return $false
     }
@@ -453,9 +455,9 @@ switch ($chassis) {
         # Decision: 0x26 (short/variable/high-boost — the Windows default) set explicitly
         # to document intent; fixed-quantum values rejected due to community conflict
         # and benchmark variance. Skipped on laptop by design (least-surprise policy).
-        $okWps, $wpsOut = Invoke-GGCommand -FilePath reg.exe -ArgumentList @('add', 'HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl', '/v', 'Win32PrioritySeparation', '/t', 'REG_DWORD', '/d', '38', '/f') -TimeoutSeconds 20 -Description 'set Win32PrioritySeparation decision record (0x26/38)'
-        if ($okWps) { Write-GGLog 'Win32PrioritySeparation decision record written: 0x26 (38).' }
-        else { Write-GGLog 'Warning: Win32PrioritySeparation could not be written.'; $hadCritical = $true }
+        $okWps, $exitWps, $wpsOut = Invoke-GGCommand -FilePath reg.exe -ArgumentList @('add', 'HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl', '/v', 'Win32PrioritySeparation', '/t', 'REG_DWORD', '/d', '38', '/f') -TimeoutSeconds 20 -Description 'set Win32PrioritySeparation decision record (0x26/38)'
+        if ($okWps -and $exitWps -eq 0) { Write-GGLog 'Win32PrioritySeparation decision record written: 0x26 (38).' }
+        else { Write-GGLog "Warning: Win32PrioritySeparation could not be written $(if ($okWps) { "(exit $exitWps)" } else { '(timed out)' })."; $hadCritical = $true }
 
         Set-BoostMode 2 2 'Aggressive' | Out-Null
         Unlock-HiddenPowerSettings | Out-Null

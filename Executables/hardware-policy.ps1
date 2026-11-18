@@ -71,19 +71,21 @@ Write-GGLog "Installed RAM: $ramMB MB"
 # ---- 4. Chassis-dependent core settings ----
 $hibernationPolicy = 'Unchanged'
 if ($chassis -eq 'Desktop') {
-    $ok, $ggOut = Invoke-GGCommand -FilePath 'powercfg.exe' -ArgumentList @('/hibernate', 'off') `
+    $ok, $exit, $ggOut = Invoke-GGCommand -FilePath 'powercfg.exe' -ArgumentList @('/hibernate', 'off') `
         -TimeoutSeconds 30 -Description 'powercfg /hibernate off (desktop)'
-    if ($ok) {
+    if ($ok -and $exit -eq 0) {
         $hibernationPolicy = 'Disabled'
         Write-GGLog 'Desktop policy: hibernation and Fast Startup disabled.'
     } else {
-        Write-GGLog 'powercfg /hibernate off failed or timed out - hibernation left unchanged.'
+        Write-GGLog "powercfg /hibernate off $(if ($ok) { "failed (exit $exit)" } else { 'timed out' }) - hibernation left unchanged."
     }
-    $ok2, $ggOut = Invoke-GGCommand -FilePath 'reg.exe' -ArgumentList @(
+    $ok2, $exit2, $ggOut = Invoke-GGCommand -FilePath 'reg.exe' -ArgumentList @(
         'add', 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power',
         '/v', 'HiberbootEnabled', '/t', 'REG_DWORD', '/d', '0', '/f') `
         -TimeoutSeconds 20 -Description 'Fast Startup off (HiberbootEnabled=0)'
-    if (-not $ok2) { Write-GGLog 'HiberbootEnabled write failed or timed out.' }
+    if (-not (Test-GGRegSuccess -Completed $ok2 -ExitCode $exit2 -Output $ggOut)) {
+        Write-GGLog "HiberbootEnabled write $(if ($ok2) { "failed (exit $exit2)" } else { 'timed out' })."
+    }
 } elseif ($chassis -eq 'Laptop') {
     Write-GGLog 'Laptop policy: hibernation and Fast Startup left enabled.'
 } else {
@@ -93,29 +95,32 @@ if ($chassis -eq 'Desktop') {
 # ---- 5. Drive-type-dependent settings ----
 $defragPolicy = 'Unchanged'
 if ($driveType -eq 'SSD') {
-    $ok3, $ggOut = Invoke-GGCommand -FilePath 'schtasks.exe' -ArgumentList @(
+    $ok3, $exit3, $ggOut = Invoke-GGCommand -FilePath 'schtasks.exe' -ArgumentList @(
         '/change', '/tn', '\Microsoft\Windows\Defrag\ScheduledDefrag', '/disable') `
         -TimeoutSeconds 20 -Description 'disable ScheduledDefrag (SSD)'
-    if ($ok3) {
+    if ($ok3 -and $exit3 -eq 0) {
         $defragPolicy = 'Disabled'
         Write-GGLog 'SSD policy: scheduled defrag disabled.'
-    } else {
-        Write-GGLog 'ScheduledDefrag disable failed or timed out (task may be absent).'
+    }
+    else {
+        Write-GGLog "ScheduledDefrag disable $(if ($ok3) { "failed (exit $exit3)" } else { 'timed out' }) (task may be absent)."
     }
     # TRIM must stay enabled on SSDs; 0 means NOT disabled.
-    $ok4, $ggOut = Invoke-GGCommand -FilePath 'fsutil.exe' -ArgumentList @(
+    $ok4, $exit4, $ggOut = Invoke-GGCommand -FilePath 'fsutil.exe' -ArgumentList @(
         'behavior', 'set', 'disabledeletenotify', '0') `
         -TimeoutSeconds 20 -Description 'ensure TRIM enabled (fsutil)'
-    if ($ok4) { Write-GGLog 'SSD policy: TRIM confirmed enabled.' }
+    if ($ok4 -and $exit4 -eq 0) { Write-GGLog 'SSD policy: TRIM confirmed enabled.' }
+    else { Write-GGLog "TRIM enable check $(if ($ok4) { "failed (exit $exit4)" } else { 'timed out' })." }
 } elseif ($driveType -eq 'HDD') {
-    $ok5, $ggOut = Invoke-GGCommand -FilePath 'schtasks.exe' -ArgumentList @(
+    $ok5, $exit5, $ggOut = Invoke-GGCommand -FilePath 'schtasks.exe' -ArgumentList @(
         '/change', '/tn', '\Microsoft\Windows\Defrag\ScheduledDefrag', '/enable') `
         -TimeoutSeconds 20 -Description 'ensure ScheduledDefrag enabled (HDD)'
-    if ($ok5) {
+    if ($ok5 -and $exit5 -eq 0) {
         $defragPolicy = 'Enabled'
         Write-GGLog 'HDD policy: scheduled defrag confirmed enabled.'
-    } else {
-        Write-GGLog 'ScheduledDefrag enable failed or timed out (task may be absent).'
+    }
+    else {
+        Write-GGLog "ScheduledDefrag enable $(if ($ok5) { "failed (exit $exit5)" } else { 'timed out' }) (task may be absent)."
     }
 } else {
     Write-GGLog 'Drive type unknown: defrag and TRIM settings left unchanged.'

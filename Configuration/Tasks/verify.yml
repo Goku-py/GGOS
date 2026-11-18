@@ -1,5 +1,5 @@
 title: Verification
-privilege: Admin
+# privilege: Admin — INERT (engine ignores task-level privilege; v0.4.0 audit).
 # Spec B3: final verification pass. Cross-checks the option ledger
 # (%SystemRoot%\GGOS\ggos-options.txt) against representative registry marker
 # values, writes PASS/DRIFT lines to %SystemRoot%\GGOS\ggos-verify.txt and

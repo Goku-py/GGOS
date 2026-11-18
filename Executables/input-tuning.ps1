@@ -88,14 +88,14 @@ switch ($Mode) {
             Save-UndoValue -Area 'InputQueue' -Name $target.ValueName -Value $previous
             # Create the Parameters key if it is absent, then set the value.
             if (-not (Test-Path -LiteralPath $target.Key)) {
-                $ok, $ggOut = Invoke-GGCommand -FilePath $reg -ArgumentList @('add', $target.RegPath, '/f') -TimeoutSeconds 30 -Description ('create ' + $target.RegPath)
-                if (-not (Test-GGRegSuccess -Completed $ok -Output $ggOut)) {
+                $ok, $exit, $ggOut = Invoke-GGCommand -FilePath $reg -ArgumentList @('add', $target.RegPath, '/f') -TimeoutSeconds 30 -Description ('create ' + $target.RegPath)
+                if (-not (Test-GGRegSuccess -Completed $ok -ExitCode $exit -Output $ggOut)) {
                     Write-GGLog ('Warning: could not create ' + $target.RegPath + '; ' + $target.Desc + ' was skipped.')
                     continue
                 }
             }
-            $ok, $ggOut = Invoke-GGCommand -FilePath $reg -ArgumentList @('add', $target.RegPath, '/v', $target.ValueName, '/t', 'REG_DWORD', '/d', '8', '/f') -TimeoutSeconds 30 -Description ('set ' + $target.Desc + ' = 8')
-            if (Test-GGRegSuccess -Completed $ok -Output $ggOut) {
+            $ok, $exit, $ggOut = Invoke-GGCommand -FilePath $reg -ArgumentList @('add', $target.RegPath, '/v', $target.ValueName, '/t', 'REG_DWORD', '/d', '8', '/f') -TimeoutSeconds 30 -Description ('set ' + $target.Desc + ' = 8')
+            if (Test-GGRegSuccess -Completed $ok -ExitCode $exit -Output $ggOut) {
                 Write-GGLog ($target.Desc + ' = 8 (was ' + $previous + ').')
             }
             else {

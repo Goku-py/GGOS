@@ -1,5 +1,5 @@
 title: Gaming
-privilege: Admin
+# privilege: Admin — INERT (engine ignores task-level privilege; v0.4.0 audit).
 # Gaming-focused registry values plus chassis-aware power configuration.
 # Registry values below are machine-wide; the chassis-aware logic (power plan,
 # processor boost mode, power throttling, bcdedit) lives in gaming-power.ps1.
