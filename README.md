@@ -16,7 +16,7 @@
 original with per-source attribution — see
 [Attribution / licenses](#attribution--licenses).
 
-**Version 0.6.0** · 4 feature pages · 12 checkboxes (plus 3 PC-type radios) ·
+**Version 0.6.1** · 5 feature pages · 12 checkboxes (plus 3 PC-type radios) ·
 26 task files · rollback gate → option ledger → verification pass.
 
 > This repository is intentionally small: playbook content, `docs\CHANGELOG.md`,
@@ -44,7 +44,7 @@ Every number on this page is countable from the repository:
 
 | Number | What it counts |
 |---|---|
-| **4 feature pages** | PC type (radio) + Extras + Cleanup & updates + Apps, down from 16 pages and 45 checkboxes in v0.5.0 |
+| **5 feature pages** | PC type (radio) + Extras + GGOS look and tools + Cleanup & updates + Apps, down from 16 pages and 45 checkboxes in v0.5.0 |
 | **12 checkboxes** | the optional extras; every automatic tuning area was removed from the wizard instead of being shown |
 | **27 automatic areas** | applied on every run without a checkbox (core registry, services, telemetry, debloat, power, input, network, gaming, Recall, security report) |
 | **142 service changes** | 138 set to Manual, 4 disabled — security services excluded by policy |
@@ -369,7 +369,7 @@ GGOS differentiates on three things: the **verification pass** (a
 PASS/DRIFT/NOTE report written for every ledger entry at the end of every
 run), a **hard no-security-trade-off policy** (the four common trade-offs
 are not offered anywhere in the playbook), and **clean-room original code**
-with per-source attribution. v0.6.0 simplifies the wizard to four pages of
+with per-source attribution. v0.6.1 simplifies the wizard to five pages of
 extras — the tuning itself is automatic — and the GGOS Toolkit covers repeat
 actions; where others document their trade-offs, GGOS documents why it never
 ships them.
@@ -397,7 +397,7 @@ declares LTSC support.
 
 ```text
 GGOS/
-├── playbook.conf            # Metadata, requirements, 4 feature pages, icon ref
+├── playbook.conf            # Metadata, requirements, 5 feature pages, icon ref
 ├── playbook.png             # 256x256 icon (AME expects playbook.png at the root)
 ├── Configuration/
 │   ├── main.yml             # Task orchestration (rollback gate runs first)
@@ -434,7 +434,7 @@ intentionally stays small.
 ## Status
 
 **v0.6.0** — wizard simplification: the tuning is applied automatically and
-the 16 pages / 45 checkboxes of v0.5.0 become 4 pages / 12 checkboxes of
+the 16 pages / 45 checkboxes of v0.5.0 become 5 pages / 12 checkboxes of
 optional extras (per-account scope, extra app and OneDrive removal, wallpaper,
 Toolkit, cleanup and updates, four app installs). Desktop-only Ultimate
 Performance and Ultra NIC mode are now guarded inside their scripts instead of
