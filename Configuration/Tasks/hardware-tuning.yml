@@ -1,55 +1,50 @@
 title: Hardware tuning
-# Research-backed device/CPU/storage/input-radio power settings. Each action is
-# gated by its own option; AC/DC scoping is enforced inside the script (battery
-# is never touched on DC power).
-# privilege: Admin — task-level `privilege:` is INERT in the AME engine (parses
+# Research-backed device/CPU/storage/input-radio power settings. v0.6.0: the
+# wizard no longer offers these as checkboxes - every action runs unconditionally
+# and AC/DC scoping is enforced inside the script (battery is never touched on
+# DC power). Desktop-only modes refuse a laptop/unknown chassis themselves
+# (chassis guard in hardware-tuning.ps1) and record the skip in skipped.txt.
+# privilege: Admin - task-level `privilege:` is INERT in the AME engine (parses
 # but has no consumer; source-verified, v0.4.0 audit). Elevation comes from the
 # !powerShell default runas: trustedInstaller. Kept as comment for the rationale
 # only: registry/powercfg writes here require elevation.
 actions:
+  # GGOS Laptop power plan FIRST - invocation wired to the -LaptopPlan switch
+  # implemented in gaming-power.ps1 (fixed GUID, Balanced duplicate, DC preserved).
+  # The script itself refuses non-laptops (chassis guard). Ordering matters:
+  # this action can change the ACTIVE plan on a laptop, so it must run before the
+  # AC-value modes below or their values would land on the previous scheme.
   - !powerShell:
     exeDir: true
     wait: true
     errorAction: Notify
-    option: 'epp-perf'
+    timeout: 180
+    command: '.\gaming-power.ps1 -LaptopPlan'
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Notify
     timeout: 120
     command: '.\hardware-tuning.ps1 -Mode epp'
   - !powerShell:
     exeDir: true
     wait: true
     errorAction: Notify
-    option: 'desktop-device-power'
     timeout: 120
     command: '.\hardware-tuning.ps1 -Mode devices'
+  # One invocation covers ledger area 'nvme-latency'. v0.4.0 split this across
+  # two wizard pages (with a 'nvme-latency-laptop' alias); v0.6.0 removed both
+  # pages and retired the alias, so the duplicate action is gone too. The script
+  # writes AC values only.
   - !powerShell:
     exeDir: true
     wait: true
     errorAction: Notify
-    option: 'nvme-latency'
-    timeout: 120
-    command: '.\hardware-tuning.ps1 -Mode nvme'
-  # Laptop-page NVMe option (renamed in 0.4.0 so both pages get distinct ledger
-  # entries). Same -Mode nvme invocation; the script writes AC values only.
-  - !powerShell:
-    exeDir: true
-    wait: true
-    errorAction: Notify
-    option: 'nvme-latency-laptop'
     timeout: 120
     command: '.\hardware-tuning.ps1 -Mode nvme'
   - !powerShell:
     exeDir: true
     wait: true
     errorAction: Notify
-    option: 'wireless-input'
     timeout: 180
     command: '.\hardware-tuning.ps1 -Mode wireless'
-  # GGOS Laptop power plan (opt-in) - invocation wired to the -LaptopPlan switch
-  # implemented in gaming-power.ps1 (fixed GUID, Balanced duplicate, DC preserved).
-  - !powerShell:
-    exeDir: true
-    wait: true
-    errorAction: Notify
-    option: 'laptop-power'
-    timeout: 180
-    command: '.\gaming-power.ps1 -LaptopPlan'

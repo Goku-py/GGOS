@@ -12,91 +12,91 @@ title: System registry
 actions:
   # ---- Storage / file system ----
   # Enable long path support (>260 chars) - WinUtil cross-check, same path/value.
-  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\FileSystem', value: 'LongPathsEnabled', type: REG_DWORD, data: 1, option: 'system-optimization'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\FileSystem', value: 'LongPathsEnabled', type: REG_DWORD, data: 1}
 
   # ---- Network responsiveness ----
   # Disable multimedia network throttling during media playback.
-  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile', value: 'NetworkThrottlingIndex', type: REG_DWORD, data: 4294967295, option: 'system-optimization'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile', value: 'NetworkThrottlingIndex', type: REG_DWORD, data: 4294967295}
   # Restore the SMB server IRP stack size for better network flow (TBOK: do not exceed 32).
-  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters', value: 'IRPStackSize', type: REG_DWORD, data: 30, option: 'system-optimization'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters', value: 'IRPStackSize', type: REG_DWORD, data: 30}
   # Repair the network data-usage graph (Ndu service startup = Automatic).
-  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\Ndu', value: 'Start', type: REG_DWORD, data: 2, option: 'system-optimization'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Services\Ndu', value: 'Start', type: REG_DWORD, data: 2}
 
   # ---- Shutdown behaviour ----
   # Restore the Windows default 5000 ms service shutdown timeout so services with
   # pending writes are not cut off earlier than the OS default.
-  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control', value: 'WaitToKillServiceTimeout', type: REG_SZ, data: '5000', option: 'system-optimization'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control', value: 'WaitToKillServiceTimeout', type: REG_SZ, data: '5000'}
 
   # ---- Firmware / boot environment ----
   # Block Windows Platform Binary Table boot execution (vendor code run at boot).
   # WinUtil cross-check: same path/value under Essential Tweaks.
-  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager', value: 'DisableWpbtExecution', type: REG_DWORD, data: 1, option: 'system-optimization'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager', value: 'DisableWpbtExecution', type: REG_DWORD, data: 1}
   # The WPBT firmware resource itself is deliberately NOT touched (OEM boot utilities preserved).
 
   # ---- Hardware/driver behaviour ----
   # Stop the OS from installing companion software when hardware is plugged in.
   # WinUtil cross-check: same path/value.
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Device Metadata', value: 'PreventDeviceMetadataFromNetwork', type: REG_DWORD, data: 1, option: 'system-optimization'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Device Metadata', value: 'PreventDeviceMetadataFromNetwork', type: REG_DWORD, data: 1}
 
   # ---- Defender ----
   # Cap Defender's scheduled/manual scan CPU usage at 25%. Real-time protection is untouched.
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Scan', value: 'ScanAvgCPULoadFactor', type: REG_DWORD, data: 25, option: 'system-optimization'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Scan', value: 'ScanAvgCPULoadFactor', type: REG_DWORD, data: 25}
 
   # ---- Storage Sense ----
   # Allow Storage Sense to run and clean temporary files when disk space runs low.
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\StorageSense', value: 'AllowStorageSenseGlobal', type: REG_DWORD, data: 1, option: 'system-optimization'}
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\StorageSense', value: 'AllowStorageSenseTemporaryFilesCleanup', type: REG_DWORD, data: 1, option: 'system-optimization'}
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\StorageSense', value: 'ConfigStorageSenseGlobalCadence', type: REG_DWORD, data: 0, option: 'system-optimization'}
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\StorageSense', value: 'ConfigStorageSenseRecycleBinCleanupThreshold', type: REG_DWORD, data: 30, option: 'system-optimization'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\StorageSense', value: 'AllowStorageSenseGlobal', type: REG_DWORD, data: 1}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\StorageSense', value: 'AllowStorageSenseTemporaryFilesCleanup', type: REG_DWORD, data: 1}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\StorageSense', value: 'ConfigStorageSenseGlobalCadence', type: REG_DWORD, data: 0}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\StorageSense', value: 'ConfigStorageSenseRecycleBinCleanupThreshold', type: REG_DWORD, data: 30}
 
   # ---- Delivery Optimization (bandwidth) ----
   # WinUtil cross-check: same policy path/value.
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization', value: 'DODownloadMode', type: REG_DWORD, data: 0, option: 'system-optimization'}
-  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config', value: 'DODownloadMode', type: REG_DWORD, data: 0, option: 'system-optimization'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization', value: 'DODownloadMode', type: REG_DWORD, data: 0}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config', value: 'DODownloadMode', type: REG_DWORD, data: 0}
 
   # ---- Edge performance (machine policy) ----
   # Stop Edge from starting with the system and running after close.
-  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Edge', value: 'StartupBoostEnabled', type: REG_DWORD, data: 0, option: 'system-optimization'}
-  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Edge', value: 'BackgroundModeEnabled', type: REG_DWORD, data: 0, option: 'system-optimization'}
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Edge', value: 'EfficiencyModeEnabled', type: REG_DWORD, data: 1, option: 'system-optimization'}
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Edge', value: 'SleepingTabsEnabled', type: REG_DWORD, data: 1, option: 'system-optimization'}
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Edge', value: 'SleepingTabsTimeout', type: REG_DWORD, data: 900, option: 'system-optimization'}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Edge', value: 'StartupBoostEnabled', type: REG_DWORD, data: 0}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Edge', value: 'BackgroundModeEnabled', type: REG_DWORD, data: 0}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Edge', value: 'EfficiencyModeEnabled', type: REG_DWORD, data: 1}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Edge', value: 'SleepingTabsEnabled', type: REG_DWORD, data: 1}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Edge', value: 'SleepingTabsTimeout', type: REG_DWORD, data: 900}
 
   # ---- Start menu / Search UI ----
   # Classic search results: disable the web-view dependency for Search via the
   # feature-override key TBOK uses (written across control sets below).
-  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\FeatureManagement\Overrides\8\1694661260', value: 'EnabledState', type: REG_DWORD, data: 1, option: 'system-optimization'}
-  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\FeatureManagement\Overrides\8\1694661260', value: 'EnabledStateOptions', type: REG_DWORD, data: 0, option: 'system-optimization'}
-  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\FeatureManagement\Overrides\8\1694661260', value: 'Variant', type: REG_DWORD, data: 0, option: 'system-optimization'}
-  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\FeatureManagement\Overrides\8\1694661260', value: 'VariantPayload', type: REG_DWORD, data: 0, option: 'system-optimization'}
-  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\FeatureManagement\Overrides\8\1694661260', value: 'VariantPayloadKind', type: REG_DWORD, data: 0, option: 'system-optimization'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\FeatureManagement\Overrides\8\1694661260', value: 'EnabledState', type: REG_DWORD, data: 1}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\FeatureManagement\Overrides\8\1694661260', value: 'EnabledStateOptions', type: REG_DWORD, data: 0}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\FeatureManagement\Overrides\8\1694661260', value: 'Variant', type: REG_DWORD, data: 0}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\FeatureManagement\Overrides\8\1694661260', value: 'VariantPayload', type: REG_DWORD, data: 0}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\FeatureManagement\Overrides\8\1694661260', value: 'VariantPayloadKind', type: REG_DWORD, data: 0}
 
   # ---- Ads and UI clutter (machine level) ----
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds', value: 'EnableFeeds', type: REG_DWORD, data: 0, option: 'ads-ui'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds', value: 'EnableFeeds', type: REG_DWORD, data: 0}
   # Advertising ID disabled via group policy (per-user AdvertisingInfo is in per-user.ps1).
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo', value: 'DisabledByGroupPolicy', type: REG_DWORD, data: 1, option: 'ads-ui'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo', value: 'DisabledByGroupPolicy', type: REG_DWORD, data: 1}
   # Edge annoyances: shopping assistant pop-ups, feedback prompts, first-run flow.
-  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Edge', value: 'EdgeShoppingAssistantEnabled', type: REG_DWORD, data: 0, option: 'ads-ui'}
-  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Edge', value: 'UserFeedbackAllowed', type: REG_DWORD, data: 0, option: 'ads-ui'}
-  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Edge', value: 'HideFirstRunExperience', type: REG_DWORD, data: 1, option: 'ads-ui'}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Edge', value: 'EdgeShoppingAssistantEnabled', type: REG_DWORD, data: 0}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Edge', value: 'UserFeedbackAllowed', type: REG_DWORD, data: 0}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Edge', value: 'HideFirstRunExperience', type: REG_DWORD, data: 1}
 
   # ---- Copilot policy keys (machine level, consumer Copilot only) ----
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot', value: 'TurnOffWindowsCopilot', type: REG_DWORD, data: 1, option: 'bloat-copilot'}
-  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\Shell\Copilot', value: 'IsCopilotAvailable', type: REG_DWORD, data: 0, option: 'bloat-copilot'}
-  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\Shell\Copilot', value: 'CopilotDisabledReason', type: REG_SZ, data: 'IsEnabledForGeographicRegionFailed', option: 'bloat-copilot'}
-  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked', value: '{CB3B0003-8088-4EDE-8769-8B354AB2FF8C}', type: REG_SZ, data: '1', option: 'bloat-copilot'}
-  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\Shell\Copilot\BingChat', value: 'IsUserEligible', type: REG_DWORD, data: 0, option: 'bloat-copilot'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot', value: 'TurnOffWindowsCopilot', type: REG_DWORD, data: 1}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\Shell\Copilot', value: 'IsCopilotAvailable', type: REG_DWORD, data: 0}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\Shell\Copilot', value: 'CopilotDisabledReason', type: REG_SZ, data: 'IsEnabledForGeographicRegionFailed'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Blocked', value: '{CB3B0003-8088-4EDE-8769-8B354AB2FF8C}', type: REG_SZ, data: '1'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\Shell\Copilot\BingChat', value: 'IsUserEligible', type: REG_DWORD, data: 0}
 
   # ---- OOBE privacy experience (applies to new accounts / feature updates) ----
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\OOBE', value: 'DisablePrivacyExperience', type: REG_DWORD, data: 1, option: 'telemetry'}
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\OOBE', value: 'PrivacyConsentStatus', type: REG_DWORD, data: 1, option: 'telemetry'}
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\OOBE', value: 'Protectyourpc', type: REG_DWORD, data: 3, option: 'telemetry'}
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\OOBE', value: 'HideEULAPage', type: REG_DWORD, data: 1, option: 'telemetry'}
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\OOBE', value: 'DisableVoice', type: REG_DWORD, data: 1, option: 'telemetry'}
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\OOBE', value: 'BypassNRO', type: REG_DWORD, data: 1, option: 'telemetry'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\OOBE', value: 'DisablePrivacyExperience', type: REG_DWORD, data: 1}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\OOBE', value: 'PrivacyConsentStatus', type: REG_DWORD, data: 1}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\OOBE', value: 'Protectyourpc', type: REG_DWORD, data: 3}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\OOBE', value: 'HideEULAPage', type: REG_DWORD, data: 1}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\OOBE', value: 'DisableVoice', type: REG_DWORD, data: 1}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\OOBE', value: 'BypassNRO', type: REG_DWORD, data: 1}
 
   # ---- Verbose logon messages ----
-  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', value: 'VerboseStatus', type: REG_DWORD, data: 1, option: 'verbose-logon'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', value: 'VerboseStatus', type: REG_DWORD, data: 1}
 
   # ---- RAM-aware memory policy ----
   # SvcHostSplitThresholdInKB: disable service-host splitting by setting the split
@@ -106,7 +106,6 @@ actions:
     exeDir: false
     wait: true
     errorAction: Notify
-    option: 'system-optimization'
     timeout: 300
     command: |-
       $ErrorActionPreference = 'Stop'
@@ -135,7 +134,6 @@ actions:
     exeDir: false
     wait: true
     errorAction: Notify
-    option: 'system-optimization'
     timeout: 300
     command: |-
       $ErrorActionPreference = 'Continue'
@@ -194,14 +192,14 @@ actions:
       }
       exit 0
 
-  # ---- Legacy F8 boot menu (boot-behaviour change; opt-in) ----
+  # ---- Legacy F8 boot menu (boot-behaviour change; applied automatically,
+  #      v0.6.0) ----
   # Skipped automatically when BitLocker protection is on or unknown: using the
   # legacy boot menu on an encrypted drive prompts for the recovery key.
   - !powerShell:
     exeDir: false
     wait: true
     errorAction: Notify
-    option: 'f8-boot'
     timeout: 300
     command: |-
       $ErrorActionPreference = 'Continue'
@@ -217,7 +215,8 @@ actions:
       else { Write-Output 'GGOS registry: warning - failed to enable the legacy F8 boot menu.' }
       exit 0
 
-  # ---- Page file auto-configuration (opt-in; restart required) ----
+  # ---- Page file auto-configuration (applied automatically, v0.6.0; restart
+  #      required) ----
   # RAM-aware target sizes: <8 GB -> 4096/16384 MB, <16 GB -> 8192/24576 MB,
   # <32 GB -> 8192/32768 MB, >=32 GB -> left unchanged. Existing page-file
   # locations are kept; the setting is only created/updated on the system drive
@@ -226,7 +225,6 @@ actions:
     exeDir: false
     wait: true
     errorAction: Notify
-    option: 'pagefile'
     timeout: 300
     command: |-
       $ErrorActionPreference = 'Continue'
@@ -281,7 +279,6 @@ actions:
     exeDir: false
     wait: true
     errorAction: Notify
-    option: 'system-optimization'
     timeout: 300
     command: |-
       $ErrorActionPreference = 'Continue'

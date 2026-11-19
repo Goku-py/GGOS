@@ -108,6 +108,40 @@ function Test-GGRegSuccess {
     return [bool](@($Output) | Where-Object { $_ -match 'operation completed successfully' })
 }
 
+function Get-GGChassis {
+    # Shared chassis resolution (v0.6.0). Precedence, identical for every caller:
+    #   1. the Chassis stamp written earlier in the run by hardware-policy.ps1
+    #      (that script already applied the pc-desktop/pc-laptop override before
+    #      stamping, so the stamp is authoritative when present),
+    #   2. local detection: Win32_SystemEnclosure ChassisTypes + battery fallback,
+    #   3. the explicit pc-desktop / pc-laptop choice in the option ledger (the
+    #      stamp exists only after hardware-policy.ps1 has run).
+    # Deliberately silent: the result must be the function's only pipeline output.
+    param([string]$LedgerFile = (Join-Path $env:SystemRoot 'GGOS\ggos-options.txt'))
+
+    $chassis = 'Unknown'
+    $stamp = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\GGOS\HardwarePolicy' -Name 'Chassis' -ErrorAction SilentlyContinue).Chassis
+    if ($stamp -in 'Desktop', 'Laptop', 'Unknown') { $chassis = $stamp }
+
+    if ($chassis -eq 'Unknown') {
+        try {
+            $types = @((Get-CimInstance -ClassName Win32_SystemEnclosure -ErrorAction Stop).ChassisTypes)
+            if ($types -match '^(8|9|10|11|12|14|18|21|23|30|31|32)$') { $chassis = 'Laptop' }
+            elseif ($types -match '^(3|4|5|6|7|13|15|16|24|35|36)$') { $chassis = 'Desktop' }
+        }
+        catch { }
+        if ($chassis -eq 'Unknown' -and (Get-CimInstance -ClassName Win32_Battery -ErrorAction SilentlyContinue)) { $chassis = 'Laptop' }
+    }
+
+    if (Test-Path -LiteralPath $LedgerFile) {
+        $choices = @(Get-Content -LiteralPath $LedgerFile -ErrorAction SilentlyContinue | ForEach-Object { $_.Trim() })
+        if ($choices -contains 'pc-desktop') { $chassis = 'Desktop' }
+        elseif ($choices -contains 'pc-laptop') { $chassis = 'Laptop' }
+    }
+
+    return $chassis
+}
+
 function Test-GGServiceSid {
     param([string]$Sid)
     $profile = Get-CimInstance -ClassName Win32_UserProfile -ErrorAction SilentlyContinue |
@@ -337,4 +371,4 @@ function Apply-GGUserValues {
     }
 }
 
-Export-ModuleMember -Function @('Write-GGLog', 'Invoke-GGCommand', 'Apply-GGUserValues', 'Test-GGRegSuccess')
+Export-ModuleMember -Function @('Write-GGLog', 'Invoke-GGCommand', 'Apply-GGUserValues', 'Test-GGRegSuccess', 'Get-GGChassis')

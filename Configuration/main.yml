@@ -6,35 +6,40 @@ actions:
   - !task: {path: 'Tasks/options-ledger.yml'}
   - !writeStatus: {status: 'Detecting hardware policy'}
   - !task: {path: 'Tasks/hardware-policy.yml'}
-  - !writeStatus: {status: 'Applying hardware tuning', option: 'epp-perf'}
-  - !task: {path: 'Tasks/hardware-tuning.yml'}
-  - !writeStatus: {status: 'Modifying system registry', option: 'system-optimization'}
+  - !writeStatus: {status: 'Modifying system registry'}
   - !task: {path: 'Tasks/system-registry.yml'}
-  - !writeStatus: {status: 'Tuning services', option: 'services'}
+  - !writeStatus: {status: 'Tuning services'}
   - !task: {path: 'Tasks/services.yml'}
-  - !writeStatus: {status: 'Disabling wasteful scheduled tasks', option: 'system-optimization'}
+  - !writeStatus: {status: 'Disabling wasteful scheduled tasks'}
   - !task: {path: 'Tasks/scheduled-tasks.yml'}
-  - !writeStatus: {status: 'Removing bloatware', option: 'bloat-copilot'}
+  - !writeStatus: {status: 'Removing bloatware'}
   - !task: {path: 'Tasks/appx.yml'}
   - !writeStatus: {status: 'Removing OneDrive', option: 'onedrive-remove'}
   - !task: {path: 'Tasks/onedrive.yml'}
-  - !writeStatus: {status: 'Disabling Recall snapshots', option: 'recall-disable'}
+  - !writeStatus: {status: 'Disabling Recall snapshots'}
   - !task: {path: 'Tasks/recall.yml'}
-  - !writeStatus: {status: 'Applying telemetry hardening', option: 'telemetry'}
+  - !writeStatus: {status: 'Applying telemetry hardening'}
   - !task: {path: 'Tasks/telemetry.yml'}
   - !writeStatus: {status: 'Applying per-user tweaks', option: 'per-user'}
   - !task: {path: 'Tasks/user-registry.yml'}
-  - !writeStatus: {status: 'Applying input tuning', option: 'input-accel'}
+  - !writeStatus: {status: 'Applying input tuning'}
   - !task: {path: 'Tasks/input-tuning.yml'}
-  - !writeStatus: {status: 'Applying gaming optimizations', option: 'gaming'}
+  - !writeStatus: {status: 'Applying gaming optimizations'}
   - !task: {path: 'Tasks/gaming.yml'}
-  - !writeStatus: {status: 'Enabling the Ultimate Performance plan', option: 'power-ultimate'}
+  - !writeStatus: {status: 'Enabling the Ultimate Performance plan'}
   - !task: {path: 'Tasks/power-plans.yml'}
+  # v0.6.0 ordering: hardware tuning follows the power-plan tasks so its AC
+  # values (EPP, ASPM, NVMe idle) land on the plan that stays active. The
+  # plan-changing tasks are ungated now, so a desktop ends the run on Ultimate
+  # Performance; applying the values first would leave them on the old scheme
+  # and verify.ps1 would read the new one.
+  - !writeStatus: {status: 'Applying hardware tuning'}
+  - !task: {path: 'Tasks/hardware-tuning.yml'}
   - !writeStatus: {status: 'Running disk cleanup', option: 'cleanup'}
   - !task: {path: 'Tasks/cleanup.yml'}
   - !writeStatus: {status: 'Running aggressive cleanup', option: 'cleanup-aggressive'}
   - !task: {path: 'Tasks/cleanup-aggressive.yml'}
-  - !writeStatus: {status: 'Cleaning GPU shader caches', option: 'shader-cache'}
+  - !writeStatus: {status: 'Cleaning GPU shader caches'}
   - !task: {path: 'Tasks/shader-cache.yml'}
   - !writeStatus: {status: 'Updating applications', option: 'winget-update'}
   - !task: {path: 'Tasks/winget.yml'}
@@ -42,9 +47,9 @@ actions:
   - !task: {path: 'Tasks/theming.yml'}
   - !writeStatus: {status: 'Installing selected apps', option: 'app-firefox'}
   - !task: {path: 'Tasks/apps.yml'}
-  - !writeStatus: {status: 'Applying network tuning', option: 'network-latency'}
+  - !writeStatus: {status: 'Applying network tuning'}
   - !task: {path: 'Tasks/network.yml'}
-  - !writeStatus: {status: 'Reporting security posture', option: 'security-posture'}
+  - !writeStatus: {status: 'Reporting security posture'}
   - !task: {path: 'Tasks/security-posture.yml'}
   - !writeStatus: {status: 'Installing the GGOS Toolkit', option: 'toolkit-install'}
   - !task: {path: 'Tasks/toolkit.yml'}

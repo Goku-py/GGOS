@@ -17,6 +17,5 @@ actions:
     exeDir: true
     wait: true
     errorAction: Notify
-    option: 'security-posture'
     timeout: 300
     command: '.\security-posture.ps1'

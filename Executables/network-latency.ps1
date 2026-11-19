@@ -1,5 +1,5 @@
-# GGOS network latency tuning (opt-in; C7, XOS semantics re-expressed - no
-# upstream code copied).
+# GGOS network latency tuning (v0.6.0: applied automatically, no wizard option;
+# C7, XOS semantics re-expressed - no upstream code copied).
 #   - Enumerates Tcpip interface keys under
 #     HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces\{guid}.
 #   - Eligible: wired/physical adapters only. Excluded: native 802.11 WiFi

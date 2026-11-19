@@ -1,6 +1,6 @@
 # GGOS network tuning - v0.2.3 (research-backed)
 #
-# Modes (invoked per option from network.yml):
+# Modes (v0.6.0: called unconditionally from network.yml - no wizard option):
 #   bufferbloat - TCP pacing (smooths send bursts) + ECN enabled (AQMs mark instead of
 #                 drop = fewer losses) + receive auto-tuning pinned to Normal (the common
 #                 'disabled' tweak lowers ping but kills throughput). NOTE: the full
@@ -12,7 +12,8 @@
 #                 latency spikes), Flow Control off (prevents pause-frame stalls).
 #   ultra       - Additionally Interrupt Moderation off + RSC off (+ UDP RSC 'URO' off
 #                 on 24H2+ when the cmdlet exists). Lowest latency, slightly higher CPU
-#                 use under heavy packet rates - hence a separate opt-in.
+#                 use under heavy packet rates - so it stays desktop-only: the chassis
+#                 guard below leaves laptops on the nic-mode settings.
 # Wired physical adapters only; WiFi/virtual/VPN excluded (same filter as
 # network-latency.ps1). Original NIC property values recorded to
 # HKLM\SOFTWARE\GGOS\NetworkUndo\NicUndo before changes.
@@ -46,6 +47,17 @@ function Get-OriginalNicValue {
         $prop = Get-NetAdapterAdvancedProperty -Name $Adapter.Name -DisplayName $DisplayName -ErrorAction Stop
         return [string]$prop.RegistryValue
     } catch { return 'ABSENT' }
+}
+
+# ---- v0.6.0 chassis guard (ultra only) --------------------------------------
+# Ultra mode is applied automatically now (the wizard has no checkbox for it).
+# Disabling interrupt moderation + RSC raises CPU use under heavy packet rates,
+# so it stays desktop-only by design: laptops keep the nic-mode settings and
+# their battery behaviour. Chassis resolution is the shared Get-GGChassis
+# helper (ggos-common.psm1) - silent, so the boolean stays unambiguous.
+if ($Mode -eq 'ultra' -and (Get-GGChassis) -ne 'Desktop') {
+    Write-GGLog 'Ultra NIC mode is desktop-only (higher CPU cost under load); adapter settings left unchanged.'
+    exit 0
 }
 
 switch ($Mode) {

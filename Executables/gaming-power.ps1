@@ -162,7 +162,8 @@ $script:UltimatePerfTemplateGuid = 'e9a42b02-d5df-448d-aa00-03f14749eb61'
 
 function Set-BoostMode {
     param([int]$AcValue, [int]$DcValue, [string]$Description)
-    Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('-attributes', 'SUB_PROCESSOR', 'PERFBOOSTMODE', '-ATTRIB_HIDE') -TimeoutSeconds 20 -Description 'unhide processor boost mode setting' | Out-Null
+    # v0.6.0: no attribute unlock. setacvalueindex works on hidden settings and
+    # verify.ps1 reads the value with `powercfg /qh` (hidden-inclusive).
     $okAc, $exitAc, $oAc = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('-setacvalueindex', 'SCHEME_CURRENT', 'SUB_PROCESSOR', 'PERFBOOSTMODE', "$AcValue") -TimeoutSeconds 20 -Description "boost mode AC=$AcValue"
     $okDc, $exitDc, $oDc = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('-setdcvalueindex', 'SCHEME_CURRENT', 'SUB_PROCESSOR', 'PERFBOOSTMODE', "$DcValue") -TimeoutSeconds 20 -Description "boost mode DC=$DcValue"
     $okRe, $exitRe, $oRe = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('-setactive', 'SCHEME_CURRENT') -TimeoutSeconds 20 -Description 're-apply current power scheme (boost mode)'
@@ -174,23 +175,14 @@ function Set-BoostMode {
     return $false
 }
 
-function Unlock-HiddenPowerSettings {
-    $keys = Get-ChildItem 'HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerSettings' -Recurse -ErrorAction SilentlyContinue
-    $failed = 0
-    foreach ($key in $keys) {
-        if ($key.Name -match 'DefaultPowerSchemeValues') { continue }
-        try {
-            Set-ItemProperty -Path $key.PSPath -Name Attributes -Value 2 -Force -ErrorAction SilentlyContinue
-        }
-        catch { $failed++ }
-    }
-    if ($failed -gt 0) {
-        Write-GGLog "Warning: $failed hidden power settings could not be unlocked."
-        return $false
-    }
-    Write-GGLog 'Hidden power-plan settings unlocked.'
-    return $true
-}
+# v0.6.0: hidden power settings are deliberately left as Windows ships them.
+# The v0.5.0 helper set Attributes=2 on every PowerSettings key, which surfaced
+# dozens of advanced settings in Control Panel - acceptable while the gaming page
+# was opt-in, wrong now that this runs on every machine. Nothing needs the
+# unlock: GGOS writes values with setacvalueindex (works on hidden settings) and
+# verify.ps1 reads them with `powercfg /qh` (hidden-inclusive) plus a
+# power-scheme registry fallback. (Also verified on build 26300: the binary
+# accepts -ATTRIB_HIDE only; -ATTRIB_UNHIDE is rejected as invalid parameters.)
 
 function Get-ActiveSchemeGuid {
     $okScheme, $exitScheme, $out = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/getactivescheme') -TimeoutSeconds 20 -Description 'read active power scheme'
@@ -368,10 +360,9 @@ function Set-GGOSLaptopPlan {
     $pairsOk = $true
 
     # Processor boost mode: AC = 3 (Efficient Aggressive), DC untouched.
-    # Subgroup/setting aliases and the attribute-unhide call mirror
-    # Set-BoostMode (SUB_PROCESSOR / PERFBOOSTMODE); DC stays on the Balanced
-    # baseline so battery keeps the OS default boost behaviour.
-    Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('-attributes', 'SUB_PROCESSOR', 'PERFBOOSTMODE', '-ATTRIB_HIDE') -TimeoutSeconds 20 -Description 'unhide processor boost mode setting (laptop plan)' | Out-Null
+    # Same subgroup/setting aliases as Set-BoostMode (SUB_PROCESSOR /
+    # PERFBOOSTMODE); no attribute unlock is needed (v0.6.0). DC stays on the
+    # Balanced baseline so battery keeps the OS default boost behaviour.
     $okBoostAc, $exitBoostAc, $boostAcOut = Invoke-GGCommand -FilePath powercfg.exe -ArgumentList @('/setacvalueindex', $script:GGOSLaptopPlanGuid, 'SUB_PROCESSOR', 'PERFBOOSTMODE', '3') -TimeoutSeconds 20 -Description 'set AC SUB_PROCESSOR\PERFBOOSTMODE = 3 (GGOS Laptop plan)'
     if (-not ($okBoostAc -and $exitBoostAc -eq 0)) { Write-GGLog 'Warning: could not set AC processor boost mode = 3 (Efficient Aggressive).'; $pairsOk = $false }
 
@@ -460,12 +451,10 @@ switch ($chassis) {
         else { Write-GGLog "Warning: Win32PrioritySeparation could not be written $(if ($okWps) { "(exit $exitWps)" } else { '(timed out)' })."; $hadCritical = $true }
 
         Set-BoostMode 2 2 'Aggressive' | Out-Null
-        Unlock-HiddenPowerSettings | Out-Null
     }
     'Laptop' {
         Write-GGLog 'Laptop policy: power plan left untouched (battery life); boost mode set to Efficient Aggressive.'
         Set-BoostMode 3 3 'Efficient Aggressive' | Out-Null
-        Unlock-HiddenPowerSettings | Out-Null
     }
     default {
         Write-GGLog 'Chassis type unknown: power plan and throttling changes skipped.'

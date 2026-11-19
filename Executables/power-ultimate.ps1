@@ -28,6 +28,19 @@ Import-Module (Join-Path $PSScriptRoot 'ggos-common.psm1') -Force
 
 $reg = Join-Path $env:SystemRoot 'System32\reg.exe'
 
+# ---- v0.6.0 chassis guard ---------------------------------------------------
+# The wizard no longer offers this as a checkbox (the plan is enabled as part of
+# the automatic tuning), so the desktop-only decision now lives here. Ultimate
+# Performance pins the processor at maximum: on a laptop or unknown chassis it
+# is refused by design and the battery policy is left alone. Chassis resolution
+# is the shared Get-GGChassis helper (ggos-common.psm1).
+$resolvedChassis = Get-GGChassis
+if ($resolvedChassis -ne 'Desktop') {
+    Write-GGLog "Ultimate Performance is desktop-only; resolved chassis: $resolvedChassis - plan left unchanged."
+    Write-Output 'GGOS power: Ultimate Performance skipped (not a desktop chassis).'
+    exit 0
+}
+
 # Built-in Ultimate Performance template GUID (see header).
 $templateGuid = 'e9a42b02-d5df-448d-aa00-03f14749eb61'
 # GGOS plan GUIDs from gaming-power.ps1 - never recorded as the user's

@@ -1,13 +1,15 @@
 # GGOS hardware tuning - v0.3 (research-backed, mode-based)
 #
-# Modes (each gated by its own playbook option):
+# Modes (v0.6.0: applied automatically - the wizard no longer gates them):
 #   epp      - Energy Performance Preference = 0 (max performance) on the ACTIVE scheme
 #              and the GGOS Performance plan. AC only. Documented hidden setting
 #              (PERFEPP); desktop-only - enforced by the chassis guard, not by
 #              page placement (see v0.4.0 note below).
 #   devices  - PCIe Link State Power Management (ASPM) off on AC. Desktop page.
-#   nvme     - Unhide + raise Primary NVMe Idle Timeout (documented GUID
+#   nvme     - Raise Primary NVMe Idle Timeout (documented GUID
 #              D639518A-E56D-4345-8AF2-B9F32FB26109) to 60000 ms on AC only.
+#              No attribute unlock is needed (v0.6.0): setacvalueindex works on
+#              hidden settings and verify.ps1 reads them with powercfg /qh.
 #              DC (battery) untouched by design. SEC NVMe timeout is build-dependent
 #              and is attempted best-effort via alias discovery.
 #   wireless - USB selective suspend off on AC (documented wireless dongle stutter
@@ -51,8 +53,11 @@ function Save-UndoValue {
 
 function Get-PowerValue {
     # Returns the current AC (or DC) value of a powercfg setting as a string, or ABSENT.
+    # v0.6.0: '/qh' (hidden-inclusive). Since the attribute unlock was removed,
+    # '/q' would see only the scheme header for hidden settings (EPP, NVMe) and
+    # the undo record would claim the previous value was ABSENT.
     param([string]$Subgroup, [string]$Setting, [switch]$DC)
-    $args = @('/q', 'SCHEME_CURRENT', $Subgroup, $Setting)
+    $args = @('/qh', 'SCHEME_CURRENT', $Subgroup, $Setting)
     $ok, $exit, $out = Invoke-GGCommand -FilePath 'powercfg.exe' -ArgumentList $args -TimeoutSeconds 20 -Description "powercfg query $Subgroup $Setting"
     # Read-only query: a nonzero exit or a pattern miss both mean "value not
     # exposed" here, reported as ABSENT (unchanged silent-ABSENT semantics).
@@ -170,8 +175,9 @@ switch ($Mode) {
     }
 
     'nvme' {
-        # Unhide the documented Primary NVMe Idle Timeout, then raise it on AC.
-        $null, $null, $null = Invoke-GGCommand -FilePath 'powercfg.exe' -ArgumentList @('-attributes', 'SUB_DISK', 'D639518A-E56D-4345-8AF2-B9F32FB26109', '-ATTRIB_HIDE') -TimeoutSeconds 20 -Description 'unhide Primary NVMe Idle Timeout'
+        # Raise the documented Primary NVMe Idle Timeout on AC. v0.6.0: no
+        # attribute unlock - setacvalueindex works on hidden settings and
+        # verify.ps1 reads it via `powercfg /qh` (hidden-inclusive).
         Set-PowerValue -Subgroup 'SUB_DISK' -Setting 'D639518A-E56D-4345-8AF2-B9F32FB26109' -Value '60000' -Description 'NVMe idle timeout raised'
         # SEC NVMe idle timeout: build-dependent GUID, best-effort via alias discovery.
         $ok, $exit, $aliases = Invoke-GGCommand -FilePath 'powercfg.exe' -ArgumentList @('/aliases') -TimeoutSeconds 20 -Description 'powercfg alias discovery'
@@ -186,8 +192,15 @@ switch ($Mode) {
     }
 
     'wireless' {
-        # USB selective suspend off on AC: SUB_USB / USBSELECTIVESUSPEND. 0 = Off.
-        Set-PowerValue -Subgroup 'SUB_USB' -Setting 'USBSELECTIVESUSPEND' -Value '0' -Description 'USB selective suspend off'
+        # USB selective suspend off on AC.
+        # v0.6.0 FIX: there is NO 'SUB_USB' / 'USBSELECTIVESUSPEND' alias in
+        # powercfg (verified: `powercfg /aliases` on build 26300 lists neither,
+        # and `powercfg /q SCHEME_CURRENT SUB_USB` exits 1 "Invalid Parameters";
+        # the pre-0.6.0 alias pair therefore never applied anything). The
+        # documented subgroup/setting GUIDs are used instead:
+        #   USB settings  2a737441-1930-4402-8d77-b2bebba308a3
+        #   selective suspend 48e6b7a6-50f5-4782-a5d4-53bb8f07e226
+        Set-PowerValue -Subgroup '2a737441-1930-4402-8d77-b2bebba308a3' -Setting '48e6b7a6-50f5-4782-a5d4-53bb8f07e226' -Value '0' -Description 'USB selective suspend off'
         # Bluetooth radio: disable "allow the computer to turn off this device".
         $btClass = 'HKLM:\SYSTEM\CurrentControlSet\Control\Class\{e0cbf06c-cd8b-4647-bb8a-263b43f0f974}'
         try {

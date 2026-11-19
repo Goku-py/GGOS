@@ -9,39 +9,39 @@ title: Gaming
 actions:
   # ---- Hardware-accelerated GPU scheduling ----
   # Requests HAGS where the installed GPU and driver support it.
-  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers', value: 'HWSchMode', type: REG_DWORD, data: 2, option: 'gaming'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers', value: 'HWSchMode', type: REG_DWORD, data: 2}
 
   # ---- Windowed game optimizations (Win11 24H2+ direct composition) ----
-  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR\Graphics', value: 'OptimizationsForWindowedGames', type: REG_DWORD, data: 1, option: 'gaming'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR\Graphics', value: 'OptimizationsForWindowedGames', type: REG_DWORD, data: 1}
 
   # ---- Multimedia Class Scheduler tuning ----
   # System responsiveness for background vs. multimedia (10 keeps a small
   # background slice; 0 is clamped up to 20 by Windows).
-  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile', value: 'SystemResponsiveness', type: REG_DWORD, data: 10, option: 'gaming'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile', value: 'SystemResponsiveness', type: REG_DWORD, data: 10}
   # Games thread scheduling: priority 6 with Medium scheduling category.
-  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games', value: 'SystemResponsiveness', type: REG_DWORD, data: 10, option: 'gaming'}
-  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games', value: 'Priority', type: REG_DWORD, data: 6, option: 'gaming'}
-  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games', value: 'Scheduling Category', type: REG_SZ, data: 'Medium', option: 'gaming'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games', value: 'SystemResponsiveness', type: REG_DWORD, data: 10}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games', value: 'Priority', type: REG_DWORD, data: 6}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games', value: 'Scheduling Category', type: REG_SZ, data: 'Medium'}
   # Latency Sensitive defaults to True upstream; written to make the state explicit.
-  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games', value: 'Latency Sensitive', type: REG_SZ, data: 'True', option: 'gaming'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games', value: 'Latency Sensitive', type: REG_SZ, data: 'True'}
   # Audio thread scheduling mirrors the Games task.
-  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Audio', value: 'Priority', type: REG_DWORD, data: 6, option: 'gaming'}
-  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Audio', value: 'Scheduling Category', type: REG_SZ, data: 'Medium', option: 'gaming'}
-  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Audio', value: 'Latency Sensitive', type: REG_SZ, data: 'True', option: 'gaming'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Audio', value: 'Priority', type: REG_DWORD, data: 6}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Audio', value: 'Scheduling Category', type: REG_SZ, data: 'Medium'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Audio', value: 'Latency Sensitive', type: REG_SZ, data: 'True'}
 
   # ---- Edge gaming mode (lowers Edge CPU usage while gaming) ----
-  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Edge', value: 'GamerModeEnabled', type: REG_DWORD, data: 1, option: 'gaming'}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Edge', value: 'GamerModeEnabled', type: REG_DWORD, data: 1}
 
   # ---- 24H2 system-wide timer resolution semantics ----
   # Windows 11 24H2 stopped applying user-process timer requests system-wide;
   # these kernel values restore the global behavior. Harmless on earlier builds.
-  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel', value: 'GlobalTimerResolutionRequests', type: REG_DWORD, data: 1, option: 'gaming', builds: ['>=22621']}
-  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel', value: 'SerializeTimerExpiration', type: REG_DWORD, data: 1, option: 'gaming', builds: ['>=22621']}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel', value: 'GlobalTimerResolutionRequests', type: REG_DWORD, data: 1, builds: ['>=22621']}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel', value: 'SerializeTimerExpiration', type: REG_DWORD, data: 1, builds: ['>=22621']}
 
   # ---- GPU driver hang tolerance ----
   # Raises the timeout before Windows resets a 'hung' GPU driver; prevents false
   # resets during long shader compilations.
-  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers', value: 'TdrDelay', type: REG_DWORD, data: 10, option: 'gaming'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers', value: 'TdrDelay', type: REG_DWORD, data: 10}
 
   # ---- MPO recall (re-expressed from community findings) ----
   # Legacy overlay-disable values are removed rather than set: forcing MPO off
@@ -51,7 +51,6 @@ actions:
     exeDir: true
     wait: true
     errorAction: Notify
-    option: 'gaming'
     timeout: 60
     command: |
       $dwmPath = 'HKLM:\SOFTWARE\Microsoft\Windows\Dwm'
@@ -73,7 +72,6 @@ actions:
     exeDir: true
     wait: true
     errorAction: Notify
-    option: 'gaming'
     timeout: 120
     command: |
       $timerExe = Join-Path (Get-Location) 'GGOSSetTimerResolution.exe'
@@ -101,6 +99,5 @@ actions:
     exeDir: true
     wait: true
     errorAction: Notify
-    option: 'gaming'
     timeout: 600
     command: '.\gaming-power.ps1'

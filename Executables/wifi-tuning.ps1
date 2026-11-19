@@ -299,5 +299,18 @@ if ($okShow -and $exitShow -eq 0) {
 # ---------------------------------------------------------------------------
 # 4. Summary
 # ---------------------------------------------------------------------------
+# v0.6.0: run stamp for verify.ps1. The primary Disable-NetAdapterPowerManagement
+# path leaves no registry marker on the adapter, so the old PnPCapabilities-only
+# check could not see a successful run. The stamp is the honest fixed evidence;
+# the adapter settings themselves remain live driver state.
+try {
+    New-Item -Path 'HKLM:\SOFTWARE\GGOS' -Force | Out-Null
+    New-ItemProperty -Path 'HKLM:\SOFTWARE\GGOS' -Name 'WifiTuning' -Value 'applied' -PropertyType String -Force | Out-Null
+    Write-GGLog 'Run stamp written: HKLM\SOFTWARE\GGOS WifiTuning = applied.'
+}
+catch {
+    Write-GGLog ('Warning: could not write the Wi-Fi tuning run stamp: ' + $_.Exception.Message)
+}
+
 Write-GGLog "Wi-Fi tuning applied to $($targets.Count) adapter(s); originals recorded under HKLM\SOFTWARE\GGOS\NetworkUndo\WifiUndo for a future revert task."
 exit 0

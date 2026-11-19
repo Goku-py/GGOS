@@ -13,41 +13,41 @@ title: Telemetry
 # applies the values on all SKUs; the policy keys are documented and reversible.
 actions:
   # ---- Diagnostic data level ----
-  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Windows\DataCollection', value: 'AllowTelemetry', type: REG_DWORD, data: 0, option: 'telemetry'}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Windows\DataCollection', value: 'AllowTelemetry', type: REG_DWORD, data: 0}
   # 32-bit view of the same policy for 32-bit processes.
-  - !registryValue: {path: 'HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\DataCollection', value: 'AllowTelemetry', type: REG_DWORD, data: 0, option: 'telemetry'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\DataCollection', value: 'AllowTelemetry', type: REG_DWORD, data: 0}
   # WinUtil cross-check: same CurrentVersion policy path/value.
-  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection', value: 'AllowTelemetry', type: REG_DWORD, data: 0, option: 'telemetry'}
-  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Windows\DataCollection', value: 'AllowDesktopAnalyticsProcessing', type: REG_DWORD, data: 0, option: 'telemetry'}
-  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Windows\DataCollection', value: 'LimitEnhancedDiagnosticDataWindowsAnalytics', type: REG_DWORD, data: 1, option: 'telemetry'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection', value: 'AllowTelemetry', type: REG_DWORD, data: 0}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Windows\DataCollection', value: 'AllowDesktopAnalyticsProcessing', type: REG_DWORD, data: 0}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Windows\DataCollection', value: 'LimitEnhancedDiagnosticDataWindowsAnalytics', type: REG_DWORD, data: 1}
   # Companion value to the DiagTrack service disable below (policy-level kill switch).
-  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Windows\DataCollection', value: 'DiagTrack', type: REG_DWORD, data: 0, option: 'telemetry'}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Windows\DataCollection', value: 'DiagTrack', type: REG_DWORD, data: 0}
 
   # ---- Feedback prompts ----
-  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Windows\DataCollection', value: 'DoNotShowFeedbackNotifications', type: REG_DWORD, data: 1, option: 'telemetry'}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Windows\DataCollection', value: 'DoNotShowFeedbackNotifications', type: REG_DWORD, data: 1}
 
   # ---- Windows Error Reporting ----
-  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting', value: 'Disabled', type: REG_DWORD, data: 1, option: 'telemetry'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting', value: 'Disabled', type: REG_DWORD, data: 1}
 
   # ---- DiagTrack ----
   # Stop the auto-logger session from starting the trace at boot.
-  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\WMI\AutoLogger\Diagtrack-Listener', value: 'Start', type: REG_DWORD, data: 0, option: 'telemetry'}
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\WMI\AutoLogger\Diagtrack-Listener', value: 'Start', type: REG_DWORD, data: 0}
   # Disable the Connected User Experiences and Telemetry service.
-  - !service: {name: 'DiagTrack', operation: change, startup: 4, errorAction: Log, option: 'telemetry'}
+  - !service: {name: 'DiagTrack', operation: change, startup: 4, errorAction: Log}
 
   # ---- Windows Error Reporting service (manual, so WER stays functional on demand) ----
-  - !service: {name: 'WerSvc', operation: change, startup: 3, errorAction: Log, option: 'telemetry'}
+  - !service: {name: 'WerSvc', operation: change, startup: 3, errorAction: Log}
 
   # ---- Windows AI / Recall ----
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsAI', value: 'DisableAIDataAnalysis', type: REG_DWORD, data: 1, option: 'telemetry'}
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsAI', value: 'AllowRecallEnablement', type: REG_DWORD, data: 0, option: 'telemetry'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsAI', value: 'DisableAIDataAnalysis', type: REG_DWORD, data: 1}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsAI', value: 'AllowRecallEnablement', type: REG_DWORD, data: 0}
   # The Recall optional feature itself is NOT disabled here (no DISM feature change);
   # these two policy keys keep it off and reversible.
 
   # ---- Activity history upload ----
   # Publish/upload of user activities to Microsoft (local clipboard history unaffected).
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\System', value: 'PublishUserActivities', type: REG_DWORD, data: 0, option: 'telemetry'}
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\System', value: 'UploadUserActivities', type: REG_DWORD, data: 0, option: 'telemetry'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\System', value: 'PublishUserActivities', type: REG_DWORD, data: 0}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\System', value: 'UploadUserActivities', type: REG_DWORD, data: 0}
 
   # ---- Edge diagnostic data ----
-  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Edge', value: 'DiagnosticData', type: REG_DWORD, data: 0, option: 'telemetry'}
+  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Edge', value: 'DiagnosticData', type: REG_DWORD, data: 0}

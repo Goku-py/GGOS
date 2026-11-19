@@ -16,165 +16,165 @@ actions:
   # ---- Services disabled outright ----
   # Deprecated/unused virtualization, port-sharing and UEV agents. DiagTrack is
   # disabled in telemetry.yml under the telemetry option instead.
-  - !service: {name: 'AppVClient', operation: change, startup: 4, errorAction: Log, option: 'services'}
-  - !service: {name: 'NetTcpPortSharing', operation: change, startup: 4, errorAction: Log, option: 'services'}
-  - !service: {name: 'DialogBlockingService', operation: change, startup: 4, errorAction: Log, option: 'services'}
-  - !service: {name: 'UevAgentService', operation: change, startup: 4, errorAction: Log, option: 'services'}
+  - !service: {name: 'AppVClient', operation: change, startup: 4, errorAction: Log}
+  - !service: {name: 'NetTcpPortSharing', operation: change, startup: 4, errorAction: Log}
+  - !service: {name: 'DialogBlockingService', operation: change, startup: 4, errorAction: Log}
+  - !service: {name: 'UevAgentService', operation: change, startup: 4, errorAction: Log}
 
   # ---- Application compatibility / installers ----
-  - !service: {name: 'AppMgmt', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'AppReadiness', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'Appinfo', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'AssignedAccessManagerSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'AxInstSV', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'BDESVC', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'COMSysApp', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'CscService', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'EFS', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'MSDTC', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'ScDeviceEnum', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'SDRSVC', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'seclogon', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'smphost', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'StorSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'svsvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'TieringEngineService', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'vds', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'wbengine', operation: change, startup: 3, errorAction: Log, option: 'services'}
+  - !service: {name: 'AppMgmt', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'AppReadiness', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'Appinfo', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'AssignedAccessManagerSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'AxInstSV', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'BDESVC', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'COMSysApp', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'CscService', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'EFS', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'MSDTC', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'ScDeviceEnum', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'SDRSVC', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'seclogon', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'smphost', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'StorSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'svsvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'TieringEngineService', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'vds', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'wbengine', operation: change, startup: 3, errorAction: Log}
 
   # ---- Bluetooth / devices / printers / sensors ----
   # BthHFSrv is left unchanged (TBOK's auto-restoration list is out of scope here).
-  - !service: {name: 'BTAGService', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'bthserv', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'CertPropSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'DevQueryBroker', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'DeviceAssociationService', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'DisplayEnhancementService', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'hidserv', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'MsKeyboardFilter', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'PerfHost', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'PlugPlay', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'perceptionsimulation', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'PrintNotify', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'Fax', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'SCardSvr', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'SCPolicySvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'SensorDataService', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'SensorService', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'SensrSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'StiSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'TabletInputService', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'WiaRpc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'WPDBusEnum', operation: change, startup: 3, errorAction: Log, option: 'services'}
+  - !service: {name: 'BTAGService', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'bthserv', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'CertPropSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'DevQueryBroker', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'DeviceAssociationService', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'DisplayEnhancementService', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'hidserv', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'MsKeyboardFilter', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'PerfHost', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'PlugPlay', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'perceptionsimulation', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'PrintNotify', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'Fax', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'SCardSvr', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'SCPolicySvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'SensorDataService', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'SensorService', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'SensrSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'StiSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'TabletInputService', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'WiaRpc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'WPDBusEnum', operation: change, startup: 3, errorAction: Log}
 
   # ---- Networking / sharing / remote ----
-  - !service: {name: 'ALG', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'dot3svc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'EapHost', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'FDResPub', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'fdPHost', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'icssvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'IpxlatCfgSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'lltdsvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'lmhosts', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'MSiSCSI', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'NcaSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'NcbService', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'NcdAutoSetup', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'Netman', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'NetSetupSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'p2pimsvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'p2psvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'PeerDistSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'PNRPAutoReg', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'PNRPsvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'PolicyAgent', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'QWAVE', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'RasAuto', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'RasMan', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'RmSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'RpcLocator', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'SharedAccess', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'SNMPTrap', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'SstpSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'SSDPSRV', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'TapiSrv', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'upnphost', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'WebClient', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'WFDSConMgrSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'WMPNetworkSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'wcncsvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'WcsPlugInService', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'wlpasvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'wlidsvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'WEPHOSTSVC', operation: change, startup: 3, errorAction: Log, option: 'services'}
+  - !service: {name: 'ALG', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'dot3svc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'EapHost', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'FDResPub', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'fdPHost', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'icssvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'IpxlatCfgSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'lltdsvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'lmhosts', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'MSiSCSI', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'NcaSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'NcbService', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'NcdAutoSetup', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'Netman', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'NetSetupSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'p2pimsvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'p2psvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'PeerDistSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'PNRPAutoReg', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'PNRPsvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'PolicyAgent', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'QWAVE', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'RasAuto', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'RasMan', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'RmSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'RpcLocator', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'SharedAccess', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'SNMPTrap', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'SstpSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'SSDPSRV', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'TapiSrv', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'upnphost', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'WebClient', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'WFDSConMgrSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'WMPNetworkSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'wcncsvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'WcsPlugInService', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'wlpasvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'wlidsvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'WEPHOSTSVC', operation: change, startup: 3, errorAction: Log}
 
   # ---- Diagnostics / reporting ----
   # DPS is left unchanged (TBOK's auto-restoration list is out of scope here).
-  - !service: {name: 'diagsvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'diagnosticshub.standardcollector.service', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'WdiServiceHost', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'WdiSystemHost', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'wisvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'wercplsupport', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'TroubleshootingSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
+  - !service: {name: 'diagsvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'diagnosticshub.standardcollector.service', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'WdiServiceHost', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'WdiSystemHost', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'wisvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'wercplsupport', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'TroubleshootingSvc', operation: change, startup: 3, errorAction: Log}
 
   # ---- Location / maps / time / telephony ----
-  - !service: {name: 'lfsvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'tzautoupdate', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'PhoneSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'SmsRouter', operation: change, startup: 3, errorAction: Log, option: 'services'}
+  - !service: {name: 'lfsvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'tzautoupdate', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'PhoneSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'SmsRouter', operation: change, startup: 3, errorAction: Log}
 
   # ---- Cloud / consumer / retail ----
-  - !service: {name: 'cloudidsvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'DcpSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'dcsvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'defragsvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'DmEnrollmentSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'dmwappushservice', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'LxpSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'McpManagementService', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'NaturalAuthentication', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'PcaSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'PushToInstall', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'RetailDemo', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'SEMgrSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'shpamsvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'SharedRealitySvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'spectrum', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'TimeBroker', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'UI0Detect', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'VacSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'WalletService', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'WManSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'WpcMonSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'workfolderssvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'fhsvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'pla', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'GraphicsPerfSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'IEEtwCollectorService', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'FrameServer', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'FrameServerMonitor', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'wmiApSrv', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'HvHost', operation: change, startup: 3, errorAction: Log, option: 'services'}
+  - !service: {name: 'cloudidsvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'DcpSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'dcsvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'defragsvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'DmEnrollmentSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'dmwappushservice', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'LxpSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'McpManagementService', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'NaturalAuthentication', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'PcaSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'PushToInstall', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'RetailDemo', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'SEMgrSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'shpamsvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'SharedRealitySvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'spectrum', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'TimeBroker', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'UI0Detect', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'VacSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'WalletService', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'WManSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'WpcMonSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'workfolderssvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'fhsvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'pla', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'GraphicsPerfSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'IEEtwCollectorService', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'FrameServer', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'FrameServerMonitor', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'wmiApSrv', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'HvHost', operation: change, startup: 3, errorAction: Log}
 
   # ---- Mixed Reality / Hyper-V guest integration (absent on most machines) ----
-  - !service: {name: 'MixedRealityOpenXRSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'vmicguestinterface', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'vmicheartbeat', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'vmickvpexchange', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'vmicshutdown', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'vmictimesync', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'vmicvmsession', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'vmicvss', operation: change, startup: 3, errorAction: Log, option: 'services'}
+  - !service: {name: 'MixedRealityOpenXRSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'vmicguestinterface', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'vmicheartbeat', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'vmickvpexchange', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'vmicshutdown', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'vmictimesync', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'vmicvmsession', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'vmicvss', operation: change, startup: 3, errorAction: Log}
 
   # ---- Xbox (demand; Game Mode / identity unaffected) ----
-  - !service: {name: 'XblAuthManager', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'XblGameSave', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'XboxGipSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'XboxNetApiSvc', operation: change, startup: 3, errorAction: Log, option: 'services'}
+  - !service: {name: 'XblAuthManager', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'XblGameSave', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'XboxGipSvc', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'XboxNetApiSvc', operation: change, startup: 3, errorAction: Log}
 
   # ---- Browser updaters ----
-  - !service: {name: 'edgeupdate', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'edgeupdatem', operation: change, startup: 3, errorAction: Log, option: 'services'}
-  - !service: {name: 'MicrosoftEdgeElevationService', operation: change, startup: 3, errorAction: Log, option: 'services'}
+  - !service: {name: 'edgeupdate', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'edgeupdatem', operation: change, startup: 3, errorAction: Log}
+  - !service: {name: 'MicrosoftEdgeElevationService', operation: change, startup: 3, errorAction: Log}

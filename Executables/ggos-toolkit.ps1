@@ -309,8 +309,8 @@ function Get-GGRestoreGuidance {
         [void]$sb.AppendLine(('    Previous power plan GUID: {0} (recorded under HKLM\SOFTWARE\GGOS\PreviousPowerPlan).' -f $guid))
     }
     else {
-        [void]$sb.AppendLine('    Previous power plan GUID: not recorded (the gaming/laptop power option was not')
-        [void]$sb.AppendLine('    selected, or a GGOS plan was already active when the playbook ran).')
+        [void]$sb.AppendLine('    Previous power plan GUID: not recorded (no power-plan change was made -')
+        [void]$sb.AppendLine('    laptop chassis, or a GGOS plan was already active when the playbook ran).')
     }
 
     [void]$sb.AppendLine('')

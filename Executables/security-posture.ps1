@@ -1,4 +1,4 @@
-# GGOS security posture report (v0.5.0) - option security-posture. READ-ONLY.
+# GGOS security posture report (v0.6.0) - always applied, no wizard option. READ-ONLY.
 #
 # This script never modifies anything outside HKLM\SOFTWARE\GGOS (and the only
 # writes there are its own report stamp). It reads the state of the security

@@ -5,10 +5,12 @@ title: App installs
 # for SYSTEM/trustedInstaller, and user apps must land in the user's context.
 #
 # Each action installs exactly ONE pinned app by winget ID. These options
-# INSTALL software (nothing is removed here — see the page's BottomLine).
+# INSTALL software (nothing is removed here - see the page's BottomLine).
+# v0.6.0: the wizard's app page was trimmed to the browser/utility starter set;
+# the Steam, Discord and VLC actions were removed with their page options (an
+# action gated on a removed option could never run).
 # IDs verified against the live winget source (2026-11-19):
 #   Mozilla.Firefox  Brave.Brave  7zip.7zip  Microsoft.PowerToys
-#   Valve.Steam     Discord.Discord  VideoLAN.VLC
 # Flags: --id <ID> --exact (exact ID match; winget has no --exact-id flag),
 # --silent --accept-package-agreements --accept-source-agreements.
 # A missing winget is a graceful skip (skipped.txt + exit 0), never a run
@@ -140,101 +142,5 @@ actions:
           Write-Output "GGOS apps: winget exited with code $code (PowerToys may already be installed or the install failed)."
       } else {
           Write-Output 'GGOS apps: PowerToys install completed.'
-      }
-      exit 0
-
-  # ---- Steam (Valve.Steam) ----
-  - !powerShell:
-    runas: currentUserElevated
-    wait: true
-    errorAction: Notify
-    option: 'app-steam'
-    timeout: 1800
-    command: |-
-      $wingetExe = $null
-      $cmd = Get-Command winget.exe -ErrorAction SilentlyContinue
-      if ($cmd) {
-          $wingetExe = $cmd.Source
-      } elseif (Test-Path -LiteralPath (Join-Path $env:LOCALAPPDATA 'Microsoft\WindowsApps\winget.exe')) {
-          $wingetExe = Join-Path $env:LOCALAPPDATA 'Microsoft\WindowsApps\winget.exe'
-      }
-      if (-not $wingetExe) {
-          $ggDir = Join-Path $env:SystemRoot 'GGOS'
-          New-Item -ItemType Directory -Path $ggDir -Force | Out-Null
-          Add-Content -Path (Join-Path $ggDir 'skipped.txt') -Value ('{0} SKIPPED(winget missing): app-steam (Valve.Steam)' -f (Get-Date -Format s))
-          Write-Output 'GGOS apps: winget was not found - Steam was not installed.'
-          exit 0
-      }
-      Write-Output "GGOS apps: installing Valve.Steam with $wingetExe"
-      & $wingetExe install --id Valve.Steam --exact --silent --accept-package-agreements --accept-source-agreements
-      $code = $LASTEXITCODE
-      if ($code -ne 0) {
-          Write-Output "GGOS apps: winget exited with code $code (Steam may already be installed or the install failed)."
-      } else {
-          Write-Output 'GGOS apps: Steam install completed.'
-      }
-      exit 0
-
-  # ---- Discord (Discord.Discord) ----
-  - !powerShell:
-    runas: currentUserElevated
-    wait: true
-    errorAction: Notify
-    option: 'app-discord'
-    timeout: 1800
-    command: |-
-      $wingetExe = $null
-      $cmd = Get-Command winget.exe -ErrorAction SilentlyContinue
-      if ($cmd) {
-          $wingetExe = $cmd.Source
-      } elseif (Test-Path -LiteralPath (Join-Path $env:LOCALAPPDATA 'Microsoft\WindowsApps\winget.exe')) {
-          $wingetExe = Join-Path $env:LOCALAPPDATA 'Microsoft\WindowsApps\winget.exe'
-      }
-      if (-not $wingetExe) {
-          $ggDir = Join-Path $env:SystemRoot 'GGOS'
-          New-Item -ItemType Directory -Path $ggDir -Force | Out-Null
-          Add-Content -Path (Join-Path $ggDir 'skipped.txt') -Value ('{0} SKIPPED(winget missing): app-discord (Discord.Discord)' -f (Get-Date -Format s))
-          Write-Output 'GGOS apps: winget was not found - Discord was not installed.'
-          exit 0
-      }
-      Write-Output "GGOS apps: installing Discord.Discord with $wingetExe"
-      & $wingetExe install --id Discord.Discord --exact --silent --accept-package-agreements --accept-source-agreements
-      $code = $LASTEXITCODE
-      if ($code -ne 0) {
-          Write-Output "GGOS apps: winget exited with code $code (Discord may already be installed or the install failed)."
-      } else {
-          Write-Output 'GGOS apps: Discord install completed.'
-      }
-      exit 0
-
-  # ---- VLC (VideoLAN.VLC) ----
-  - !powerShell:
-    runas: currentUserElevated
-    wait: true
-    errorAction: Notify
-    option: 'app-vlc'
-    timeout: 1800
-    command: |-
-      $wingetExe = $null
-      $cmd = Get-Command winget.exe -ErrorAction SilentlyContinue
-      if ($cmd) {
-          $wingetExe = $cmd.Source
-      } elseif (Test-Path -LiteralPath (Join-Path $env:LOCALAPPDATA 'Microsoft\WindowsApps\winget.exe')) {
-          $wingetExe = Join-Path $env:LOCALAPPDATA 'Microsoft\WindowsApps\winget.exe'
-      }
-      if (-not $wingetExe) {
-          $ggDir = Join-Path $env:SystemRoot 'GGOS'
-          New-Item -ItemType Directory -Path $ggDir -Force | Out-Null
-          Add-Content -Path (Join-Path $ggDir 'skipped.txt') -Value ('{0} SKIPPED(winget missing): app-vlc (VideoLAN.VLC)' -f (Get-Date -Format s))
-          Write-Output 'GGOS apps: winget was not found - VLC was not installed.'
-          exit 0
-      }
-      Write-Output "GGOS apps: installing VideoLAN.VLC with $wingetExe"
-      & $wingetExe install --id VideoLAN.VLC --exact --silent --accept-package-agreements --accept-source-agreements
-      $code = $LASTEXITCODE
-      if ($code -ne 0) {
-          Write-Output "GGOS apps: winget exited with code $code (VLC may already be installed or the install failed)."
-      } else {
-          Write-Output 'GGOS apps: VLC install completed.'
       }
       exit 0

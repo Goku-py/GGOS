@@ -16,22 +16,26 @@
 original with per-source attribution — see
 [Attribution / licenses](#attribution--licenses).
 
-**Version 0.5.0** · 16 feature pages · 48 unique options · 26 task files ·
-rollback gate → option ledger → verification pass.
+**Version 0.6.0** · 4 feature pages · 12 checkboxes (plus 3 PC-type radios) ·
+26 task files · rollback gate → option ledger → verification pass.
 
-> This repository is intentionally small: playbook content, the build scripts,
-> the native timer source and `docs\CHANGELOG.md`. The GitHub release notes
+> This repository is intentionally small: playbook content, `docs\CHANGELOG.md`,
+> and the maintainer-local build tooling (`Build-Playbook.ps1`, `Build-Playbook.cmd`,
+> `timer-hash.txt`, `Native\`), which is kept untracked. The GitHub release notes
 > mirror the changelog.
 
-GGOS is an interactive optimization, debloat and cleanup playbook for
+GGOS is an optimization, debloat and cleanup playbook for
 [AME Wizard](https://amelabs.net/), written for gamers and power users who
 want a faster, quieter Windows **without** breaking anti-cheat or switching
-security off. You tick what you want across 16 feature pages — every option
-explains itself, and hardware is auto-detected so desktops and laptops get
-different values. Before anything changes, a System Restore point is created
-**and verified**; when the run finishes, a verification pass writes a
-PASS / DRIFT / NOTE report for every option you selected. The implementation
-is clean-room original YAML/PowerShell, and nothing in it disables Defender,
+security off. Since v0.6.0 the tuning is **automatic**: registry, services,
+scheduled tasks, telemetry, debloat, power, input and network work is applied
+without asking, and hardware is detected so desktops and laptops get different
+values. The wizard only asks about the **extras** — per-account scope, extra
+app removal, OneDrive, wallpaper, the Toolkit, one-time cleanup and app
+installs. Before anything changes, a System Restore point is created **and
+verified**; when the run finishes, a verification pass writes a
+PASS / DRIFT / NOTE report for every area that ran. The implementation is
+clean-room original YAML/PowerShell, and nothing in it disables Defender,
 Windows Update, UAC, VBS/HVCI or CPU exploit mitigations.
 
 ## The numbers
@@ -40,11 +44,12 @@ Every number on this page is countable from the repository:
 
 | Number | What it counts |
 |---|---|
-| **16 feature pages** | 10 carried over from v0.4.0 + six new: Theming, Apps & browsers, OneDrive & extras, Power plan, Security check, GGOS Toolkit |
-| **48 unique options** | 33 carried over + 15 new; each one independently selectable |
+| **4 feature pages** | PC type (radio) + Extras + Cleanup & updates + Apps, down from 16 pages and 45 checkboxes in v0.5.0 |
+| **12 checkboxes** | the optional extras; every automatic tuning area was removed from the wizard instead of being shown |
+| **27 automatic areas** | applied on every run without a checkbox (core registry, services, telemetry, debloat, power, input, network, gaming, Recall, security report) |
 | **142 service changes** | 138 set to Manual, 4 disabled — security services excluded by policy |
 | **71 per-user values** | swept across all loaded hives, `.DEFAULT` and the Default profile template |
-| **100% option verification coverage** | every ledger option has a marker check; `ggos-verify.txt` reports PASS / DRIFT / NOTE |
+| **100% ledger verification coverage** | every ledger entry has a marker check; `ggos-verify.txt` reports PASS / DRIFT / NOTE |
 | **1 verified restore point** | created before any change; the run fail-closes if none can be made |
 
 No FPS, RAM or download figures appear on this page. The repository has none
@@ -57,8 +62,8 @@ Qualitative on purpose — every row below is checkable on the machine itself:
 
 | | Stock Windows 11 | A GGOS run |
 |---|---|---|
-| **Telemetry** | On at default levels, spread across registry, services and scheduled tasks | One option (`telemetry`) hardens all three surfaces |
-| **Ads and bundled apps** | Start-menu suggestions, Bing results in Search, Widgets, Copilot, OEM trialware | Removed by default; OEM trial apps and the extras set (Outlook "new", consumer Teams, Clipchamp) stay opt-in |
+| **Telemetry** | On at default levels, spread across registry, services and scheduled tasks | Hardened automatically across all three surfaces |
+| **Ads and bundled apps** | Start-menu suggestions, Bing results in Search, Widgets, Copilot, OEM trialware | Copilot, Bing search and Widgets removed automatically; OEM trial apps and the extras set (Outlook "new", consumer Teams, Clipchamp) stay an opt-in checkbox |
 | **Who gets the tweaks** | A tweak you paste yourself covers the profile you are logged into | 71 values swept across every loaded hive, `.DEFAULT` and the Default profile template |
 | **Safety net** | None — a pasted `.reg` has no gate | Verified restore point first, per-hive `.reg` exports, a rollback manifest; fail-closed if none can be made |
 | **Proof** | You hope the script did what the forum post said | An option ledger plus a PASS / DRIFT / NOTE verification report in `%SystemRoot%\GGOS\` |
@@ -78,8 +83,8 @@ the scene commonly offers, and the policy reason each one is absent here.
 | **Disable UAC** — "kill the prompts" | With the boundary gone, everything you launch runs with a full admin token — one stray download away from total system control. The prompt costs seconds; the boundary is the cheapest security on the machine. |
 | **Disable VBS / HVCI** — memory isolation switched off, sold back as FPS | Virtualization-based security is what keeps credential-theft tooling out of `lsass`. Turning it off hands every process on the machine a clearer path to your credentials for a gain you will struggle to measure honestly. |
 
-The positive counterpart is page 15: `security-posture` is a **read-only**
-report of Defender, SmartScreen and Windows Update status, written to
+The positive counterpart is the read-only security report: every run writes the
+Defender, SmartScreen and Windows Update status to
 `%SystemRoot%\GGOS\ggos-security.txt`. It changes nothing — it exists so you
 can confirm, in one file, that the security surface is exactly as Windows
 shipped it.
@@ -89,62 +94,79 @@ requires turning security off; the performance work lives in scheduler,
 service, power, network and input tuning that leaves the security surface
 untouched.
 
-## Feature pages (v0.5.0, in the order AME shows them)
+## Feature pages (v0.6.0, in the order AME shows them)
 
 | # | Page | Options |
 |---|------|---------|
 | 1 | **PC type** (radio) | Auto-detect (recommended) · Desktop · Laptop |
-| 2 | **Core** | Core system tweaks · Service tuning · Telemetry hardening · Ads & clutter |
-| 3 | **Profiles & optional** (`DependsOn` core) | All user profiles · Detailed logon · F8 boot menu · Page file |
-| 4 | **Bloatware** | Copilot · Bing Search · Widgets · OEM trial apps |
-| 5 | **Office & gaming** | Office telemetry · Gaming mode |
-| 6 | **Cleanup & software** | Safe cleanup · Deep cleanup (cannot be undone) · Clean GPU shader caches · WinGet updates |
-| 7 | **Desktop power** | CPU EPP · PCIe ASPM off · NVMe idle timeout |
-| 8 | **Laptop** | GGOS Laptop plan · Wi-Fi latency fix · NVMe idle timeout (AC) |
-| 9 | **Input devices** | Mouse acceleration off · Input buffer latency · Wireless dongle fix |
-| 10 | **Network (wired)** | Lower ping (TCP) · Bufferbloat relief · NIC low-latency · Ultra NIC mode |
-| 11 | **Theming** | Apply GGOS wallpaper |
-| 12 | **Apps & browsers** | Firefox · Brave · 7-Zip · PowerToys · Steam · Discord · VLC — installed via winget as the current user |
-| 13 | **OneDrive & extras** | Remove OneDrive (official uninstaller) · Disable Recall (default on, 26100+ only) · Remove extra bloatware (Outlook "new" / consumer Teams / Clipchamp) |
-| 14 | **Power plan** | Ultimate Performance plan (built-in; previous plan recorded for restore) |
-| 15 | **Security check** | Read-only security posture report → `ggos-security.txt` |
-| 16 | **GGOS Toolkit** | Install GGOS Toolkit v0.1 (default on) |
+| 2 | **Extras** | Apply tweaks to all user accounts · Remove extra preinstalled apps · Uninstall OneDrive · Install GGOS Toolkit and shortcut · Apply GGOS wallpaper |
+| 3 | **Cleanup & updates** | Safe disk cleanup · Deep cleanup (cannot be undone) · Update all apps |
+| 4 | **Apps** | Firefox · Brave · 7-Zip · PowerToys — installed via winget as the current user |
 
-> **Hardware pages (unchanged since 0.4.0, audit F1–F3):** both hardware pages
-> are always visible; desktop-only tweaks (EPP, ASPM) are refused on laptops by
-> the script-side chassis guard (`hardware-tuning.ps1`), and the laptop NVMe
-> option has its own `nvme-latency-laptop` name. The desktop/laptop *radio*
-> choice remains an override; auto-detect is the default.
+> **What changed in v0.6.0:** the tuning is no longer a list of checkboxes. The
+> 29 core/perf option names that v0.5.0 exposed across 13 pages were removed
+> from the wizard and are applied unconditionally; only the extras above are
+> still selectable. The previous structure (16 pages, 45 checkboxes) is in the
+> git history and `docs\CHANGELOG.md`.
+
+## What runs automatically
+
+These areas have no checkbox and run on every machine (they were the v0.5.0
+tuning pages):
+
+| Area | What it does |
+|---|---|
+| Core system tweaks | long paths, network throttling index, IRP stack, NDU, shutdown timeout, Storage Sense, Delivery Optimization, Edge efficiency, MPO recall, SysMain/memory compression |
+| Service tuning | 142 changes (138 Manual, 4 disabled) with security services excluded |
+| Telemetry hardening | policy values, DiagTrack/WerSvc, Office telemetry agents, Recall policy values |
+| Ads and clutter | Windows feeds, advertising ID, Edge shopping/feedback/first-run, Copilot |
+| Debloat | Copilot, Bing Search, Widgets families removed; Start-menu cache cleared |
+| Logon and boot | verbose logon status, legacy F8 boot menu (BitLocker-guarded) |
+| Page file | RAM-aware sizing, skipped at 32 GB+ or when free space is short |
+| Hardware tuning | EPP, PCIe ASPM, NVMe idle timeout, USB selective suspend, Bluetooth radio power (AC only) |
+| Input | mouse acceleration off, input queue sizes, wireless dongle stutter fix |
+| Gaming | HAGS, MMCSS, GameDVR, timer-resolution task, chassis-aware power plan |
+| Power plan | Ultimate Performance duplicated and activated (desktop); on laptops the `GGOS Laptop` plan is created and activated instead, with battery-safe timeouts and the previous plan recorded |
+| Network latency | TCP ACK coalescing off, bufferbloat relief, NIC EEE/flow-control off, Wi-Fi driver power save off. Wired tuning applies to wired adapters only; turning Nagle off helps game and small-request traffic but some servers and applications behave worse with it, which is why the task file documents it instead of offering a checkbox (Wi-Fi power save off also costs a little battery) |
+| GPU shader caches | documented cache directories cleaned for loaded profiles |
+| Security report | read-only Defender/SmartScreen/Update status → `ggos-security.txt` |
+
+Desktop-only areas refuse a laptop or unknown chassis in the script itself, and
+`verify.ps1` reports that skip as `NOTE`, never `DRIFT`.
 
 ## Option → task map
 
+The 12 wizard options still select their own work; everything else is ungated
+in `Configuration\main.yml`.
+
 | Option | Task file(s) | Executable / action |
+|---|---|---|
+| `per-user` | `user-registry.yml` | `per-user.ps1` (71 values × loaded hives, `.DEFAULT`, Default template) — also carries the Office telemetry block |
+| `bloat-extra` | `appx.yml` | OEM trial apps + Outlook "new" / consumer Teams / Clipchamp removals |
+| `onedrive-remove` | `onedrive.yml` | Microsoft's official OneDrive uninstaller; cloud files untouched |
+| `cleanup` · `cleanup-aggressive` | `cleanup.yml`, `cleanup-aggressive.yml` | `cleanup-sweep.ps1` (`-Aggressive`) |
+| `winget-update` | `winget.yml` | `winget upgrade --all` as current user |
+| `ggos-theme` | `theming.yml` | apply the GGOS wallpaper |
+| `app-firefox` · `app-brave` · `app-7zip` · `app-powertoys` | `apps.yml` | winget installs as the current user |
+| `toolkit-install` | `toolkit.yml` | copy the GGOS Toolkit to `%SystemRoot%\GGOS\` + Start menu shortcut |
+
+Ungated (always applied — the ledger records them as fixed areas):
+
+| Area | Task file(s) | Executable / action |
 |---|---|---|
 | `system-optimization` | `system-registry.yml`, `scheduled-tasks.yml`, `hardware-policy.yml` | registry + `hardware-policy.ps1` |
 | `services` | `services.yml` | 142 service changes (138 manual, 4 disabled) |
-| `telemetry` | `telemetry.yml`, `scheduled-tasks.yml` | registry + services + tasks |
-| `ads-ui` | `system-registry.yml` | registry |
-| `per-user` | `user-registry.yml` | `per-user.ps1` (71 values × loaded hives, `.DEFAULT`, Default template) |
-| `verbose-logon` · `f8-boot` · `pagefile` | `system-registry.yml` | inline PowerShell |
-| `bloat-copilot` · `bloat-bing` · `bloat-widgets` · `bloat-oem` | `appx.yml` | 29 Appx family removals |
-| `bloat-extra` | `appx.yml` | Outlook "new" / consumer Teams / Clipchamp removals |
-| `office-telemetry` | `user-registry.yml` (office group), `scheduled-tasks.yml` | per-user hive sweep |
+| `telemetry` · `ads-ui` · `verbose-logon` · `f8-boot` · `pagefile` | `system-registry.yml`, `telemetry.yml`, `scheduled-tasks.yml` | registry, services, scheduled tasks, inline PowerShell |
+| `bloat-copilot` · `bloat-bing` · `bloat-widgets` | `appx.yml` | 29 Appx family removals |
 | `gaming` | `gaming.yml` | registry + timer task + `gaming-power.ps1` |
-| `cleanup` · `cleanup-aggressive` | `cleanup.yml`, `cleanup-aggressive.yml` | `cleanup-sweep.ps1` (`-Aggressive`) |
+| `recall-disable` | `recall.yml` | WindowsAI policies (26100+ only) |
 | `shader-cache` | `shader-cache.yml` | GPU shader cache cleaner (also exposed in the Toolkit) |
-| `winget-update` | `winget.yml` | `winget upgrade --all` as current user |
-| `ggos-theme` | `theming.yml` | apply the GGOS wallpaper |
-| `app-firefox` · `app-brave` · `app-7zip` · `app-powertoys` · `app-steam` · `app-discord` · `app-vlc` | `apps.yml` | winget installs as the current user |
-| `onedrive-remove` | `onedrive.yml` | Microsoft's official OneDrive uninstaller; cloud files untouched |
-| `recall-disable` | `recall.yml` | WindowsAI policies (default on; 26100+ only) |
-| `power-ultimate` | `power-plans.yml` | duplicate the built-in Ultimate Performance plan; record the previous plan for restore |
+| `power-ultimate` | `power-plans.yml` | duplicate and activate the built-in Ultimate Performance plan (desktop only; previous plan recorded for restore) |
 | `security-posture` | `security-posture.yml` | read-only status report → `%SystemRoot%\GGOS\ggos-security.txt` |
-| `toolkit-install` | `toolkit.yml` | copy the GGOS Toolkit to `%SystemRoot%\GGOS\` + Start menu shortcut |
-| `epp-perf` · `desktop-device-power` · `nvme-latency` · `nvme-latency-laptop` · `wireless-input` | `hardware-tuning.yml` | `hardware-tuning.ps1 -Mode …` (AC only; `epp`/`devices` refuse laptop chassis) |
-| `laptop-power` | `hardware-tuning.yml` | `gaming-power.ps1 -LaptopPlan` |
-| `wifi-tuning` | `network.yml` | `wifi-tuning.ps1` |
+| `epp-perf` · `desktop-device-power` · `nvme-latency` · `wireless-input` | `hardware-tuning.yml` | `hardware-tuning.ps1 -Mode …` (AC only; `epp`/`devices` refuse laptop chassis) |
+| `laptop-power` | `hardware-tuning.yml` | `gaming-power.ps1 -LaptopPlan` (laptops only) |
+| `wifi-tuning` · `network-latency` · `network-bufferbloat` · `network-nic` · `network-ultra` | `network.yml` | `wifi-tuning.ps1`, `network-latency.ps1`, `network-tuning.ps1 -Mode …` (ultra: desktop only) |
 | `input-accel` · `input-queue` | `input-tuning.yml` | `input-tuning.ps1 -Mode …` |
-| `network-latency` · `network-bufferbloat` · `network-nic` · `network-ultra` | `network.yml` | `network-latency.ps1`, `network-tuning.ps1 -Mode …` |
 
 ## Safety rules (non-negotiable)
 
@@ -157,10 +179,13 @@ untouched.
    **not** Appx removals, deleted cleanup targets, winget updates, app
    installs, OneDrive removal or per-user hive edits.
 2. **Desktop/laptop split.** Hardware tuning writes **AC values only**; a
-   laptop is never given desktop-only EPP/ASPM settings. DC values are written
-   only by the explicitly opt-in laptop power features (processor boost mode
-   and the GGOS Laptop plan timeouts); every other path leaves the OS's AC/DC
-   management intact.
+   laptop is never given desktop-only EPP/ASPM settings, and the desktop-only
+   Ultra NIC mode and Ultimate Performance plan are guarded in their scripts.
+   DC values are written only by the laptop power paths (processor boost mode
+   and the `GGOS Laptop` plan, which is created and activated on laptops); every
+   other path leaves the OS's AC/DC management intact. One exception is
+   deliberate and stated on the Network row above: Wi-Fi driver tuning turns off
+   the adapter's own power management, which costs some battery time on a laptop.
 3. **Security is out of scope.** Defender (`WinDefend`, `SecurityHealthService`,
    `wscsvc`), SmartScreen, Windows Update (`wuauserv`, `UsoSvc`, `BITS`),
    AppLocker (`AppIDSvc`) and event collection (`Wecsvc`) are never disabled.
@@ -173,12 +198,13 @@ untouched.
    `%SystemRoot%\GGOS\`: `ggos-options.txt` (ledger), `hive-backups\`
    (per-hive `.reg` exports), `skipped.txt` (bounded-timeout skips),
    `rollback-manifest.txt`, and `ggos-verify.txt` (PASS/DRIFT/NOTE). HKLM
-   stamps live under `HKLM\SOFTWARE\GGOS`. Verification maps **all 48
-   options**; by-design dynamic areas (package removals and installs,
-   cleanups, live driver state) report `NOTE` instead of a pretended PASS.
-6. **The v0.5.0 surfaces follow the same rules.** OneDrive removal runs
+   stamps live under `HKLM\SOFTWARE\GGOS`. Verification maps **every ledger
+   entry** — the 27 automatic areas and each selected option; by-design
+   dynamic areas (package removals and installs, cleanups, live driver state)
+   and hardware-dependent skips report `NOTE` instead of a pretended PASS.
+6. **The v0.6.0 extras follow the same rules.** OneDrive removal runs
    Microsoft's official uninstaller and never touches cloud files — anything
-   already in OneDrive stays in OneDrive. The security check is read-only: it
+   already in OneDrive stays in OneDrive. The security report is read-only: it
    reports status and writes one text file, nothing else. App installs run as
    the current user via winget, not as TrustedInstaller. Recall disabling is
    registry policy only (WindowsAI), build-gated to 26100+ where Recall
@@ -188,11 +214,11 @@ untouched.
 
 | Artefact | Writer | Meaning |
 |---|---|---|
-| `%SystemRoot%\GGOS\ggos-options.txt` | `options-ledger.yml` | Options the user selected |
+| `%SystemRoot%\GGOS\ggos-options.txt` | `options-ledger.yml` | Every area the run applied: the unconditional areas plus the extras selected |
 | `%SystemRoot%\GGOS\rollback-manifest.txt` | `rollback.ps1` | Restore-point sequence / export paths |
 | `%SystemRoot%\GGOS\skipped.txt` | `Invoke-GGCommand` | Commands that exceeded their timeout |
 | `%SystemRoot%\GGOS\hive-backups\*.reg` | `per-user.ps1`, `input-tuning.ps1` | Per-hive registry exports before writes |
-| `%SystemRoot%\GGOS\ggos-verify.txt` | `verify.ps1` | PASS / DRIFT / NOTE per mapped option |
+| `%SystemRoot%\GGOS\ggos-verify.txt` | `verify.ps1` | PASS / DRIFT / NOTE per ledger entry |
 | `%SystemRoot%\GGOS\ggos-security.txt` | `security-posture.yml` | Read-only Defender / SmartScreen / Windows Update status report |
 | `%SystemRoot%\GGOS\` (Toolkit app) | `toolkit.yml` | GGOS Toolkit v0.1 files + Start menu shortcut |
 | `HKLM\SOFTWARE\GGOS` | `verify.ps1` | `Installed`, `AppliedVersion`, `LastVerify` |
@@ -202,19 +228,19 @@ untouched.
 
 ## GGOS Toolkit v0.1
 
-Page 16 installs the **GGOS Toolkit v0.1** — a single-file PowerShell WinForms
-companion app copied to `%SystemRoot%\GGOS\` with a Start menu shortcut. The
-companion-app idea is proven elsewhere in the scene (the XOS Toolkit, FSOS's
+The **Extras** page installs the **GGOS Toolkit v0.1** — a single-file PowerShell
+WinForms companion app copied to `%SystemRoot%\GGOS\` with a Start menu shortcut.
+The companion-app idea is proven elsewhere in the scene (the XOS Toolkit, FSOS's
 Dash); GGOS's version is one script with no dependencies:
 
 - **Dashboard** — reads the `HKLM\SOFTWARE\GGOS` stamps and shows what was
   applied, on which version, and what the last verification said.
 - **Re-run verification** — the same verification pass as the playbook,
   refreshable any time; rewrites `ggos-verify.txt`.
-- **Shader cache cleaner** — the page-6 GPU shader cache clean, available on
+- **Shader cache cleaner** — the automatic GPU shader cache clean, available on
   demand.
-- **Curated installs** — the page-12 app set (Firefox, Brave, 7-Zip,
-  PowerToys, Steam, Discord, VLC) via winget as the current user.
+- **Curated installs** — the Apps page set (Firefox, Brave, 7-Zip, PowerToys)
+  via winget as the current user.
 - **Restore guidance** — points to the restore point, `rollback-manifest.txt`
   and the per-hive exports, and states plainly what is not reversible.
 
@@ -246,14 +272,16 @@ the Toolkit reads its stamps rather than becoming a second control surface.
   wake-latency micro-stutters without a battery tax.
 - **Input:** `MouseDataQueueSize`/`KeyboardDataQueueSize` are
   community-contested; GGOS ships value 8 (inside the ~8–16 floor; lower than
-  3 drops inputs) as an explicit opt-in.
+  3 drops inputs) as part of the automatic tuning.
 - **Wi-Fi:** MIMO Power Save (No SMPS), U-APSD off, roaming aggressiveness
   low and the adapter power-off toggle are documented latency-spike causes.
   `netsh wlan autoconfig off` is deliberately **not** used.
-- **Ultimate Performance plan:** page 14 offers Microsoft's built-in
-  `Ultimate Performance` scheme (duplicated, not hand-rolled), and records the
-  previous plan first so the switch is reversible with one
-  `powercfg /setactive` call.
+- **Ultimate Performance plan:** the run enables Microsoft's built-in
+  `Ultimate Performance` scheme (duplicated, not hand-rolled) on desktops, and
+  records the previous plan first so the switch is reversible with one
+  `powercfg /setactive` call. Laptops are refused by the script's chassis
+  guard; on a laptop the separate `GGOS Laptop` plan (a Balanced duplicate with
+  battery-safe AC/DC timeouts) is created **and activated** instead.
 - **Recall:** disabled through the documented `WindowsAI` policy keys; the
   option is build-gated to 26100+ where Recall's snapshot pipeline ships.
 - **What GGOS deliberately does NOT ship:** CPU mitigation/VBS/Defender/
@@ -284,13 +312,14 @@ original with the attributions above.
 2. Download the newest `.apbx` from the
    [releases page](https://github.com/Goku-py/GGOS/releases) — the release
    badge above always points at the latest tag.
-3. Open it with AME Wizard, pick options across the 16 pages, and let it run.
+3. Open it with AME Wizard, confirm the PC type, tick any extras you want,
+   and let it run.
    The Wizard enforces the declared gates: supported builds only
    (22621–26300), no pending updates, plugged in. Elevation is supplied by
    AME's `!powerShell` default `runas`; no separate elevation tool is
    shipped.
-4. When it finishes, read `%SystemRoot%\GGOS\ggos-verify.txt` — every option
-   you selected, PASS / DRIFT / NOTE.
+4. When it finishes, read `%SystemRoot%\GGOS\ggos-verify.txt` — every area
+   that ran, PASS / DRIFT / NOTE.
 
 AME Wizard also polls this repository's releases, so an installed playbook
 offers its own updates when a new version ships.
@@ -337,12 +366,13 @@ app, and anti-cheat-conscious guidance for Valorant and FACEIT players.
 might not want some of them, and supports LTSC.
 
 GGOS differentiates on three things: the **verification pass** (a
-PASS/DRIFT/NOTE report written for every selected option at the end of every
+PASS/DRIFT/NOTE report written for every ledger entry at the end of every
 run), a **hard no-security-trade-off policy** (the four common trade-offs
 are not offered anywhere in the playbook), and **clean-room original code**
-with per-source attribution. v0.5.0 closes the companion-app gap with the
-GGOS Toolkit, and where others document their trade-offs, GGOS documents why
-it never ships them.
+with per-source attribution. v0.6.0 simplifies the wizard to four pages of
+extras — the tuning itself is automatic — and the GGOS Toolkit covers repeat
+actions; where others document their trade-offs, GGOS documents why it never
+ships them.
 
 ### Does it support Windows 10?
 
@@ -367,7 +397,7 @@ declares LTSC support.
 
 ```text
 GGOS/
-├── playbook.conf            # Metadata, requirements, 16 feature pages, icon ref
+├── playbook.conf            # Metadata, requirements, 4 feature pages, icon ref
 ├── playbook.png             # 256x256 icon (AME expects playbook.png at the root)
 ├── Configuration/
 │   ├── main.yml             # Task orchestration (rollback gate runs first)
@@ -403,10 +433,12 @@ intentionally stays small.
 
 ## Status
 
-**v0.5.0** — feature expansion: six new feature pages (Theming, Apps &
-browsers, OneDrive & extras, Power plan, Security check, GGOS Toolkit), a
-shader-cache cleanup option on the Cleanup page, 48 options across 16 pages,
-and the GGOS Toolkit v0.1 companion app.
+**v0.6.0** — wizard simplification: the tuning is applied automatically and
+the 16 pages / 45 checkboxes of v0.5.0 become 4 pages / 12 checkboxes of
+optional extras (per-account scope, extra app and OneDrive removal, wallpaper,
+Toolkit, cleanup and updates, four app installs). Desktop-only Ultimate
+Performance and Ultra NIC mode are now guarded inside their scripts instead of
+being page options, and verification reports hardware-dependent skips as NOTE.
 
 The runtime AME Wizard smoke test on a disposable VM remains the open gate;
 see the release notes for the verification status of every item.

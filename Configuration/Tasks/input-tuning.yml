@@ -9,13 +9,11 @@ actions:
     exeDir: true
     wait: true
     errorAction: Notify
-    option: 'input-accel'
     timeout: 120
     command: '.\input-tuning.ps1 -Mode accel'
   - !powerShell:
     exeDir: true
     wait: true
     errorAction: Notify
-    option: 'input-queue'
     timeout: 180
     command: '.\input-tuning.ps1 -Mode queue'

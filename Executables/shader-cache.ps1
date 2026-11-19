@@ -1,4 +1,4 @@
-# GGOS GPU shader cache cleanup (v0.5.0) - option shader-cache.
+# GGOS GPU shader cache cleanup (v0.6.0) - always applied, no wizard option.
 #
 # Enumerates ONLY documented GPU shader cache locations under each loaded
 # interactive user profile. Existence-checked: only directories that already

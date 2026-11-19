@@ -96,8 +96,8 @@ actions:
   # wrote (DisableAIDataAnalysis / AllowRecallEnablement under
   # HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsAI - see Tasks/recall.yml
   # for the Learn sources), restoring the policy-absent OS default. NOTE:
-  # telemetry.yml writes the same two values under the telemetry option; if
-  # telemetry is selected in the new run it re-applies them after revert.
+  # telemetry.yml writes the same two values; the new run re-applies them
+  # after revert (both tasks are ungated since v0.6.0).
   # Idempotent: no-op when absent.
   - !powerShell:
     exeDir: true
