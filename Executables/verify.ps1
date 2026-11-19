@@ -50,6 +50,23 @@
 #                          live state, so the run marker is the honest check)
 #   network-ultra       -> NOTE: interrupt moderation/RSC are live driver state
 #                          with driver-dependent exposure - no fixed marker
+#   ---- v0.5.0 feature-expansion options ----
+#   ggos-theme          -> theming.ps1: HKLM\SOFTWARE\GGOS Theme = applied +
+#                          staged wallpaper file under GGOS\Assets (PASS);
+#                          per-hive WallPaper values are live user state
+#   app-* (7 options)   -> no static marker - winget app install state is
+#                          dynamic post-install -> reported as NOTE
+#   onedrive-remove    -> onedrive.ps1: OneDriveSetup.exe absent from both
+#                          documented locations + OneDrive stamp (PASS)
+#   recall-disable     -> recall.yml: WindowsAI policy values
+#                          (build-gated 26100+; NOTE on lower builds)
+#   bloat-extra        -> no static marker (dynamic appx state) -> NOTE
+#   power-ultimate     -> power-ultimate.ps1: the recorded duplicate GUID
+#                          (HKLM\SOFTWARE\GGOS\UltimatePowerPlan PlanGuid)
+#                          present in powercfg /list (PASS)
+#   security-posture   -> security-posture.ps1: ggos-security.txt exists (PASS)
+#   toolkit-install    -> toolkit.yml: Start menu shortcut .lnk exists (PASS)
+#   shader-cache       -> no static marker - cache deletion is dynamic -> NOTE
 # Results are written to %SystemRoot%\GGOS\ggos-verify.txt and echoed; HKLM
 # stamps (Installed, AppliedVersion, LastVerify) are written under
 # HKLM\SOFTWARE\GGOS with AppliedVersion parsed from playbook.conf.
@@ -91,7 +108,8 @@ foreach ($cand in $confCandidates) {
 # Kind: reg-dword | reg-sz | reg-key | bcdedit-f8 | pagefile | appx-allusers |
 #       appx-provisioned | build-gated-dword | tcpip-latency | chassis-stamp |
 #       powercfg-index | power-plan | class-pnp | undo-record |
-#       netsh-tcp-global | note
+#       netsh-tcp-global | note | file-exists | onedrive-setup-gone |
+#       recorded-plan
 # ---------------------------------------------------------------------------
 $Checks = @(
     @{ Area = 'system-optimization'; Kind = 'reg-dword'; Path = 'HKLM\SYSTEM\CurrentControlSet\Control\FileSystem'; Name = 'LongPathsEnabled'; Expected = '1'; Desc = 'Long paths enabled' },
@@ -198,7 +216,59 @@ $Checks = @(
     @{ Area = 'network-nic'; Kind = 'undo-record'; Path = 'HKLM\SOFTWARE\GGOS\NetworkUndo\NicUndo'; MatchName = '::Flow Control'; Desc = 'NIC tuning ran (undo record in NetworkUndo\NicUndo)' },
     # Ground truth: network-tuning.ps1 mode 'ultra' - interrupt moderation/RSC
     # writes are driver-dependent live state with no fixed offline marker.
-    @{ Area = 'network-ultra'; Kind = 'note'; Desc = 'no fixed offline marker - interrupt moderation/RSC are live driver state (exposure varies by driver)' }
+    @{ Area = 'network-ultra'; Kind = 'note'; Desc = 'no fixed offline marker - interrupt moderation/RSC are live driver state (exposure varies by driver)' },
+
+    # ---- v0.5.0 feature-expansion options ----
+    # Every Expected value below was read from the cited ground-truth task
+    # file or script, not invented.
+    # Ground truth: theming.ps1 (stamp + staged asset; the per-hive WallPaper
+    # values are live user state, so the stamp + staged file are the honest
+    # fixed markers).
+    @{ Area = 'ggos-theme'; Kind = 'reg-sz'; Path = 'HKLM\SOFTWARE\GGOS'; Name = 'Theme'; Expected = 'applied'; Desc = 'theming stamp (HKLM GGOS Theme = applied)' },
+    @{ Area = 'ggos-theme'; Kind = 'file-exists'; Path = (Join-Path $env:SystemRoot 'GGOS\Assets\ggos-wallpaper.jpg'); Desc = 'staged wallpaper asset exists' },
+
+    # Ground truth: apps.yml - winget installs are dynamic post-install state
+    # (same honesty rule as winget-update).
+    @{ Area = 'app-firefox';   Kind = 'note'; Desc = 'no static marker - winget app install state is dynamic post-install (Mozilla.Firefox)' },
+    @{ Area = 'app-brave';     Kind = 'note'; Desc = 'no static marker - winget app install state is dynamic post-install (Brave.Brave)' },
+    @{ Area = 'app-7zip';      Kind = 'note'; Desc = 'no static marker - winget app install state is dynamic post-install (7zip.7zip)' },
+    @{ Area = 'app-powertoys'; Kind = 'note'; Desc = 'no static marker - winget app install state is dynamic post-install (Microsoft.PowerToys)' },
+    @{ Area = 'app-steam';     Kind = 'note'; Desc = 'no static marker - winget app install state is dynamic post-install (Valve.Steam)' },
+    @{ Area = 'app-discord';   Kind = 'note'; Desc = 'no static marker - winget app install state is dynamic post-install (Discord.Discord)' },
+    @{ Area = 'app-vlc';       Kind = 'note'; Desc = 'no static marker - winget app install state is dynamic post-install (VideoLAN.VLC)' },
+
+    # Ground truth: onedrive.ps1 (official uninstaller removes its own setup
+    # binaries; end-state stamp = removed).
+    @{ Area = 'onedrive-remove'; Kind = 'onedrive-setup-gone'; Desc = 'OneDrive setup binaries absent (SysWOW64/System32)' },
+    @{ Area = 'onedrive-remove'; Kind = 'reg-sz'; Path = 'HKLM\SOFTWARE\GGOS'; Name = 'OneDrive'; Expected = 'removed'; Desc = 'OneDrive removal stamp' },
+
+    # Ground truth: recall.yml (documented WindowsAI policy values, verified
+    # against Microsoft Learn - see the task file). Build-gated at 26100; on
+    # lower builds the NOTE line is the by-design outcome.
+    @{ Area = 'recall-disable'; Kind = 'build-gated-dword'; Path = 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsAI'; Name = 'DisableAIDataAnalysis'; Expected = '1'; MinBuild = 26100; Desc = 'Recall snapshots off (DisableAIDataAnalysis = 1, 26100+ only)' },
+    @{ Area = 'recall-disable'; Kind = 'build-gated-dword'; Path = 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsAI'; Name = 'AllowRecallEnablement'; Expected = '0'; MinBuild = 26100; Desc = 'Recall availability off (AllowRecallEnablement = 0, 26100+ only)' },
+
+    # Ground truth: appx.yml bloat-extra block (dynamic family removal like
+    # bloat-oem - provisioned/installed state is machine-dynamic).
+    @{ Area = 'bloat-extra'; Kind = 'note'; Desc = 'no static marker - appx family removal state is dynamic (OutlookForWindows / MSTeams / Clipchamp)' },
+
+    # Ground truth: power-ultimate.ps1 (duplicated plan GUID recorded under
+    # HKLM\SOFTWARE\GGOS\UltimatePowerPlan; the duplicated GUID itself is
+    # system-generated, so the record is the honest fixed marker).
+    @{ Area = 'power-ultimate'; Kind = 'recorded-plan'; Path = 'HKLM\SOFTWARE\GGOS\UltimatePowerPlan'; Name = 'PlanGuid'; Desc = 'duplicated Ultimate Performance plan present in powercfg /list' },
+
+    # Ground truth: security-posture.ps1 (report file written to
+    # %SystemRoot%\GGOS\ggos-security.txt; content is a live report).
+    @{ Area = 'security-posture'; Kind = 'file-exists'; Path = (Join-Path $env:SystemRoot 'GGOS\ggos-security.txt'); Desc = 'security posture report written' },
+
+    # Ground truth: toolkit.yml (all-users Start menu shortcut created via
+    # WScript.Shell COM).
+    @{ Area = 'toolkit-install'; Kind = 'file-exists'; Path = 'C:\ProgramData\Microsoft\Windows\Start Menu\Programs\GGOS Toolkit.lnk'; Desc = 'GGOS Toolkit Start menu shortcut created' },
+
+    # Ground truth: shader-cache.ps1 - deletion is dynamic state (caches
+    # regenerate on next driver/game use), so a deleted count is not a fixed
+    # marker; the log file is informational, not a state marker.
+    @{ Area = 'shader-cache'; Kind = 'note'; Desc = 'no static marker - shader cache deletion is dynamic (caches regenerate on driver/game use)' }
 )
 
 # ---------------------------------------------------------------------------
@@ -477,6 +547,41 @@ foreach ($area in $selected) {
                 if ($found) { $status = 'PASS' }
                 else { $status = 'DRIFT'; $detail = ('Pacing Profile is not ''{0}'' (netsh int tcp show global)' -f $c.Expected) }
             }
+            'file-exists' {
+                # v0.5.0: PASS when a run-produced artifact file exists (staged
+                # wallpaper, security report, Toolkit Start menu shortcut).
+                if (Test-Path -LiteralPath $c.Path) { $status = 'PASS' }
+                else { $status = 'DRIFT'; $detail = ('file missing: {0}' -f $c.Path) }
+            }
+            'onedrive-setup-gone' {
+                # v0.5.0: the official uninstaller removes its own setup
+                # binaries from both documented locations; both must be absent.
+                # (On a machine where OneDrive was never installed they are
+                # absent too - the end state 'OneDrive not present' is what the
+                # option guarantees.)
+                $left = @(
+                    (Join-Path $env:SystemRoot 'SysWOW64\OneDriveSetup.exe'),
+                    (Join-Path $env:SystemRoot 'System32\OneDriveSetup.exe')
+                ) | Where-Object { Test-Path -LiteralPath $_ }
+                if (@($left).Count -eq 0) { $status = 'PASS' }
+                else { $status = 'DRIFT'; $detail = ('OneDrive setup binary still present: ' + (@($left) -join ', ')) }
+            }
+            'recorded-plan' {
+                # v0.5.0: the power-ultimate task duplicates the built-in
+                # Ultimate Performance template and records the system-assigned
+                # GUID under HKLM\SOFTWARE\GGOS\UltimatePowerPlan (PlanGuid).
+                # PASS = the recorded GUID is present in powercfg /list (the
+                # plan exists; activation is live state, not a fixed marker).
+                $exists, $type, $data = Get-GGRegValue -Path $c.Path -Name $c.Name
+                if (-not $exists) {
+                    $status = 'DRIFT'; $detail = ('no recorded plan GUID under {0} (option did not run or failed)' -f $c.Path)
+                }
+                else {
+                    $ok, $exit, $out = Invoke-GGCommand -FilePath 'powercfg.exe' -ArgumentList @('/list') -TimeoutSeconds 20 -Description 'powercfg list (recorded Ultimate plan check)'
+                    if ($ok -and $exit -eq 0 -and ((@($out) -join "`n") -match [regex]::Escape($data.Trim()))) { $status = 'PASS' }
+                    else { $status = 'DRIFT'; $detail = ('recorded plan GUID {0} not present in powercfg /list' -f $data) }
+                }
+            }
             'note' {
                 $status = 'NOTE'; $detail = $c.Desc
             }
@@ -512,11 +617,26 @@ catch {
 }
 
 $stampOk = $true
-foreach ($stampCmd in @(
+# F1 (senior review, 2026-11-19): stamp AppliedVersion only when the version
+# actually resolved from playbook.conf. When verify.ps1 is re-run from
+# %SystemRoot%\GGOS via the GGOS Toolkit, no playbook.conf sits next to the
+# script and the version resolves as 'UNKNOWN' - stamping that would clobber
+# the real version written during the playbook run.
+$stampCmds = @(
     @{ Args = @('add', 'HKLM\SOFTWARE\GGOS', '/v', 'Installed', '/t', 'REG_DWORD', '/d', '1', '/f'); Desc = 'HKLM\SOFTWARE\GGOS Installed stamp' },
-    @{ Args = @('add', 'HKLM\SOFTWARE\GGOS', '/v', 'AppliedVersion', '/t', 'REG_SZ', '/d', $version, '/f'); Desc = 'HKLM\SOFTWARE\GGOS AppliedVersion stamp' },
     @{ Args = @('add', 'HKLM\SOFTWARE\GGOS', '/v', 'LastVerify', '/t', 'REG_SZ', '/d', $summary, '/f'); Desc = 'HKLM\SOFTWARE\GGOS LastVerify stamp' }
-)) {
+)
+if ($version -ne 'UNKNOWN') {
+    $stampCmds = @(
+        @{ Args = @('add', 'HKLM\SOFTWARE\GGOS', '/v', 'Installed', '/t', 'REG_DWORD', '/d', '1', '/f'); Desc = 'HKLM\SOFTWARE\GGOS Installed stamp' },
+        @{ Args = @('add', 'HKLM\SOFTWARE\GGOS', '/v', 'AppliedVersion', '/t', 'REG_SZ', '/d', $version, '/f'); Desc = 'HKLM\SOFTWARE\GGOS AppliedVersion stamp' },
+        @{ Args = @('add', 'HKLM\SOFTWARE\GGOS', '/v', 'LastVerify', '/t', 'REG_SZ', '/d', $summary, '/f'); Desc = 'HKLM\SOFTWARE\GGOS LastVerify stamp' }
+    )
+}
+else {
+    Write-GGLog ('Note: playbook.conf not found next to verify.ps1; keeping the existing AppliedVersion stamp (version resolved as UNKNOWN).')
+}
+foreach ($stampCmd in $stampCmds) {
     $ok, $exit, $out = Invoke-GGCommand -FilePath $reg -ArgumentList $stampCmd.Args -TimeoutSeconds 20 -Description $stampCmd.Desc
     # Success = completed within timeout AND reg.exe exited 0 (audit F4).
     $succeeded = ($ok -and $exit -eq 0)

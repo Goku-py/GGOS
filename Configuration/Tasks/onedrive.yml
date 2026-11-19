@@ -1,0 +1,29 @@
+title: OneDrive removal
+# privilege: Admin — the !powerShell default runas; uninstalling a machine
+# component and sweeping Run keys require elevation.
+# Uninstalls the OneDrive sync client (option onedrive-remove) with the
+# official uninstaller, then cleans its autorun leftovers.
+#
+# NEVER deletes user files: OneDrive keeps each user's synchronized files
+# under %USERPROFILE%\OneDrive, and removing the app leaves that folder and
+# its contents exactly as they are. Files not yet downloaded to the PC remain
+# in the cloud only (sign in at onedrive.com to reach them).
+#
+# Reinstall path if OneDrive is wanted later (no automatic restore exists —
+# an uninstaller cannot be reverted):
+#   winget install --id Microsoft.OneDrive --exact
+#   (or the direct installer https://go.microsoft.com/fwlink/?linkid=860984)
+#
+# Uninstall procedure documented at Microsoft Q&A "How can I uninstall
+# OneDrive?": %SystemRoot%\SysWOW64\OneDriveSetup.exe /uninstall (64-bit
+# Windows), falling back to %SystemRoot%\System32\OneDriveSetup.exe
+# /uninstall. Idempotent: on a machine without OneDrive every step is a
+# no-op and the end-state stamp is still written (OneDrive absent).
+actions:
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Notify
+    option: 'onedrive-remove'
+    timeout: 600
+    command: '.\onedrive.ps1'

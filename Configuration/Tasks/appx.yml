@@ -61,3 +61,14 @@ actions:
   - !appx: {name: '*McAfee*', type: family, errorAction: Log, option: 'bloat-oem'}
   - !appx: {name: '*WildTangent*', type: family, errorAction: Log, option: 'bloat-oem'}
   - !appx: {name: '*AdobeNotification*', type: family, errorAction: Log, option: 'bloat-oem'}
+
+  # ---- Extra stock apps (v0.5.0; opt-in; option: 'bloat-extra') ----
+  # The 'new Outlook' consumer client, the consumer Teams client (the
+  # post-2023 MSIX 'MSTeams' family - NOT the legacy Win32/MicrosoftTeams
+  # classic client), and Clipchamp. All three names verified against the
+  # current CTT WinUtil config/appx.json (MIT, fetched 2026-11-19):
+  #   PackageId Microsoft.OutlookForWindows / MSTeams / Clipchamp.Clipchamp.
+  # Removing an absent family is a no-op with errorAction: Log.
+  - !appx: {name: 'Microsoft.OutlookForWindows', type: family, errorAction: Log, option: 'bloat-extra'}
+  - !appx: {name: 'MSTeams', type: family, errorAction: Log, option: 'bloat-extra'}
+  - !appx: {name: 'Clipchamp.Clipchamp', type: family, errorAction: Log, option: 'bloat-extra'}

@@ -16,6 +16,10 @@ actions:
   - !task: {path: 'Tasks/scheduled-tasks.yml'}
   - !writeStatus: {status: 'Removing bloatware', option: 'bloat-copilot'}
   - !task: {path: 'Tasks/appx.yml'}
+  - !writeStatus: {status: 'Removing OneDrive', option: 'onedrive-remove'}
+  - !task: {path: 'Tasks/onedrive.yml'}
+  - !writeStatus: {status: 'Disabling Recall snapshots', option: 'recall-disable'}
+  - !task: {path: 'Tasks/recall.yml'}
   - !writeStatus: {status: 'Applying telemetry hardening', option: 'telemetry'}
   - !task: {path: 'Tasks/telemetry.yml'}
   - !writeStatus: {status: 'Applying per-user tweaks', option: 'per-user'}
@@ -24,13 +28,25 @@ actions:
   - !task: {path: 'Tasks/input-tuning.yml'}
   - !writeStatus: {status: 'Applying gaming optimizations', option: 'gaming'}
   - !task: {path: 'Tasks/gaming.yml'}
+  - !writeStatus: {status: 'Enabling the Ultimate Performance plan', option: 'power-ultimate'}
+  - !task: {path: 'Tasks/power-plans.yml'}
   - !writeStatus: {status: 'Running disk cleanup', option: 'cleanup'}
   - !task: {path: 'Tasks/cleanup.yml'}
   - !writeStatus: {status: 'Running aggressive cleanup', option: 'cleanup-aggressive'}
   - !task: {path: 'Tasks/cleanup-aggressive.yml'}
+  - !writeStatus: {status: 'Cleaning GPU shader caches', option: 'shader-cache'}
+  - !task: {path: 'Tasks/shader-cache.yml'}
   - !writeStatus: {status: 'Updating applications', option: 'winget-update'}
   - !task: {path: 'Tasks/winget.yml'}
+  - !writeStatus: {status: 'Applying the GGOS wallpaper', option: 'ggos-theme'}
+  - !task: {path: 'Tasks/theming.yml'}
+  - !writeStatus: {status: 'Installing selected apps', option: 'app-firefox'}
+  - !task: {path: 'Tasks/apps.yml'}
   - !writeStatus: {status: 'Applying network tuning', option: 'network-latency'}
   - !task: {path: 'Tasks/network.yml'}
+  - !writeStatus: {status: 'Reporting security posture', option: 'security-posture'}
+  - !task: {path: 'Tasks/security-posture.yml'}
+  - !writeStatus: {status: 'Installing the GGOS Toolkit', option: 'toolkit-install'}
+  - !task: {path: 'Tasks/toolkit.yml'}
   - !task: {path: 'Tasks/verify.yml'}
   - !writeStatus: {status: 'GGOS finished - restart when convenient'}

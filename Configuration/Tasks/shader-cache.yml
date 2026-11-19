@@ -1,0 +1,21 @@
+title: GPU shader cache cleanup
+# privilege: Admin — enumerating and cleaning other users' profile folders
+# requires elevation; only documented cache directories are touched.
+# Cleans GPU/driver shader caches for every loaded interactive user profile
+# (option shader-cache). The task calls shader-cache.ps1 -Clean; the wizard
+# checkbox is the opt-in. Only documented cache locations are enumerated
+# (NVIDIA DXCache / GLCache / NV_Cache / PerDriverVersion\DXCache, AMD
+# DxCache / Dx9Cache, Windows D3DSCache — see the script header for sources),
+# only directories that exist are touched, and ONLY FILES inside those cache
+# directories are deleted — never the directories themselves, never anything
+# outside them. The Recycle Bin, Office auto-recover data and iTunes backups
+# are not on the path list by construction (repo safety rules). Per-path
+# deleted-file counts are logged to %SystemRoot%\GGOS\ggos-shaderclean.txt.
+actions:
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Notify
+    option: 'shader-cache'
+    timeout: 600
+    command: '.\shader-cache.ps1 -Clean'

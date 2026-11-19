@@ -1,0 +1,22 @@
+title: Security posture report
+# privilege: Admin — only so the report can read service states and HKLM
+# policy values. The script itself is READ-ONLY outside HKLM\SOFTWARE\GGOS:
+# it never changes a security setting (GGOS rule: Defender, SmartScreen,
+# Windows Update, BITS and Security Center are never disabled).
+# Read-only report of the machine's security posture: Defender services
+# (WinDefend, SecurityHealthService, wscsvc), Windows Update services
+# (wuauserv, UsoSvc, BITS), SmartScreen (documented policy value
+# EnableSmartScreen under HKLM\Software\Policies\Microsoft\Windows\System —
+# ADMX SmartScreen.admx; see security-posture.ps1 for every value's source),
+# and Defender real-time protection via Get-MpComputerStatus when available.
+# Writes %SystemRoot%\GGOS\ggos-security.txt (OK / ATTENTION / UNKNOWN per
+# item — every read failure degrades to UNKNOWN, never a crash) and a
+# summary stamp under HKLM\SOFTWARE\GGOS\SecurityPosture.
+actions:
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Notify
+    option: 'security-posture'
+    timeout: 300
+    command: '.\security-posture.ps1'

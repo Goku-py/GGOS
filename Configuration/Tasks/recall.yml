@@ -1,0 +1,33 @@
+title: Recall disable
+# privilege: Admin — HKLM policy writes require elevation.
+# Disables Windows Recall (AI snapshots) through the documented WindowsAI
+# policy surface under HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsAI
+# (ADMX: WindowsCopilot.admx). Both value names and data verified against the
+# current Microsoft Learn references (fetched 2026-11-19):
+#   - DisableAIDataAnalysis = 1 (REG_DWORD)
+#       Group Policy "Turn off saving snapshots for use with Recall"
+#       (Enabled = 1; 0 = OS default where snapshot saving follows the user's
+#       choice). Sources: Policy CSP - WindowsAI, DisableAIDataAnalysis
+#       https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsai#disableaidataanalysis
+#       (ADMX enabledValue 1 cross-checked against the published
+#       WindowsCopilot.admx policy definition) and "Manage Recall for Windows
+#       clients" https://learn.microsoft.com/en-us/windows/client-management/manage-recall
+#   - AllowRecallEnablement = 0 (REG_DWORD)
+#       Group Policy "Allow Recall to be enabled" - 0 = Recall isn't
+#       available; 1 = available (default on unmanaged devices). Sources: the
+#       same two Learn pages.
+# NOTE on the spec-proposed value 'DisableRecallEnablement': no such value
+# name exists in the current documented WindowsAI policy surface (checked in
+# the Policy CSP reference above); the documented kill switches are
+# DisableAIDataAnalysis + AllowRecallEnablement, so those are written instead.
+# telemetry.yml writes the same two values under the telemetry option; this
+# task gates them for users who tick recall-disable without telemetry.
+# Build gate: the Recall policy surface is documented for Windows 11 24H2
+# (26100) and later - AllowRecallEnablement specifically for 24H2 with
+# KB5055627 (26100.3915+). On lower builds the actions do not run at all
+# (the option is simply not applicable there; verify.yml reports NOTE).
+actions:
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsAI', value: 'DisableAIDataAnalysis', type: REG_DWORD, data: 1, option: 'recall-disable', builds: ['>=26100']}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsAI', value: 'AllowRecallEnablement', type: REG_DWORD, data: 0, option: 'recall-disable', builds: ['>=26100']}
+  # End-state stamp (same build gate; absent on lower builds by design).
+  - !registryValue: {path: 'HKLM\SOFTWARE\GGOS', value: 'Recall', type: REG_SZ, data: 'disabled', option: 'recall-disable', builds: ['>=26100']}

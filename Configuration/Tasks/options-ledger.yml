@@ -317,3 +317,139 @@ actions:
     timeout: 120
     command: |-
       Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'wireless-input'
+
+  # ---- v0.5.0 feature-expansion options (pages 6, 11-16) ----
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'shader-cache'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'shader-cache'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'ggos-theme'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'ggos-theme'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'app-firefox'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'app-firefox'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'app-brave'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'app-brave'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'app-7zip'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'app-7zip'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'app-powertoys'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'app-powertoys'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'app-steam'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'app-steam'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'app-discord'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'app-discord'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'app-vlc'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'app-vlc'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'onedrive-remove'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'onedrive-remove'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'recall-disable'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'recall-disable'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'bloat-extra'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'bloat-extra'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'power-ultimate'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'power-ultimate'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'security-posture'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'security-posture'
+
+  - !powerShell:
+    exeDir: false
+    wait: true
+    errorAction: Notify
+    option: 'toolkit-install'
+    timeout: 120
+    command: |-
+      Add-Content -Path $env:SystemRoot\GGOS\ggos-options.txt -Value 'toolkit-install'

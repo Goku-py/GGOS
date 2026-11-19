@@ -1,0 +1,27 @@
+title: Power plans
+# privilege: Admin — powercfg plan duplication/activation requires elevation.
+# Enables the built-in Ultimate Performance power plan (option
+# power-ultimate). Template GUID e9a42b02-d5df-448d-aa00-03f14749eb61 is the
+# built-in Ultimate Performance plan Windows ships - the same template the
+# gaming option's desktop plan duplicates from in gaming-power.ps1.
+#   - powercfg -duplicatescheme <template> creates the visible plan copy and
+#     prints the new "Power Scheme GUID"; the new GUID is recorded under
+#     HKLM\SOFTWARE\GGOS\UltimatePowerPlan (PlanGuid) so re-runs re-use the
+#     same plan (no duplicate copies) and verify.yml can find it in
+#     powercfg /list,
+#   - the user's current plan GUID is recorded under
+#     HKLM\SOFTWARE\GGOS\PreviousPowerPlan (PreviousPlanGuid) ONLY if that
+#     value does not already exist (the same record-once discipline as
+#     gaming-power.ps1 — a later GGOS run must never overwrite the original),
+#   - the duplicated plan is set active.
+# Ordering: main.yml runs this task after gaming.yml on purpose. If both the
+# gaming option and this option are selected, both plans exist in
+# powercfg /list and the one activated last (Ultimate Performance) is active.
+actions:
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Notify
+    option: 'power-ultimate'
+    timeout: 180
+    command: '.\power-ultimate.ps1'

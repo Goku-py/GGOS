@@ -1,0 +1,71 @@
+title: GGOS Toolkit
+# privilege: Admin — writing to %SystemRoot%\GGOS and the all-users Start
+# Menu requires elevation.
+# Installs the GGOS Toolkit for day-to-day use after the playbook run (option
+# toolkit-install):
+#   1. copies the shipped Executables to %SystemRoot%\GGOS\: ggos-toolkit.ps1,
+#      verify.ps1, ggos-common.psm1, shader-cache.ps1. Sources that are not
+#      present in this build are skipped gracefully with a skipped.txt entry
+#      (ggos-toolkit.ps1 and shader-cache.ps1 are authored on parallel
+#      tracks; a build containing either track's output — or neither — must
+#      still succeed). Only files GGOS itself ships are ever copied.
+#   2. creates an all-users Start menu shortcut
+#      C:\ProgramData\Microsoft\Windows\Start Menu\Programs\GGOS Toolkit.lnk
+#      targeting powershell.exe with -ExecutionPolicy Bypass -File
+#      "%SystemRoot%\GGOS\ggos-toolkit.ps1", WindowStyle Minimized, via the
+#      WScript.Shell COM object. When ggos-toolkit.ps1 is not shipped in this
+#      build the shortcut is still created and clearly logged — it becomes
+#      functional once a later build ships the script.
+#   3. stamps HKLM\SOFTWARE\GGOS Toolkit = installed.
+actions:
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Notify
+    option: 'toolkit-install'
+    timeout: 300
+    command: |
+      $exeDir = (Get-Location).Path
+      $destDir = Join-Path $env:SystemRoot 'GGOS'
+      $skipped = Join-Path $destDir 'skipped.txt'
+      New-Item -ItemType Directory -Path $destDir -Force | Out-Null
+      $copied = @()
+      foreach ($name in @('ggos-toolkit.ps1', 'verify.ps1', 'ggos-common.psm1', 'shader-cache.ps1')) {
+        $src = Join-Path $exeDir $name
+        if (Test-Path -LiteralPath $src) {
+          Copy-Item -LiteralPath $src -Destination (Join-Path $destDir $name) -Force
+          $copied += $name
+          Write-Output ('GGOS toolkit: copied ' + $name)
+        }
+        else {
+          Add-Content -Path $skipped -Value ('{0} SKIPPED(source missing): {1}' -f (Get-Date -Format s), $name)
+          Write-Output ('GGOS toolkit: ' + $name + ' is not shipped in this build - skipped (see skipped.txt).')
+        }
+      }
+      if ($copied -notcontains 'ggos-toolkit.ps1') {
+        Write-Output 'GGOS toolkit: ggos-toolkit.ps1 is not shipped in this build; the shortcut is created and will launch it once a later build ships the script.'
+      }
+      $lnkPath = 'C:\ProgramData\Microsoft\Windows\Start Menu\Programs\GGOS Toolkit.lnk'
+      $shortcut = (New-Object -ComObject WScript.Shell).CreateShortcut($lnkPath)
+      $shortcut.TargetPath = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
+      $shortcut.Arguments = '-ExecutionPolicy Bypass -File "' + (Join-Path $destDir 'ggos-toolkit.ps1') + '"'
+      $shortcut.WorkingDirectory = $destDir
+      # WScript.Shell WindowStyle: 1 = Normal, 3 = Maximized, 7 = Minimized.
+      $shortcut.WindowStyle = 7
+      $shortcut.Description = 'GGOS Toolkit (scripts installed by the GGOS playbook)'
+      $shortcut.Save()
+      if (Test-Path -LiteralPath $lnkPath) { Write-Output 'GGOS toolkit: Start menu shortcut created.' }
+      else { Write-Output 'GGOS toolkit: warning - the Start menu shortcut could not be created.' }
+      # F3 (senior review): on a minimal run (only toolkit-install ticked) no
+      # earlier task has created HKLM\SOFTWARE\GGOS yet - create the parent key
+      # and log the stamp result honestly instead of printing success
+      # unconditionally.
+      try {
+        New-Item -Path 'HKLM:\SOFTWARE\GGOS' -Force | Out-Null
+        New-ItemProperty -Path 'HKLM:\SOFTWARE\GGOS' -Name 'Toolkit' -Value 'installed' -PropertyType String -Force | Out-Null
+        Write-Output 'GGOS toolkit: HKLM\SOFTWARE\GGOS stamped: Toolkit = installed.'
+      }
+      catch {
+        Write-Output ('GGOS toolkit: warning - could not write the Toolkit stamp: ' + $_.Exception.Message)
+      }
+      exit 0

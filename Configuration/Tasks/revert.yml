@@ -34,3 +34,135 @@ actions:
           Write-Output ('GGOS revert: removed stale MPO override ' + $value)
         }
       }
+
+  # ---- v0.5.0 feature-expansion reverse diff ----------------------------------------------
+  # Same convention as above: entries are idempotent (no-op when absent) and
+  # only remove artifacts a GGOS run wrote. Default-apply behavior stays in
+  # the owning task file.
+
+  # ggos-theme: NOT revertable. The user's previous wallpaper value
+  # (HKCU\Control Panel\Desktop WallPaper per hive) is never recorded by
+  # theming.ps1, so no automatic restore exists; only the GGOS run stamp is
+  # removed on upgrade. Users restore their own wallpaper via Settings >
+  # Personalization > Background.
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Log
+    command: |
+      $ggos = 'HKLM:\SOFTWARE\GGOS'
+      if (Get-ItemProperty -Path $ggos -Name 'Theme' -ErrorAction SilentlyContinue) {
+        Remove-ItemProperty -Path $ggos -Name 'Theme' -Force
+        Write-Output 'GGOS revert: removed the v0.5.0 Theme stamp (the wallpaper itself is not reverted - the previous value was never recorded).'
+      }
+
+  # onedrive-remove: an uninstaller cannot be reverted automatically.
+  # Reinstall path (documented in Tasks/onedrive.yml): winget install --id
+  # Microsoft.OneDrive --exact, or the direct installer
+  # https://go.microsoft.com/fwlink/?linkid=860984. User files were never
+  # touched. Only the GGOS run stamp is removed on upgrade.
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Log
+    command: |
+      $ggos = 'HKLM:\SOFTWARE\GGOS'
+      if (Get-ItemProperty -Path $ggos -Name 'OneDrive' -ErrorAction SilentlyContinue) {
+        Remove-ItemProperty -Path $ggos -Name 'OneDrive' -Force
+        Write-Output 'GGOS revert: removed the v0.5.0 OneDrive stamp (reinstall with: winget install --id Microsoft.OneDrive --exact).'
+      }
+
+  # security-posture: the script is read-only, so nothing on the system needs
+  # undoing - only GGOS-owned state is cleared on upgrade for uniformity (F4,
+  # senior review): the SecurityPosture stamp subkey and the report file. A
+  # new run rewrites both when Security check is selected. Idempotent.
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Log
+    command: |
+      $ggos = 'HKLM:\SOFTWARE\GGOS'
+      if (Test-Path -LiteralPath ($ggos + '\SecurityPosture')) {
+        Remove-Item -LiteralPath ($ggos + '\SecurityPosture') -Force
+        Write-Output 'GGOS revert: removed the v0.5.0 SecurityPosture stamp subkey.'
+      }
+      $secReport = Join-Path $env:SystemRoot 'GGOS\ggos-security.txt'
+      if (Test-Path -LiteralPath $secReport) {
+        Remove-Item -LiteralPath $secReport -Force
+        Write-Output 'GGOS revert: removed the old security posture report (a new run rewrites it when selected).'
+      }
+
+  # recall-disable: delete the documented WindowsAI policy values a GGOS run
+  # wrote (DisableAIDataAnalysis / AllowRecallEnablement under
+  # HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsAI - see Tasks/recall.yml
+  # for the Learn sources), restoring the policy-absent OS default. NOTE:
+  # telemetry.yml writes the same two values under the telemetry option; if
+  # telemetry is selected in the new run it re-applies them after revert.
+  # Idempotent: no-op when absent.
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Log
+    command: |
+      $winAI = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsAI'
+      foreach ($value in @('DisableAIDataAnalysis', 'AllowRecallEnablement')) {
+        if (Get-ItemProperty -Path $winAI -Name $value -ErrorAction SilentlyContinue) {
+          Remove-ItemProperty -Path $winAI -Name $value -Force
+          Write-Output ('GGOS revert: removed the WindowsAI policy value ' + $value + ' (policy-absent OS default restored)')
+        }
+      }
+      $ggos = 'HKLM:\SOFTWARE\GGOS'
+      if (Get-ItemProperty -Path $ggos -Name 'Recall' -ErrorAction SilentlyContinue) {
+        Remove-ItemProperty -Path $ggos -Name 'Recall' -Force
+        Write-Output 'GGOS revert: removed the v0.5.0 Recall stamp.'
+      }
+
+  # power-ultimate: restore the user's recorded previous power plan GUID
+  # (HKLM\SOFTWARE\GGOS\PreviousPowerPlan PreviousPlanGuid - written only
+  # once per machine, so it still holds the pre-GGOS original). The recorded
+  # Ultimate plan duplicate is left in place (a leftover plan is harmless and
+  # user-visible in powercfg /list); only the active plan is restored.
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Log
+    command: |
+      Import-Module (Join-Path (Get-Location) 'ggos-common.psm1') -Force
+      $rec = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\GGOS\PreviousPowerPlan' -ErrorAction SilentlyContinue).PreviousPlanGuid
+      if ($rec) {
+        $ok, $exit, $out = Invoke-GGCommand -FilePath 'powercfg.exe' -ArgumentList @('/setactive', $rec) -TimeoutSeconds 30 -Description 'restore previous power plan (revert)'
+        if ($ok -and $exit -eq 0) { Write-Output ('GGOS revert: restored the previously active power plan (' + $rec + ').') }
+        else { Write-Output ('GGOS revert: could not restore the previous power plan (' + $rec + ') - it may no longer exist.') }
+      }
+      $undo = 'HKLM:\SOFTWARE\GGOS\UltimatePowerPlan'
+      if (Get-ItemProperty -Path $undo -Name 'PlanGuid' -ErrorAction SilentlyContinue) {
+        Remove-ItemProperty -Path $undo -Name 'PlanGuid' -Force
+        Write-Output 'GGOS revert: removed the v0.5.0 UltimatePowerPlan PlanGuid record.'
+      }
+
+  # toolkit-install: remove the copied Toolkit scripts and the Start menu
+  # shortcut (all GGOS-written artifacts; the package Executables folder
+  # remains the authoritative source). The new run re-copies what it ships.
+  - !powerShell:
+    exeDir: true
+    wait: true
+    errorAction: Log
+    command: |
+      $destDir = Join-Path $env:SystemRoot 'GGOS'
+      foreach ($name in @('ggos-toolkit.ps1', 'verify.ps1', 'ggos-common.psm1', 'shader-cache.ps1')) {
+        $path = Join-Path $destDir $name
+        if (Test-Path -LiteralPath $path) {
+          Remove-Item -LiteralPath $path -Force
+          Write-Output ('GGOS revert: removed the copied Toolkit script ' + $name)
+        }
+      }
+      $lnk = 'C:\ProgramData\Microsoft\Windows\Start Menu\Programs\GGOS Toolkit.lnk'
+      if (Test-Path -LiteralPath $lnk) {
+        Remove-Item -LiteralPath $lnk -Force
+        Write-Output 'GGOS revert: removed the GGOS Toolkit Start menu shortcut.'
+      }
+      $ggos = 'HKLM:\SOFTWARE\GGOS'
+      if (Get-ItemProperty -Path $ggos -Name 'Toolkit' -ErrorAction SilentlyContinue) {
+        Remove-ItemProperty -Path $ggos -Name 'Toolkit' -Force
+        Write-Output 'GGOS revert: removed the v0.5.0 Toolkit stamp.'
+      }
