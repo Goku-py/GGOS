@@ -42,7 +42,7 @@ $ErrorActionPreference = 'Stop'
 # Body-computed defaults: $PSScriptRoot is empty inside param() defaults under
 # Windows PowerShell 5.1 -File invocation (W1-B finding, 2026-11-23).
 if ([string]::IsNullOrWhiteSpace($RegistryDir)) { $RegistryDir = Join-Path $PSScriptRoot '..\registry' }
-if ([string]::IsNullOrWhiteSpace($OutDir))     { $OutDir     = Join-Path $PSScriptRoot '..' }
+if ([string]::IsNullOrWhiteSpace($OutDir))     { $OutDir     = Join-Path $PSScriptRoot '..\docs' }
 
 $RegistryDir = [System.IO.Path]::GetFullPath($RegistryDir)
 $OutDir      = [System.IO.Path]::GetFullPath($OutDir)

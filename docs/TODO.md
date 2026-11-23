@@ -4,7 +4,7 @@
 
 ## Standing rules (every workstream, every agent)
 
-1. **File ownership is absolute.** A workstream owns exactly its listed files. Shared files (schema, validator, core `src/nxcore/*` modules, `TWEAK_CATALOGUE.md`, `CHANGELOG.md`, `KNOWN_ISSUES.md`, `README.md`, `docs/DECISIONS.md`) are coordinator-only. Findings that need shared-file changes are reported, never self-applied.
+1. **File ownership is absolute.** A workstream owns exactly its listed files. Shared files (schema, validator, core `src/nxcore/*` modules, `TWEAK_CATALOGUE.md`, `CHANGELOG.md`, `KNOWN_ISSUES.md`, `README.md`, `DECISIONS.md`) are coordinator-only. Findings that need shared-file changes are reported, never self-applied.
 2. **Testing boundary (directive §16):** never apply/execute any tweak against the development machine. Validation = registry validator + PowerShell parser + temp-folder self-tests + read-only queries only.
 3. **Evidence discipline:** E1 requires a Microsoft/vendor documentation URL; otherwise E0 with provenance noted. Zero performance claims anywhere.
 4. **Validator is law:** `tools/Test-NxRegistry.ps1` must show zero errors attributable to the workstream's files. Banned targets / never-touch services / preset rules / duplicate targets are hard errors by design.

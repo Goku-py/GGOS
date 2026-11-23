@@ -4,7 +4,7 @@ All notable changes to the NEXTRIX repository. Dates are ISO. Statuses follow th
 
 ## 2026-11-23 - Phase 6 Documentation & Handover (v0.7.0-rc)
 
-- **Docs delivered:** `MANUAL_TESTING_GUIDE.md` (282 per-tweak sheets, generation-verified: 0 missing/duplicate IDs, 33 code blocks parsed), `HARDWARE_COMPATIBILITY.md` + `WINDOWS_COMPATIBILITY.md` (registry/engine-traced matrices), `DEPENDENCY_MATRIX.md` + `CONFLICT_MATRIX.md` (generated: 109 edges, 12 symmetric pairs, 5 groups, cycle PASS), `docs/PACKAGING.md`, `OWNER_HANDOVER.md`.
+- **Docs delivered:** `MANUAL_TESTING_GUIDE.md` (282 per-tweak sheets, generation-verified: 0 missing/duplicate IDs, 33 code blocks parsed), `HARDWARE_COMPATIBILITY.md` + `WINDOWS_COMPATIBILITY.md` (registry/engine-traced matrices), `DEPENDENCY_MATRIX.md` + `CONFLICT_MATRIX.md` (generated: 109 edges, 12 symmetric pairs, 5 groups, cycle PASS), `PACKAGING.md`, `OWNER_HANDOVER.md`.
 - **Resolver hardening from the compatibility audit:** `excludedHardware` evaluated; `builds.excluded` honoured; edition gate (Home/Pro/Enterprise/Education mapping, unknown-edition = warning) and x64 architecture gate added and live-verified; null-element hardening for synthetic inputs.
 - **Two engine defects found by the testing-guide audit and fixed:** `NxVerify` null `ExpectedValue` binding (rollback of never-existed values could throw) and journal re-arm after a verified restore now archives the old entries file instead of losing audit history (`Initialize-NxJournal` semantics updated).
 - **Data/schema completeness:** `rollback.reversible` added to the 18 NX07 entries and required by the validator; NX18-006 declares its NX19-002 dependency; README/classification/catalogue counts synced (282 entries; 242 SyntaxValidated / 40 Defined).
@@ -76,7 +76,7 @@ All notable changes to the NEXTRIX repository. Dates are ISO. Statuses follow th
   - `TWEAK_CATALOGUE.md` — proposed inventory: 20 categories, ~270 candidate tweaks, initial risk/evidence classes, rejected & excluded lists.
   - `TWEAK_CLASSIFICATION.md` — risk classes, evidence ladder, verification-status ladder, promotion rules.
   - `PROFILE_MATRIX.md` — 9 composable user profiles, eligibility and conflict-resolution rules.
-  - `docs/DECISIONS.md` — ADR log with pending decisions.
+  - `DECISIONS.md` — ADR log with pending decisions.
   - `research/README.md` — Phase 1 methodology and synthesis plan.
 
 No NEXTRIX modifications have been applied to any machine. No performance claims are made.
@@ -85,8 +85,8 @@ No NEXTRIX modifications have been applied to any machine. No performance claims
 
 - **R3 complete** (`research/sources/r3-sapphire-vain.md`, 63 KB): source-level research on SapphireOS, SapphireOS-Playbook, Vain. Headline: both references disable the OS's own recovery substrate (System Restore/VSS/WinRE/event logs) — NEXTRIX inverts this by design; Vain's scheduling engine is closed-source with hardcoded game lists, so NX19's open topology derivation is confirmed as the only compliant route.
 - **R1 complete** (`research/sources/r1-fsosx-xos.md`, 75.5 KB): FSOS-X (closed-source, claims-only), XOS Playbook (CC BY-NC-ND — reference only), XOS Toolkit (open Rust topology engine: P/E tiers, CCD/X3D via L3 asymmetry, LP→CPU-Set-ID mapping — approach validated, code not copyable).
-- **Reconciliation log created** (`docs/RESEARCH_RECONCILIATION.md`): ADOPT/ADAPT/REJECT registers, licensing constraints, catalogue change queue (2 candidate additions, rejected-list strengthening, evidence confirmations), consolidated-pass checklist.
-- All six research streams complete (`research/sources/r1–r6`, all read in full by the coordinator); reconciliation log finalized (`docs/RESEARCH_RECONCILIATION.md`).
+- **Reconciliation log created** (`RESEARCH_RECONCILIATION.md`): ADOPT/ADAPT/REJECT registers, licensing constraints, catalogue change queue (2 candidate additions, rejected-list strengthening, evidence confirmations), consolidated-pass checklist.
+- All six research streams complete (`research/sources/r1–r6`, all read in full by the coordinator); reconciliation log finalized (`RESEARCH_RECONCILIATION.md`).
 
 ### Phase 1 complete + consolidated pass (same day)
 

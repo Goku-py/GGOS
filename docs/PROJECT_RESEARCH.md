@@ -1,6 +1,6 @@
 # NEXTRIX — Project Research
 
-**Status:** Phase 1 deliverable · generated 2026-11-23 · all six research streams (`research/sources/r1–r6`) read in full by the coordinator and reconciled via `docs/RESEARCH_RECONCILIATION.md`.
+**Status:** Phase 1 deliverable · generated 2026-11-23 · all six research streams (`research/sources/r1–r6`) read in full by the coordinator and reconciled via `RESEARCH_RECONCILIATION.md`.
 
 **Global evidence verdict:** across all 14 reference projects plus the AME Wizard platform, **zero independently verified (VERIFIED) performance results exist**. Every performance number found anywhere (Hone's +51 %/+27.7 % Valorant, ReviOS's TSX "4–5×", FSOS-X's RAM/process/footprint figures) is a developer-reported DEV-BENCHMARK or DOCUMENTED claim. **None may be cited in NEXTRIX as evidence of performance.** Functional verification ≠ performance verification, per the directive.
 

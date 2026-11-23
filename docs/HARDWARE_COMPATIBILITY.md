@@ -11,7 +11,7 @@
 | `[REG]` | Field in a `registry/NX*.json` entry — the single source of truth |
 | `[CODE]` | Behaviour read from `src/nxcore/*.ps1` |
 | `[RES]` | `COMPATIBILITY_RESEARCH.md`, `PROJECT_RESEARCH.md`, `TWEAK_RESEARCH.md` |
-| `[ADR]` | `docs/DECISIONS.md` |
+| `[ADR]` | `DECISIONS.md` |
 | `[DOC]` | `KNOWN_ISSUES.md`, `SECURITY_POLICY.md`, `TWEAK_CLASSIFICATION.md`, `PROFILE_MATRIX.md` |
 
 **Reading rules**

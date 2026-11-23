@@ -186,7 +186,7 @@ A **runtime companion** (installed by the playbook, user-optional, explicit cons
 
 **Residual unknowns:** wizard EULA text is not published online (PD-2 residual); 24H2 (26100) is a reference-divergent build (skipped by XOS, supported by four others) → extra capability checks on 24H2-targeted tweaks; UltraOS's `research/ame-wizard-format-spec.md` (42 KB community spec) and `scripts/ame-dryrun.py` (engine-rule port) are flagged for a follow-up read in Phase 3 to harden the playbook build/dry-run tooling.
 
-**ADR-006 compensations bind all Phase 3+ engineering** (see `docs/DECISIONS.md`): journal-only rollback, `UseKernelDriver: false`, zero security-neutralization requirements, disclosed trust posture, pinned wizard version, hash-pinned artifacts.
+**ADR-006 compensations bind all Phase 3+ engineering** (see `DECISIONS.md`): journal-only rollback, `UseKernelDriver: false`, zero security-neutralization requirements, disclosed trust posture, pinned wizard version, hash-pinned artifacts.
 
 ## 9. Phase gates
 

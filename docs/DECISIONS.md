@@ -28,7 +28,7 @@ Owner-approved and pending decisions. Each ADR records context, decision, owner 
 
 - **Date:** 2026-11-23
 - **Decision by:** Project owner.
-- **Decision:** Supported targets are Windows 11 23H2 (build 22631), 24H2 (26100), 25H2 (26200) and 26H2 (build **26300** — confirmed in code by four independent reference projects: Atlas `atlas.json`, ReviOS `playbook.conf`, Sophia `supported_windows_builds.json` (UBR ≥ 9974), UltraOS `playbook.conf`; accessed 2026-11-23; see `docs/RESEARCH_RECONCILIATION.md`). Insider builds are treated as experimental. Windows 10 is out of scope.
+- **Decision:** Supported targets are Windows 11 23H2 (build 22631), 24H2 (26100), 25H2 (26200) and 26H2 (build **26300** — confirmed in code by four independent reference projects: Atlas `atlas.json`, ReviOS `playbook.conf`, Sophia `supported_windows_builds.json` (UBR ≥ 9974), UltraOS `playbook.conf`; accessed 2026-11-23; see `RESEARCH_RECONCILIATION.md`). Insider builds are treated as experimental. Windows 10 is out of scope.
 - **Consequences:** Build gates target Win11 23H2+; capability detection remains the primary applicability mechanism per directive Section 10 (build number alone never implies a feature exists).
 
 ## ADR-004 — Phase gating: no mass implementation before catalogue approval

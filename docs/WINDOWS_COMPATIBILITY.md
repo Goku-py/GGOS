@@ -11,7 +11,7 @@
 | `[REG]` | Field in `registry/NX*.json` |
 | `[CODE]` | `src/nxcore/*.ps1`, `tools/*.ps1`, generated `playbook/` |
 | `[RES]` | `COMPATIBILITY_RESEARCH.md`, `PROJECT_RESEARCH.md`, `TWEAK_RESEARCH.md` |
-| `[ADR]` | `docs/DECISIONS.md` |
+| `[ADR]` | `DECISIONS.md` |
 | `[DOC]` | `KNOWN_ISSUES.md`, `SECURITY_POLICY.md`, `TWEAK_CLASSIFICATION.md`, `PROFILE_MATRIX.md` |
 
 **Reading rules**

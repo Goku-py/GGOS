@@ -1,11 +1,9 @@
 # NEXTRIX — Tweak Catalogue (PROPOSED)
 
-**Status:** v0.3 — Phase 4 Wave 1 in progress. **Nothing has been applied to any machine.** Per-entry implementation status now lives in `registry/*.json` (the source of truth); this catalogue remains the reviewed inventory. Evidence corrections from Wave-1 verification are applied below; no performance evidence exists anywhere.
-
-**Status:** v0.2 DRAFT PROPOSAL — candidate inventory for owner review. **Nothing here is implemented or applied.** Phase 1 reconciliation (2026-11-23) confirmed all desk evidence assignments; no E-levels were raised (details: `docs/RESEARCH_RECONCILIATION.md`).
+**Status:** v0.5 - Phases 0-6 complete (v0.7.0-rc). **Nothing has been applied to any machine.** Per-entry implementation status lives in `registry/*.json` (the source of truth: 282 entries; 242 SyntaxValidated / 40 Defined). This catalogue remains the reviewed inventory; evidence corrections from Phases 1-6 are applied below, and no performance evidence exists anywhere.
 **Conventions**
 
-- All entries: implementation status = **CANDIDATE** (see ladder in `TWEAK_CLASSIFICATION.md`).
+- Entry status lives in `registry/*.json` (see the ladder in `TWEAK_CLASSIFICATION.md`); nothing in this repository holds an owner-gated status.
 - **Class** = risk class (CORE / CONDITIONAL / ADVANCED / EXPERIMENTAL / TROUBLESHOOTING). **Ev** = evidence desk assignment (E0 community-known · E1 Microsoft/vendor-documented); E2+ only via owner testing.
 - **One primary category per tweak.** Where the master directive lists an item in two categories, the catalogue assigns one owner and cross-references (`XREF`). Registry target duplication under different names is a build-validation failure.
 - Mechanism-owner rule: a *mechanism* (e.g. per-app GPU preference, USB selective suspend, SysMain service config) is owned by exactly one entry; other categories reference or parameterize it.
@@ -435,7 +433,7 @@ Driver install/removal stays separate from gaming optimization; nothing auto-ins
 
 ## Rejected / excluded from NEXTRIX
 
-Standing policy items (directive-derived), confirmed by Phase 1 research (2026-11-23; evidence tags per `docs/RESEARCH_RECONCILIATION.md`):
+Standing policy items (directive-derived), confirmed by Phase 1 research (2026-11-23; evidence tags per `RESEARCH_RECONCILIATION.md`):
 
 1. **Global Fullscreen Optimizations disable** — forbidden (directive NX02); per-game TROUBLESHOOTING only (NX04-005). Confirmed: XOS disables MPO globally and FSOS-X pulled its MPO toggle twice for user-reported issues [r1].
 2. **Blanket service disabling / "disable-all" lists** — no such feature exists (NX11 policy). Confirmed: 50–250-service disable lists observed in four references with documented fallout (SMB1, Task Manager, THE FINALS, GameBar) [r2, r3, r4].

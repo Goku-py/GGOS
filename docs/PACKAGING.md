@@ -204,7 +204,7 @@ That loader reads **only immediate children of `Executables/`**, and only names 
 2. loads `NX01.ps1` .. `NX20.ps1` (including the bundled `NX18.ps1`) by name order;
 3. throws before any mutation unless `Invoke-NxPreFlight`, `Invoke-NxRegistryTweak` and `Invoke-NxRollback` are in scope.
 
-This is a packaging workaround, not a generator change. If W1-B later makes the generator load `Executables/` recursively (or adds an explicit loader path), the bootstrap can be dropped and `docs/PACKAGING.md` updated - until then, removing it produces a package that fails at the first `!powerShell` action.
+This is a packaging workaround, not a generator change. If W1-B later makes the generator load `Executables/` recursively (or adds an explicit loader path), the bootstrap can be dropped and `PACKAGING.md` updated - until then, removing it produces a package that fails at the first `!powerShell` action.
 
 ### NX18 packaging note
 
@@ -235,7 +235,7 @@ This is a packaging workaround, not a generator change. If W1-B later makes the 
 ## 10. Non-goals and boundaries
 
 - This tooling does **not** execute the playbook, mutate the host, download anything, or select a paid/licensed component.
-- It does not publish releases. GitHub Release upload, tagging and `ReleaseApproved` promotion remain owner/coordinator decisions (`docs/TODO.md` release cadence).
+- It does not publish releases. GitHub Release upload, tagging and `ReleaseApproved` promotion remain owner/coordinator decisions (`TODO.md` release cadence).
 - It does not reimplement the generator. `playbook/` content is W1-B's contract; packaging only copies, flattens and pins.
 - It does not make performance or compatibility claims. Evidence levels stay E0/E1 until owner testing promotes them.
 

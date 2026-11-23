@@ -69,9 +69,9 @@ x64 Windows 11 only, builds 22631–26300; Home included where an ADMX-backed lo
 
 ## 9. Handover checklist
 
-- [ ] Read: `README.md` → `docs/DECISIONS.md` → `PROJECT_ARCHITECTURE.md` → `MANUAL_TESTING_GUIDE.md`.
+- [ ] Read: `README.md` → `DECISIONS.md` → `PROJECT_ARCHITECTURE.md` → `MANUAL_TESTING_GUIDE.md`.
 - [ ] Run the static gate on a clean machine (validator + bounded runner).
-- [ ] Build the package (`tools/New-NxPackage.ps1 -Version 0.7.0`), verify `SHA256SUMS`, follow `docs/PACKAGING.md` for the owner 7-Zip step.
+- [ ] Build the package (`tools/New-NxPackage.ps1 -Version 0.7.0`), verify `SHA256SUMS`, follow `PACKAGING.md` for the owner 7-Zip step.
 - [ ] Snapshot the test machine; execute the guide's NX16 → read-only → CORE path; record evidence.
 - [ ] Promote statuses yourself (owner-only) and send findings back into `KNOWN_ISSUES.md`.
 

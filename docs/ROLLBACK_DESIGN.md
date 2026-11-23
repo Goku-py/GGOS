@@ -32,7 +32,7 @@
 
 ## 3. Only-if-ours divergence handling
 
-Rollback reads the live state first. If it no longer equals the recorded modified state, the target is **skipped and reported** (`Result: Diverged`, journaled) — the user's later change wins, and NEXTRIX never clobbers it. This is the semantics three independent references converged on (XOS 0.6.4, FSOS-X R10, WinUtil `KeepServiceStartup` — `docs/RESEARCH_RECONCILIATION.md` adopt register).
+Rollback reads the live state first. If it no longer equals the recorded modified state, the target is **skipped and reported** (`Result: Diverged`, journaled) — the user's later change wins, and NEXTRIX never clobbers it. This is the semantics three independent references converged on (XOS 0.6.4, FSOS-X R10, WinUtil `KeepServiceStartup` — `RESEARCH_RECONCILIATION.md` adopt register).
 
 ## 4. Integrity gating
 

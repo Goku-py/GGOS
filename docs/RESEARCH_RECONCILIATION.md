@@ -86,7 +86,7 @@ R6's platform findings materially affect ADR-002 (owner's AME Wizard choice, mad
 4. **Ecosystem signal:** AtlasOS — one of the two flagship verified playbooks — **moved off AME Wizard this same week** (v0.6.0, 2026-11-22) to its own Rust manager + TrustedInstaller-brokered PowerShell install, citing similar engineering control needs.
 5. **Countervailing:** the AME authoring schema itself is well-designed (14 typed actions, per-action `builds`/`cpuArch`/`errorAction`, requirement gates, feature pages, upgrade semantics) and directly portable; `.apbx` is a plain password-zip (no technical lock-in); the wizard's UX and user base are the real assets.
 
-Escalated to the project owner on 2026-11-23 with three options (PowerShell engine emulating the AME schema · hybrid PS-core + optional later AME export · keep AME Wizard with documented compensations). Outcome recorded as ADR-006 in `docs/DECISIONS.md`.
+Escalated to the project owner on 2026-11-23 with three options (PowerShell engine emulating the AME schema · hybrid PS-core + optional later AME export · keep AME Wizard with documented compensations). Outcome recorded as ADR-006 in `DECISIONS.md`.
 
 ## Catalogue change queue (applied in the consolidated pass)
 
