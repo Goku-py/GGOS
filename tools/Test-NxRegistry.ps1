@@ -12,9 +12,13 @@
 #>
 [CmdletBinding()]
 param(
-    [string]$RegistryDir = (Join-Path $PSScriptRoot '..\registry'),
-    [string]$SchemaPath  = (Join-Path $PSScriptRoot '..\registry\schema.json')
+    [string]$RegistryDir,
+    [string]$SchemaPath
 )
+# Body-computed defaults: $PSScriptRoot is empty inside param() defaults under
+# Windows PowerShell 5.1 -File invocation (W1-B finding, 2026-11-23).
+if (-not $RegistryDir) { $RegistryDir = Join-Path $PSScriptRoot '..\registry' }
+if (-not $SchemaPath)  { $SchemaPath  = Join-Path $PSScriptRoot '..\registry\schema.json' }
 $ErrorActionPreference = 'Stop'
 $errors = New-Object System.Collections.Generic.List[string]
 $warnings = New-Object System.Collections.Generic.List[string]

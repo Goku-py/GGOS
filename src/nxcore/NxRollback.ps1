@@ -50,18 +50,65 @@ function Invoke-NxRollback {
     $journal = Read-NxJournal -Path $JournalRoot
     if ($journal.integrityErrors.Count -gt 0) {
         Write-Warning ("Journal integrity errors - refusing partial rollback: " + ($journal.integrityErrors -join '; '))
-        return [pscustomobject]@{ aborted = $true; integrityErrors = $journal.integrityErrors; restored = @(); diverged = @(); failed = @() }
+        return [pscustomobject]@{ aborted = $true; integrityErrors = $journal.integrityErrors; restored = @(); diverged = @(); failed = @(); irreversible = @(); delegated = @() }
     }
-    $candidates = @($journal.entries | Where-Object { $_.operation -eq 'apply' -and $_.result -eq 'Success' })
+    $candidates = @($journal.entries | Where-Object { $_.operation -eq 'apply' -and ($_.result -eq 'InProgress' -or $_.result -eq 'Success' -or $_.result -eq 'Success-Irreversible') })
     if ($TweakId)  { $candidates = @($candidates | Where-Object { $_.tweakId -eq $TweakId }) }
     if ($Category) { $candidates = @($candidates | Where-Object { $_.tweakId -like "$Category-*" }) }
     if ($Profile)  { $candidates = @($candidates | Where-Object { @($_.profiles) -contains $Profile }) }
-    $restored = @(); $diverged = @(); $failed = @()
+    $restored = @(); $diverged = @(); $failed = @(); $irreversible = @()
+    $seenTargets = @{}
     # Reverse order: undo the most recent changes first.
     [array]::Reverse($candidates)
+    # Category delegation: target types the registry engine v0.1 does not cover are
+    # handed to a category rollback engine when one is loaded (e.g. Invoke-Nx09Rollback).
+    $delegated = @(); $delegatedTweakIds = @{}
+    $catGroups = @{}
+    foreach ($e in $candidates) {
+        $tt = [string]$e.original.targetType
+        if ($tt -eq 'registry' -or $tt -eq 'function') { continue }
+        $cat = [string]$e.tweakId
+        if ($cat.Length -lt 4) { continue }
+        $cat = $cat.Substring(0, 4)
+        if (-not $catGroups.ContainsKey($cat)) { $catGroups[$cat] = @{} }
+        $catGroups[$cat][$e.tweakId] = $true
+    }
+    foreach ($cat in $catGroups.Keys) {
+        $fnName = 'Invoke-Nx' + $cat.Substring(2) + 'Rollback'
+        $fn = Get-Command -Name $fnName -CommandType Function -ErrorAction SilentlyContinue
+        if ($null -eq $fn) {
+            $failed += [pscustomobject]@{ tweakId = $cat; reason = "no category rollback engine loaded for target types of $cat (report-only)" }
+            continue
+        }
+        foreach ($tid in $catGroups[$cat].Keys) {
+            try {
+                $r = & $fnName -JournalRoot $JournalRoot -TweakId $tid
+                if ($null -ne $r) {
+                    $delegated += [pscustomobject]@{ category = $cat; tweakId = $tid; delegatedTo = $fnName; restored = @($r.restored).Count; diverged = @($r.diverged).Count; failed = @($r.failed).Count }
+                    if ($r.restored) { $restored += @($r.restored) }
+                    if ($r.diverged) { $diverged += @($r.diverged) }
+                    if ($r.failed) { $failed += @($r.failed) }
+                    if ($r.PSObject.Properties['irreversible'] -and $r.irreversible) { $irreversible += @($r.irreversible) }
+                    $delegatedTweakIds[$tid] = $true
+                }
+            } catch {
+                $failed += [pscustomobject]@{ tweakId = $tid; reason = "delegated rollback via $fnName failed: $($_.Exception.Message)" }
+            }
+        }
+    }
     foreach ($e in $candidates) {
         $orig = $e.original
+        if ($delegatedTweakIds.ContainsKey($e.tweakId) -and $orig.targetType -ne 'registry' -and $orig.targetType -ne 'function') { continue }
+        if ($orig.targetType -eq 'function') { continue }  # functions journal their own registry mutations; the engine entry only records the invocation
         if ($orig.targetType -ne 'registry') { $failed += [pscustomobject]@{ entry = $e; reason = "target type '$($orig.targetType)' rollback not implemented in engine v0.1" }; continue }
+        if ($e.result -eq 'Success-Irreversible') {
+            $irreversible += [pscustomobject]@{ tweakId = $e.tweakId; target = "$($orig.path) :: $($orig.name)"; reason = 'operation labeled irreversible at apply time - manual restore path documented in the registry entry' }
+            Add-NxJournalEntry -Path $JournalRoot -TweakId $e.tweakId -TweakVersion $e.tweakVersion -Operation 'rollback' -Approval 'RollbackRun' -Original $e.original -Modified $e.modified -Result 'Skipped-Irreversible' -Verification 'NotRun' -ErrorInfo 'apply entry labeled irreversible' -Profiles @($e.profiles)
+            continue
+        }
+        $tkey = ("registry|" + [string]$orig.path + "|" + [string]$orig.name).ToLower()
+        if ($seenTargets.ContainsKey($tkey)) { continue }  # only the newest apply entry per target is a restore candidate
+        $seenTargets[$tkey] = $true
         $live = Capture-NxRegistryValue -Path $orig.path -Name $orig.name
         $stillOurs = Test-NxCurrentEqualsDescriptor -Descriptor $live -Kind ([string]$e.modified.kind) -Value $e.modified.value
         if (-not $stillOurs) {
@@ -81,5 +128,5 @@ function Invoke-NxRollback {
         }
     }
     if ($All -and $restored.Count -gt 0) { Complete-NxJournalRestore -Path $JournalRoot }
-    return [pscustomobject]@{ aborted = $false; restored = $restored; diverged = $diverged; failed = $failed; integrityErrors = @() }
+    return [pscustomobject]@{ aborted = $false; restored = $restored; diverged = $diverged; failed = $failed; irreversible = $irreversible; delegated = $delegated; integrityErrors = @() }
 }

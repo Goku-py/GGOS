@@ -1,5 +1,7 @@
 # NEXTRIX — Tweak Catalogue (PROPOSED)
 
+**Status:** v0.3 — Phase 4 Wave 1 in progress. **Nothing has been applied to any machine.** Per-entry implementation status now lives in `registry/*.json` (the source of truth); this catalogue remains the reviewed inventory. Evidence corrections from Wave-1 verification are applied below; no performance evidence exists anywhere.
+
 **Status:** v0.2 DRAFT PROPOSAL — candidate inventory for owner review. **Nothing here is implemented or applied.** Phase 1 reconciliation (2026-11-23) confirmed all desk evidence assignments; no E-levels were raised (details: `docs/RESEARCH_RECONCILIATION.md`).
 **Conventions**
 
@@ -24,7 +26,7 @@
 | NX01-007 | Notification defaults configuration | CORE | E1 | Per-user toast settings + documented policy paths |
 | NX01-008 | Global UWP background-app permission policy | CONDITIONAL | E0 | Per-user global toggle; per-app management lives NX11-002 |
 | NX01-009 | Windows Search indexing scope configuration | CONDITIONAL | E1 | Documented indexing scope mgmt; SSD/HDD parameters via NX06 guidance; XREF NX11-008 |
-| NX01-010 | Disable search highlights | CORE | E0 | `IsDynamicSearchBoxEnabled`; per-user |
+| NX01-010 | Disable search highlights | CORE | E1 | Microsoft-documented AllowSearchHighlights/EnableDynamicContentInWSB policy covers the same feature (verified 2026-11-23); per-user |
 | NX01-011 | Delivery Optimization configuration | CONDITIONAL | E1 | Documented DO mode/bandwidth policies; E1 |
 | NX01-012 | Automatic maintenance schedule | CONDITIONAL | E1 | Documented MaintenanceSettings; wake-time trade-off stated |
 | NX01-013 | Windows Update active hours configuration | CORE | E1 | Documented policy; owner-chosen window |
@@ -39,12 +41,12 @@ Mechanisms owned by NX04 (HAGS, per-app GPU preference, VRR, Auto HDR, FSO per-g
 | ID | Tweak | Class | Ev | Notes |
 |---|---|---|---|---|
 | NX02-001 | Windows Game Mode configuration | CORE | E1 | Documented Settings toggle; registry family journaled |
-| NX02-002 | Xbox Game Bar configuration | CONDITIONAL | E0 | User preference; Game Pass users cautioned |
-| NX02-003 | Disable Game DVR | CONDITIONAL | E0 | Esports-conditional; Streamer profile excludes |
+| NX02-002 | Xbox Game Bar configuration | CONDITIONAL | E1 | Microsoft-documented values (UseNexusForGameBarEnabled etc., verified 2026-11-23); Game Pass users cautioned |
+| NX02-003 | Disable Game DVR | CONDITIONAL | E1 | Microsoft-documented AllowGameDVR policy (GameDVR.admx, verified 2026-11-23); Streamer profile excludes |
 | NX02-004 | Disable background game recording | CONDITIONAL | E0 | Conflict: capture/streaming users — profile-guarded |
-| NX02-005 | Optimizations for windowed games | CONDITIONAL | E1 | Documented 24H2 toggle; capability-checked |
+| NX02-005 | Optimizations for windowed games | CONDITIONAL | E0 | Corrected from E1: no Microsoft documentation exists for the DirectXUserGlobalSettings encoding (verified 2026-11-23); community-established across three references; capability-checked |
 | NX02-006 | Game Mode notification suppression | CORE | E0 | Per-user |
-| NX02-007 | Game capture configuration | CONDITIONAL | E0 | Streamer/capture preservation rules apply |
+| NX02-007 | Game capture configuration | CONDITIONAL | E1 | Microsoft-documented VKM shortcut values (verified 2026-11-23); Streamer/capture preservation rules apply |
 | NX02-008 | Xbox Gaming Services management | CONDITIONAL | E0 | Dependency-aware (Game Pass, NX12 Xbox removal conflict) |
 | NX02-009 | Per-game driver graphics application | CONDITIONAL | E0 | COMPOSITION of NX04-009…023 per game; no duplicate targets |
 | NX02-010 | Game-specific launch configuration | CONDITIONAL | E0 | COMPOSITION of NX19-004/005 at launch |
@@ -458,4 +460,4 @@ Phase 1 research-confirmed additions (each with source evidence in `research/sou
 ## Catalogue statistics (v0.1)
 
 272 candidate entries across 20 categories · risk mix: CORE ≈ 26%, CONDITIONAL ≈ 45%, ADVANCED ≈ 22%, EXPERIMENTAL ≈ 3%, TROUBLESHOOTING ≈ 5% · evidence: E1 ≈ 60%, E0 ≈ 40%, E2+ = 0 (none claimed; E2+ only via owner-supplied results).
-Every entry is CANDIDATE status. Implementation begins only after owner approval of this catalogue; the rejected list above is research-confirmed as of 2026-11-23.
+Implementation status per entry lives in `registry/*.json` (source of truth). Wave 1 (2026-11-23) implemented NX01/NX02/NX04/NX09/NX16 at the levels recorded there; evidence corrections applied to the rows above (NX01-010, NX02-002/-003/-007 → E1; NX02-005 → E0).

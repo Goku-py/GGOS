@@ -14,18 +14,18 @@
 
 ## PHASE 4 — Tweak implementation (waves 1–3)
 
-### Wave 1 — IN FLIGHT (launched 2026-11-23; gate: release v0.3.0)
+### Wave 1 — COMPLETE (all six workstreams delivered 2026-11-23; gate: release v0.3.0)
 
 | # | Task | Owner (agent) | Files owned | Status |
 |---|---|---|---|---|
-| 1.1 | Finish NX16 engine functions (12 `Defined` → `Implemented`) | W1-A | `registry/NX16.json`, `src/nxcore/functions/NX16.ps1`, `tools/selftests/Test-NX16.ps1` | IN FLIGHT |
-| 1.2 | AME playbook generator (registry → playbook source, dry-run mode) | W1-B | `tools/Invoke-NxBuild.ps1`, `playbook/**` | IN FLIGHT |
-| 1.3 | NX01 Windows Foundation (16 entries) | W1-C | `registry/NX01.json`, `src/nxcore/functions/NX01.ps1` | IN FLIGHT |
-| 1.4 | NX02 Gaming & Esports (12 entries; per-game FSO stays in NX04) | W1-D | `registry/NX02.json`, `src/nxcore/functions/NX02.ps1` | IN FLIGHT |
-| 1.5 | NX09 Power Management (15 entries; AC/DC journaled separately; never delete active/stock plans) | W1-E | `registry/NX09.json`, `src/nxcore/functions/NX09.ps1` | IN FLIGHT |
-| 1.6 | NX04 GPU & Graphics (23 entries; vendor-gated; undocumented driver interfaces stay `Defined` + guided) | W1-F | `registry/NX04.json`, `src/nxcore/functions/NX04.ps1` | IN FLIGHT |
+| 1.1 | Finish NX16 engine functions (12 `Defined` → `Implemented`) | W1-A | `registry/NX16.json`, `src/nxcore/functions/NX16.ps1`, `tools/selftests/Test-NX16.ps1` | DONE |
+| 1.2 | AME playbook generator (registry → playbook source, dry-run mode) | W1-B | `tools/Invoke-NxBuild.ps1`, `playbook/**` | DONE |
+| 1.3 | NX01 Windows Foundation (16 entries) | W1-C | `registry/NX01.json`, `src/nxcore/functions/NX01.ps1` | DONE |
+| 1.4 | NX02 Gaming & Esports (12 entries; per-game FSO stays in NX04) | W1-D | `registry/NX02.json`, `src/nxcore/functions/NX02.ps1` | DONE |
+| 1.5 | NX09 Power Management (15 entries; AC/DC journaled separately; never delete active/stock plans) | W1-E | `registry/NX09.json`, `src/nxcore/functions/NX09.ps1` | DONE |
+| 1.6 | NX04 GPU & Graphics (23 entries; vendor-gated; undocumented driver interfaces stay `Defined` + guided) | W1-F | `registry/NX04.json`, `src/nxcore/functions/NX04.ps1` | DONE |
 
-Gate 1 checklist (coordinator): full validator across all `registry/NX*.json` · parser check all functions · independent review agent audits wave for policy compliance · integrate · release v0.3.0.
+Gate 1 result (2026-11-23): **PASSED** — validator 0 errors/0 warnings (83 tweaks); self-tests 63/63 (NX16), 62/62 (NX09), 11/11 (journal, incl. a 40-iteration integrity regression loop); generator 0 errors, 34 journaled registry writes, 0 raw writes; parser clean on PowerShell 5.1 + 7. Released as **v0.3.0**. Wave 2 launching immediately after.
 
 ### Wave 2 — PENDING (launch after Gate 1)
 
@@ -72,7 +72,7 @@ Gate 1 checklist (coordinator): full validator across all `registry/NX*.json` ·
 
 | Wave | Version | Trigger |
 |---|---|---|
-| 1 | v0.3.0 | Gate 1 passed (validator + review + integration) |
+| 1 | v0.3.0 | **RELEASED 2026-11-23** — Gate 1 passed |
 | 2 | v0.4.0 | Gate 2 passed |
 | 3 | v0.5.0 | Gate 3 passed |
 | 4 | v0.6.0 | NX18 self-tested |

@@ -9,10 +9,10 @@
       "subcategory": "Recovery substrate", "kind": "configuration",
       "description": "Enables System Restore protection on the system drive with a sane disk allocation.",
       "objective": "Guarantee an OS-level recovery anchor exists before NEXTRIX changes anything.",
-      "technicalExplanation": "Removes DisableSR/DisableRPC policy values if present (journaled), enables protection via Enable-ComputerRestore on the system drive, and sets a disk allocation the user selects (default 2-6 GB). NEXTRIX never deletes restore points or shadow copies (inversion of the reference pattern that sabotages recovery, PROJECT_RESEARCH).",
+      "technicalExplanation": "Removes DisableSR/DisableRPC policy values if present (journaled), then enables protection via Enable-ComputerRestore on the system drive with the current allocation. Explicit allocation changes (vssadmin shadowstorage) are deliberately out of scope for this entry - a destructive write for a cosmetic dial is not worth it. NEXTRIX never deletes restore points or shadow copies (inversion of the reference pattern that sabotages recovery, PROJECT_RESEARCH).",
       "modificationType": "function",
       "defaultState": "Windows default: System Restore often disabled on fresh Windows 11 installs.",
-      "proposedState": "Protection enabled on the system drive with user-selected allocation.",
+      "proposedState": "Protection enabled on the system drive with the existing allocation.",
       "risk": "CORE", "evidence": "E1",
       "profiles": ["P1","P2","P3","P4","P5","P6","P7","P8","P9"], "workloads": ["all"],
       "requiredHardware": {}, "excludedHardware": {},
@@ -20,14 +20,14 @@
       "builds": { "min": 22631, "max": 26300, "excluded": [] },
       "dependencies": [], "conflicts": [],
       "privileges": "Admin", "restart": "None",
-      "apply": { "actions": [ { "type": "function", "function": "Enable-NxSystemRestore", "parameters": { "diskPercent": 3 } } ] },
+      "apply": { "actions": [ { "type": "function", "function": "Enable-NxSystemRestore", "parameters": {} } ] },
       "verify": { "procedure": "Get-ComputerRestorePoint lists points and protection is enabled for the system drive." },
       "rollback": { "procedure": "Disable-ComputerRestore for the system drive; prior policy values restored from journal.", "reversible": true },
       "originalState": { "method": "DisableSR/DisableRPC policy values and prior protection state captured to journal before change." },
       "sideEffects": ["Disk space consumed by restore points within the chosen allocation."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/powershell/module/microsoft.powershell.management/enable-computerrestore", "r4-synergy-ultraos.md (L0)", "r5-winutil-sophia.md (CreateRestorePoint)"],
-      "status": "Defined", "presetExcluded": false, "version": 1
+      "status": "Implemented", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-002", "name": "Pre-change restore point creation ritual", "category": "NX16",
@@ -52,7 +52,7 @@
       "sideEffects": ["Brief VSS activity during point creation."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/powershell/module/microsoft.powershell.management/checkpoint-computer", "r4-synergy-ultraos.md (RESTOREPOINT.ps1)", "r4-synergy-ultraos.md (SynToolkit RestorePointService)"],
-      "status": "Defined", "presetExcluded": false, "version": 1
+      "status": "Implemented", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-003", "name": "Targeted registry backup", "category": "NX16",
@@ -77,7 +77,7 @@
       "sideEffects": ["Small disk usage under %ProgramData%\\NEXTRIX\\Backups."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/windows-server/administration/windows-commands/reg-export", "r2-atlasos-revios.md (winServices.reg validated-backup pattern)"],
-      "status": "Defined", "presetExcluded": false, "version": 1
+      "status": "Implemented", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-004", "name": "Pre-flight original-state snapshot bundle", "category": "NX16",
@@ -102,7 +102,7 @@
       "sideEffects": ["Disk usage for reports and backups."],
       "approval": "Selection",
       "documentationSource": ["r1-fsosx-xos.md (StockValueCapture capture-refusal + completeness gate)", "r2-atlasos-revios.md (transactional front door)"],
-      "status": "Defined", "presetExcluded": false, "version": 1
+      "status": "Implemented", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-005", "name": "Service configuration backup", "category": "NX16",
@@ -127,7 +127,7 @@
       "sideEffects": ["Small disk usage."],
       "approval": "Selection",
       "documentationSource": ["r2-atlasos-revios.md (validated winServices.reg, first-backup-kept)", "r3-sapphire-vain.md (service Start export-before-change)"],
-      "status": "Defined", "presetExcluded": false, "version": 1
+      "status": "Implemented", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-006", "name": "Scheduled task backup", "category": "NX16",
@@ -152,7 +152,7 @@
       "sideEffects": ["Small disk usage."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/powershell/module/scheduledtasks/export-scheduledtask", "r1-fsosx-xos.md (per-task backup + verified disable)"],
-      "status": "Defined", "presetExcluded": false, "version": 1
+      "status": "Implemented", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-007", "name": "DISM health check & repair tooling", "category": "NX16",
@@ -177,7 +177,7 @@
       "sideEffects": ["ScanHealth can take several minutes."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/windows-hardware/manufacture/desktop/repair-a-windows-image"],
-      "status": "Defined", "presetExcluded": false, "version": 1
+      "status": "Implemented", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-008", "name": "SFC verification tooling", "category": "NX16",
@@ -202,7 +202,7 @@
       "sideEffects": ["Verify pass can take minutes."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/windows-server/administration/windows-commands/sfc"],
-      "status": "Defined", "presetExcluded": false, "version": 1
+      "status": "Implemented", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-009", "name": "Component store cleanup (on-demand)", "category": "NX16",
@@ -227,7 +227,7 @@
       "sideEffects": ["Takes several minutes; temporary elevated CPU/disk usage."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["https://learn.microsoft.com/windows-hardware/manufacture/desktop/update-os-components", "r5-winutil-sophia.md (ResetBase rejected)"],
-      "status": "Defined", "presetExcluded": false, "version": 1
+      "status": "Implemented", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-010", "name": "Driver inventory & history report", "category": "NX16",
@@ -252,7 +252,7 @@
       "sideEffects": ["None (read-only)."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/windows/win32/cimwin32prov/win32-pnpsigneddriver"],
-      "status": "Defined", "presetExcluded": false, "version": 1
+      "status": "Implemented", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-011", "name": "Driver Store selective cleanup", "category": "NX16",
@@ -270,14 +270,14 @@
       "builds": { "min": 22631, "max": 26300, "excluded": [] },
       "dependencies": ["NX16-010"], "conflicts": [],
       "privileges": "Admin", "restart": "None",
-      "apply": { "actions": [ { "type": "function", "function": "Invoke-NxDriverStoreClean", "parameters": { "perPackageConsent": true } } ] },
+      "apply": { "actions": [ { "type": "function", "function": "Invoke-NxDriverStoreClean", "parameters": {} } ] },
       "verify": { "procedure": "pnputil enum no longer lists the removed orphaned packages; in-use drivers untouched." },
       "rollback": { "procedure": "Honest labeling: driver-package deletion is NOT journal-reversible; the before/after inventory and original .inf names are recorded for manual reinstall.", "reversible": false },
       "originalState": { "method": "Full package enumeration exported to the backup set before any deletion." },
       "sideEffects": ["Removing the wrong package can break a device - hence per-package consent and orphan-only scope."],
       "approval": "ExplicitConsent",
       "documentationSource": ["https://learn.microsoft.com/windows-server/administration/windows-commands/pnputil"],
-      "status": "Defined", "presetExcluded": true, "version": 1
+      "status": "Implemented", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX16-012", "name": "Windows build & UBR verification report", "category": "NX16",
@@ -427,7 +427,7 @@
       "sideEffects": ["Writes one zip file to the owner-chosen location."],
       "approval": "Selection",
       "documentationSource": ["r1-fsosx-xos.md (Export PC Specs; diagnostic ZIP uploads nothing)", "r5-winutil-sophia.md (session logging)"],
-      "status": "Defined", "presetExcluded": false, "version": 1
+      "status": "Implemented", "presetExcluded": false, "version": 1
     }
   ]
 }

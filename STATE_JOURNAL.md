@@ -17,7 +17,7 @@ No secrets ever: the journal stores configuration states, tweak IDs, approvals a
 
 ## 2. Entry schema (one per apply/rollback/verify/failed step)
 
-`seq` · `utc` · `tweakId` · `tweakVersion` · `operation` (apply/rollback/skip/verify/failed) · `approval` · `profiles[]` · `original` · `modified` · `result` · `verification` · `errorInfo` · `hash`
+`seq` · `tsUtcUnixMs` (integer by design — date-like strings are auto-converted by `ConvertFrom-Json` and re-serialize lossily, which would break the integrity chain) · `tweakId` · `tweakVersion` · `operation` (apply/rollback/skip/verify/failed) · `approval` · `profiles[]` · `original` · `modified` · `result` · `verification` · `errorInfo` · `hash`
 
 Original-state descriptors (registry scope in engine v0.1; one descriptor type per modification family as categories land):
 
@@ -27,7 +27,7 @@ Original-state descriptors (registry scope in engine v0.1; one descriptor type p
 
 1. **Journal-first:** the original-state entry is written BEFORE any mutation (step 7 of the 10-step protocol before step 8). No journal record → no change, ever.
 2. **Capture-refusal (stacking detection):** `Initialize-NxJournal` refuses to arm over an existing journal — an already-NEXTRIX-tweaked state is never treated as "original". A `restoredVerifiedUtc` marker (set by verified full rollback) re-arms capture.
-3. **Integrity chain:** every entry carries `hash = SHA256(prevHash | seq | canonicalJSON)`. `Read-NxJournal` re-verifies the whole chain; rollback **refuses to run** on a tampered journal (test 6: falsified `seq` detected).
+3. **Integrity chain:** every entry carries `hash = SHA256(prevHash | seq | canonicalJSON)`. `Read-NxJournal` re-verifies the whole chain; rollback **refuses to run** on a tampered journal (test 6: falsified `seq` detected). Reads use a fresh, permissively-shared file read with one retry so a transient partial read (AV scan, concurrent I/O) can never be misreported as tampering — a real modification fails deterministically on both attempts.
 4. **Only-if-ours restore:** a target is restored only if its live state still equals the recorded modified state; divergence (user/other-tool change after apply) is reported, never clobbered (tests 7–9).
 5. **Exact-original restoration:** values are rewritten with their original kind; values that never existed are deleted; the original **existence** and **key existence** are part of the record — never guessed Windows defaults.
 6. **Concurrency:** appends hold a named mutex (`Local\NEXTRIX_Journal_v1`); the manifest is rewritten via temp-file + atomic move.

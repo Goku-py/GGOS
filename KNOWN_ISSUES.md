@@ -14,6 +14,10 @@
 6. **Research gaps inherited:** SapphireOS ISOs (Discord-gated), Vain's scheduling engine (closed, RE-prohibited), FSOS-X/Hone internals (closed), XOS's stable C# toolkit, all bundled binaries — unauditable, and documented as such; several large source files were not fetched (enumerated per stream in `research/sources/r1–r6` limitations sections).
 7. **24H2 (26100) is the divergent build** — skipped by XOS, UCPD-quirky per SynergyOS; 24H2-targeted tweaks carry extra capability checks by policy.
 8. **Per-tweak documentation depth:** NX16 now carries full 32-field registry metadata; the remaining 19 categories are queued for the same depth as they are implemented (Phase 4 order: NX01, NX02, NX09, NX04, then the rest).
+9. **Wizard confirmation UX:** the AME platform cannot express per-tweak confirmation dialogs; `SelectionPlusConfirmation`/`ExplicitConsent` models are journal-recorded but enforced at selection level in the generated playbook (platform limitation, disclosed).
+10. **Parameterized rollback in the wizard UI:** the wizard cannot collect free-text parameters; per-tweak/-category/-profile rollback calls in `rollback.yml` carry placeholders to edit, while `-All` is fully functional (documented).
+11. **Packaging not yet automated:** the generator emits playbook source + a SHA256-pinned NxCore manifest; copying NxCore flat into `Executables/` and building the `.apbx` remains a documented manual step (TODO Wave 5).
+12. **HKCU scope in the generated playbook:** journaled registry writes execute as the invoking elevated user, so HKCU resolves to that user's hive (journal-consistent, matches `Invoke-NxApply`). Per-user rollout to other profiles would require dedicated functions (documented, W1-B note).
 
 ## B. Ecosystem issue knowledge shaping NEXTRIX (summary; full citations in `COMPATIBILITY_RESEARCH.md` §3)
 

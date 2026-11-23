@@ -46,7 +46,7 @@ function Initialize-NxJournal {
     if (-not (Test-Path $Path)) { New-Item -Path $Path -ItemType Directory -Force | Out-Null }
     $manifest = [ordered]@{
         schemaVersion = 1
-        journalVersion = '1.0'
+        journalVersion = '1.1'
         createdAtUtc   = (Get-Date).ToUniversalTime().ToString('o')
         captureStatus  = 'Complete'
         entries        = 0
@@ -129,7 +129,10 @@ function Add-NxJournalEntry {
         $seq = [int]$manifest.entries + 1
         $entry = [ordered]@{
             seq          = $seq
-            utc          = (Get-Date).ToUniversalTime().ToString('o')
+            # Integer timestamp by design: JSON date-like strings are silently
+            # converted to DateTime by ConvertFrom-Json and re-serialize lossily,
+            # breaking the integrity chain (~1/10 writes). See STATE_JOURNAL.md.
+            tsUtcUnixMs  = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
             tweakId      = $TweakId
             tweakVersion = $TweakVersion
             operation    = $Operation
@@ -160,33 +163,49 @@ function Read-NxJournal {
     $entriesPath = Join-Path $Path 'journal.jsonl'
     $state = Read-NxManifest -Path $Path
     if (-not $state.present) { return [pscustomobject]@{ integrityErrors = @(); entries = @(); manifestPresent = $false } }
-    $prev = $state.manifest.lastHash
-    $read = @()
-    if (Test-Path $entriesPath) { $read = @(Get-Content $entriesPath -Encoding UTF8 | Where-Object { $_.Trim().Length -gt 0 }) }
-    $entries = New-Object System.Collections.Generic.List[object]
-    $errors = New-Object System.Collections.Generic.List[string]
-    $expectedPrev = 'GENESIS'
-    foreach ($line in $read) {
-        try {
-            $e = $line | ConvertFrom-Json
-            $storedHash = $e.hash
-            $clone = [ordered]@{}
-            foreach ($p in $e.PSObject.Properties) {
-                if ($p.Name -ne 'hash') { $clone[$p.Name] = $p.Value }
+    $result = $null
+    # Two attempts with fresh, permissively-shared file reads: a transient partial
+    # read (AV scanning, concurrent I/O) must not be misreported as tampering.
+    # A real modification fails deterministically on every attempt.
+    for ($attempt = 1; $attempt -le 2; $attempt++) {
+        $read = @()
+        if (Test-Path $entriesPath) {
+            $text = ''
+            try { $text = [System.IO.File]::ReadAllText($entriesPath, [System.Text.Encoding]::UTF8) } catch { }
+            if ($text.Length -gt 0) {
+                $read = @($text -split "\r?\n" | Where-Object { $_.Trim().Length -gt 0 })
+            } else {
+                $read = @()
             }
-            $canonical = ($clone | ConvertTo-Json -Depth 8 -Compress)
-            $expected = Get-NxSha256Hex ("$expectedPrev|$($e.seq)|$canonical")
-            if ($expected -ne $storedHash) { $errors.Add("seq $($e.seq): integrity mismatch") }
-            $expectedPrev = $storedHash
-            $entries.Add($e)
-        } catch {
-            $errors.Add("unparseable journal line: $($_.Exception.Message)")
         }
+        $entries = New-Object System.Collections.Generic.List[object]
+        $errors = New-Object System.Collections.Generic.List[string]
+        $expectedPrev = 'GENESIS'
+        foreach ($line in $read) {
+            try {
+                $e = $line | ConvertFrom-Json
+                $storedHash = $e.hash
+                $clone = [ordered]@{}
+                foreach ($p in $e.PSObject.Properties) {
+                    if ($p.Name -ne 'hash') { $clone[$p.Name] = $p.Value }
+                }
+                $canonical = ($clone | ConvertTo-Json -Depth 8 -Compress)
+                $expected = Get-NxSha256Hex ("$expectedPrev|$($e.seq)|$canonical")
+                if ($expected -ne $storedHash) { $errors.Add("seq $($e.seq): integrity mismatch") }
+                $expectedPrev = $storedHash
+                $entries.Add($e)
+            } catch {
+                $errors.Add("unparseable journal line: $($_.Exception.Message)")
+            }
+        }
+        if ($entries.Count -ne [int]$state.manifest.entries) {
+            $errors.Add("manifest count $($state.manifest.entries) != journal lines $($entries.Count)")
+        }
+        $result = [pscustomobject]@{ integrityErrors = $errors; entries = $entries; manifestPresent = $true; manifest = $state.manifest }
+        if ($errors.Count -eq 0) { break }
+        if ($attempt -lt 2) { Start-Sleep -Milliseconds 200 }
     }
-    if ($entries.Count -ne [int]$state.manifest.entries) {
-        $errors.Add("manifest count $($state.manifest.entries) != journal lines $($entries.Count)")
-    }
-    return [pscustomobject]@{ integrityErrors = $errors; entries = $entries; manifestPresent = $true; manifest = $state.manifest }
+    return $result
 }
 
 # Only-if-ours predicate: does the live state still equal what we recorded writing?

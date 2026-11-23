@@ -1,0 +1,393 @@
+{
+  "schemaVersion": 1,
+  "category": "NX02",
+  "categoryName": "Gaming & Esports",
+  "categoryNote": "Gaming & Esports entries NX02-001..NX02-012. Cross-reference rule (TWEAK_CATALOGUE.md): mechanisms owned by NX04 (HAGS, per-app GPU preference, VRR, Auto HDR, per-game FSO, MPO) are XREF'd there, never duplicated here - NX02 writes none of those targets. Global FSO disable is forbidden (rejected list); per-game FSO is NX04-005 (TROUBLESHOOTING). No IFEO 'Debugger' hijacks anywhere (XOS systray.exe pattern is rejected, r1). Streamer protection (PROFILE_MATRIX.md): every entry that disables capture excludes P4 from its profiles array. This file is the single source of truth for NX02; the playbook build is generated from it.",
+  "tweaks": [
+    {
+      "id": "NX02-001", "name": "Windows Game Mode configuration", "category": "NX02",
+      "subcategory": "Game Mode", "kind": "configuration",
+      "description": "Pins the Windows Game Mode toggle ON to an explicit, journaled state (a user who wants it off simply does not select this entry).",
+      "objective": "Make the Game Mode state explicit and rollback-safe instead of leaving the per-user toggle implicit.",
+      "technicalExplanation": "Writes the per-user GameBar family: AutoGameModeEnabled=1 (documented on Microsoft's public Windows 11 settings reference as the backing value of the Gaming > Game Mode > Game Mode toggle) and AllowAutoGameMode=1 (community-known family member written identically by XOS r1; NOT on the Microsoft settings reference page - E0 within this E1 entry). Both writes run through the shared engine pipeline: exact original value/existence/kind captured to the journal before any mutation, configuration state verified after apply, originals restorable via NX16-013.",
+      "modificationType": "registry",
+      "defaultState": "Windows default: Game Mode toggle present under Settings > Gaming > Game Mode; backing registry values may be absent on a fresh profile.",
+      "proposedState": "AutoGameModeEnabled=1 and AllowAutoGameMode=1 (DWord) under HKCU\\SOFTWARE\\Microsoft\\GameBar, journaled. This entry pins ON; registry-data parameterization is not yet wired in the engine, so an OFF variant is a settings-app change, not a selectable variant of this entry.",
+      "risk": "CORE", "evidence": "E1",
+      "profiles": ["P1","P2","P3","P4","P5","P6","P9"], "workloads": ["gaming","esports"],
+      "requiredHardware": {}, "excludedHardware": {},
+      "editions": ["Home","Pro","Enterprise","Education"],
+      "builds": { "min": 22631, "max": 26300, "excluded": [] },
+      "dependencies": [], "conflicts": [],
+      "privileges": "User", "restart": "None",
+      "apply": { "actions": [
+        { "type": "registry", "path": "HKCU:\\SOFTWARE\\Microsoft\\GameBar", "name": "AutoGameModeEnabled", "kind": "DWord", "data": 1, "capabilityPath": "HKCU:\\SOFTWARE\\Microsoft\\GameBar" },
+        { "type": "registry", "path": "HKCU:\\SOFTWARE\\Microsoft\\GameBar", "name": "AllowAutoGameMode", "kind": "DWord", "data": 1, "capabilityPath": "HKCU:\\SOFTWARE\\Microsoft\\GameBar" }
+      ] },
+      "verify": { "procedure": "Test-NxConfigurationState read-back of both values equals the intended DWord state; verification journaled (pipeline step 10)." },
+      "rollback": { "procedure": "Invoke-NxRollback -TweakId NX02-001 restores journaled originals (exact kind and value; values that never existed are deleted).", "reversible": true },
+      "originalState": { "method": "Pipeline steps 2-6: Capture-NxRegistryValue records each value's key existence, value existence, kind and exact data to the journal before any mutation." },
+      "sideEffects": ["Game Mode behavior is Windows-defined; NEXTRIX pins the toggle state only and claims no performance effect (per TWEAK_CLASSIFICATION.md, performance questions remain PENDING until owner evidence at E2+)."],
+      "approval": "Selection",
+      "documentationSource": [
+        "https://learn.microsoft.com/en-us/windows/apps/develop/settings/settings-windows-11 (AutoGameModeEnabled documented as the Game Mode toggle backing value; fetched and confirmed 2026-11-23)",
+        "research/sources/r1-fsosx-xos.md (XOS GameBar family: AllowAutoGameMode + AutoGameModeEnabled; community-known member AllowAutoGameMode is not on the Microsoft settings reference page)"
+      ],
+      "status": "Implemented", "presetExcluded": false, "version": 1
+    },
+    {
+      "id": "NX02-002", "name": "Xbox Game Bar configuration", "category": "NX02",
+      "subcategory": "Game Bar", "kind": "configuration",
+      "description": "Disables the controller-nexus way of opening the Xbox Game Bar (per-user), leaving capture and the Game Bar itself functional.",
+      "objective": "Remove the controller-button Game Bar trigger for users who never use it, without disabling any capture capability.",
+      "technicalExplanation": "Sets UseNexusForGameBarEnabled=0 (DWord) under HKCU\\SOFTWARE\\Microsoft\\GameBar. This value is documented on Microsoft's public Windows 11 settings reference as the backing value of the Gaming > Game Bar > 'Allow your controller to open Game Bar' toggle (E1 verified 2026-11-23; catalogue desk-assigned E0, raised on direct verification). Game Pass caution: this entry does not touch the Xbox app, Gaming Services or Game Pass in any way - Game Pass users are only cautioned that Game Bar overlays are a supported launch surface for some titles.",
+      "modificationType": "registry",
+      "defaultState": "Windows default: the Xbox/nexus controller button opens Game Bar when the toggle is on.",
+      "proposedState": "UseNexusForGameBarEnabled=0 (DWord) under HKCU\\SOFTWARE\\Microsoft\\GameBar, journaled; Game Bar remains launchable by keyboard and Start menu.",
+      "risk": "CONDITIONAL", "evidence": "E1",
+      "profiles": ["P1","P2","P3","P4","P5","P6","P9"], "workloads": ["gaming"],
+      "requiredHardware": {}, "excludedHardware": {},
+      "editions": ["Home","Pro","Enterprise","Education"],
+      "builds": { "min": 22631, "max": 26300, "excluded": [] },
+      "dependencies": [], "conflicts": [],
+      "privileges": "User", "restart": "None",
+      "apply": { "actions": [
+        { "type": "registry", "path": "HKCU:\\SOFTWARE\\Microsoft\\GameBar", "name": "UseNexusForGameBarEnabled", "kind": "DWord", "data": 0, "capabilityPath": "HKCU:\\SOFTWARE\\Microsoft\\GameBar" }
+      ] },
+      "verify": { "procedure": "Test-NxConfigurationState read-back equals DWord 0; verification journaled." },
+      "rollback": { "procedure": "Invoke-NxRollback -TweakId NX02-002 restores the journaled original (only-if-ours).", "reversible": true },
+      "originalState": { "method": "Pipeline steps 2-6: Capture-NxRegistryValue records UseNexusForGameBarEnabled's prior key existence, value existence, kind and exact data to the journal before any mutation." },
+      "sideEffects": ["The controller nexus/Xbox button no longer opens Game Bar (per-user); keyboard shortcuts and Start-menu launch are unaffected. OBS/ShadowPlay capture is unaffected (P4 streamer protection respected: this entry disables no capture)."],
+      "approval": "Selection",
+      "documentationSource": [
+        "https://learn.microsoft.com/en-us/windows/apps/develop/settings/settings-windows-11 (UseNexusForGameBarEnabled documented as the 'Allow your controller to open Game Bar' toggle backing value; fetched and confirmed 2026-11-23)",
+        "research/sources/r1-fsosx-xos.md (XOS GameBar family)",
+        "research/sources/r4-synergy-ultraos.md (SynergyOS settings.yml: UseNexusForGameBarEnabled=0; its HKCR ms-gamebar protocol repoint is a rejected hijack pattern NOT adopted here)"
+      ],
+      "status": "Implemented", "presetExcluded": false, "version": 1
+    },
+    {
+      "id": "NX02-003", "name": "Disable Game DVR", "category": "NX02",
+      "subcategory": "Game DVR & capture", "kind": "configuration",
+      "description": "Disables Windows Game DVR capture for the user plus a machine-wide policy leg (three declarative writes, all journaled).",
+      "objective": "Stop background-capable DVR capture for users who never use it (esports-conditional), with every prior state journaled.",
+      "technicalExplanation": "Three declarative writes: (1) HKCU\\...\\GameDVR AppCaptureEnabled=0 and (2) HKCU\\SYSTEM\\GameConfigStore GameDVR_Enabled=0 (community-known per-user DVR master pair; written identically by XOS r1 and by Sophia's XBOXGameBar function, MIT source fetched 2026-11-23), plus (3) the policy leg HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\GameDVR AllowGameDVR=0, documented by Microsoft's ApplicationManagement Policy CSP (GameDVR.admx, 'Enables or disables Windows Game Recording and Broadcasting') - E1 verified 2026-11-23. REJECTED patterns not used: XOS's IFEO systray.exe debugger hijacks against GameBar/bcastdvr executables (r1 REJECT list) and any FSE behavior values (GameDVR_FSEBehaviorMode/FSEBehavior/HonorUserFSEBehaviorMode belong to NX04-005 per SynToolkit's FSO fence, r4; Vain's forced FSE values are a rejected pattern, r3). The policy leg is machine-wide, hence Admin privileges and SelectionPlusConfirmation; users who want per-user-only capture changes can skip this entry and select NX02-004 and/or NX02-007 instead.",
+      "modificationType": "registry",
+      "defaultState": "Windows default: Game DVR capture available; values may be absent on a fresh profile (absent = Windows decides).",
+      "proposedState": "AppCaptureEnabled=0, GameDVR_Enabled=0 (per-user) and AllowGameDVR=0 (policy), all journaled with exact originals.",
+      "risk": "CONDITIONAL", "evidence": "E1",
+      "profiles": ["P1","P2","P3","P5","P6","P9"], "workloads": ["esports","gaming"],
+      "requiredHardware": {}, "excludedHardware": {},
+      "editions": ["Home","Pro","Enterprise","Education"],
+      "builds": { "min": 22631, "max": 26300, "excluded": [] },
+      "dependencies": [], "conflicts": [],
+      "privileges": "Admin", "restart": "None",
+      "apply": { "actions": [
+        { "type": "registry", "path": "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\GameDVR", "name": "AppCaptureEnabled", "kind": "DWord", "data": 0, "capabilityPath": "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\GameDVR" },
+        { "type": "registry", "path": "HKCU:\\SYSTEM\\GameConfigStore", "name": "GameDVR_Enabled", "kind": "DWord", "data": 0, "capabilityPath": "HKCU:\\SYSTEM\\GameConfigStore" },
+        { "type": "registry", "path": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\GameDVR", "name": "AllowGameDVR", "kind": "DWord", "data": 0, "capabilityPath": "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows" }
+      ] },
+      "verify": { "procedure": "Test-NxConfigurationState read-back of all three values equals DWord 0; verification journaled per action." },
+      "rollback": { "procedure": "Invoke-NxRollback -TweakId NX02-003 restores each journaled original in reverse order (per-user values and the policy value; values that never existed are deleted, including the policy key NEXTRIX created).", "reversible": true },
+      "originalState": { "method": "Pipeline steps 2-6 capture existence/kind/exact value of all three targets before any mutation (policy leg captures pre-change policy absence too)." },
+      "sideEffects": [
+        "Game Bar recording/broadcast becomes unavailable (per-user pair) and is policy-blocked machine-wide (policy leg); Win+Alt+R stops capturing.",
+        "P4 (Streamer) is EXCLUDED from this entry by design (PROFILE_MATRIX.md capture preservation); capture/streaming users must not select it.",
+        "Game Pass caution: this entry does not remove the Xbox app, Gaming Services or Game Pass; only the capture feature is disabled."
+      ],
+      "approval": "SelectionPlusConfirmation",
+      "documentationSource": [
+        "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-applicationmanagement (AllowGameDVR policy documented: GameDVR.admx, key Software\\Policies\\Microsoft\\Windows\\GameDVR; fetched and confirmed 2026-11-23)",
+        "research/sources/r1-fsosx-xos.md (XOS: GameDVR capture values=0 + policy AllowGameDVR=0; its IFEO hijacks are REJECTED by NEXTRIX policy and are not implemented)",
+        "research/sources/r5-winutil-sophia.md (Sophia XBOXGameBar Disable/Enable pair: AppCaptureEnabled + GameDVR_Enabled; MIT source fetched 2026-11-23)",
+        "research/sources/r4-synergy-ultraos.md (SynToolkit FSO fence: FSE values are NX04-005 territory, explicitly not GameDVR_Enabled/AppCaptureEnabled)"
+      ],
+      "status": "Implemented", "presetExcluded": false, "version": 1
+    },
+    {
+      "id": "NX02-004", "name": "Disable background game recording", "category": "NX02",
+      "subcategory": "Game DVR & capture", "kind": "configuration",
+      "description": "Disables the 'record in the background' DVR buffer independently of the DVR master switches.",
+      "objective": "Stop the rolling background-capture buffer for users who never use 'record the last X minutes' (esports-conditional).",
+      "technicalExplanation": "Sets HistoricalCaptureEnabled=0 (DWord) under HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\GameDVR. E0: this value is community-known, not documented on Microsoft's public settings reference (checked 2026-11-23); the value name is corroborated by public source code, including OBS Studio's own libobs, which reads HistoricalCaptureEnabled to detect Windows background recording (GitHub code search 2026-11-23, 589 hits), and by the XOS GameDVR capture family (r1). Missing value is treated as 'Windows decides', never as off (uncertainty discipline).",
+      "modificationType": "registry",
+      "defaultState": "Windows default: background recording available when Game DVR is enabled; value may be absent on a fresh profile.",
+      "proposedState": "HistoricalCaptureEnabled=0 (DWord) under HKCU\\...\\GameDVR, journaled with the exact original.",
+      "risk": "CONDITIONAL", "evidence": "E0",
+      "profiles": ["P1","P2","P3","P5","P6","P9"], "workloads": ["esports","gaming"],
+      "requiredHardware": {}, "excludedHardware": {},
+      "editions": ["Home","Pro","Enterprise","Education"],
+      "builds": { "min": 22631, "max": 26300, "excluded": [] },
+      "dependencies": [], "conflicts": [],
+      "privileges": "User", "restart": "None",
+      "apply": { "actions": [
+        { "type": "registry", "path": "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\GameDVR", "name": "HistoricalCaptureEnabled", "kind": "DWord", "data": 0, "capabilityPath": "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\GameDVR" }
+      ] },
+      "verify": { "procedure": "Test-NxConfigurationState read-back equals DWord 0; verification journaled." },
+      "rollback": { "procedure": "Invoke-NxRollback -TweakId NX02-004 restores the journaled original (only-if-ours).", "reversible": true },
+      "originalState": { "method": "Pipeline capture of HistoricalCaptureEnabled's prior existence/kind/value before mutation." },
+      "sideEffects": [
+        "'Record the last X minutes' no longer works while this is set; manual recording (if left enabled) is unaffected by this value.",
+        "P4 (Streamer) is EXCLUDED from this entry by design (PROFILE_MATRIX.md capture preservation); capture/streaming users must not select it."
+      ],
+      "approval": "Selection",
+      "documentationSource": [
+        "research/sources/r1-fsosx-xos.md (XOS GameDVR capture family = 0)",
+        "GitHub corroboration 2026-11-23: HistoricalCaptureEnabled appears in 589 public code results incl. obsproject/obs-studio libobs/obs-windows.c (reads the value to detect Windows background recording) and FunkyFr3sh/GameDVR_Config - community-known E0, no Microsoft documentation found"
+      ],
+      "status": "Implemented", "presetExcluded": false, "version": 1
+    },
+    {
+      "id": "NX02-005", "name": "Optimizations for windowed games", "category": "NX02",
+      "subcategory": "Windowed games", "kind": "configuration",
+      "description": "Enables the Windows 11 'Optimizations for windowed games' toggle via its registry encoding for DirectX 10/11 windowed/borderless games.",
+      "objective": "Pin the 24H2-era windowed-games toggle to ON via its registry encoding, build-gated and capability-checked.",
+      "technicalExplanation": "Writes the INI-style REG_SZ DirectXUserGlobalSettings under HKCU\\Software\\Microsoft\\DirectX\\UserGpuPreferences (the key family corroborated by SynergyOS final.bat r4; the earlier draft's 'UserGlobalSettings' key name was wrong and is corrected) with the single component 'SwapEffectUpgradeEnable=1', through the shared read-modify-write composer Set-NxDirectXGlobalSetting (NX04-003's mechanism module) so sibling components are preserved. Build-gated to 26100+. EVIDENCE NOTE (honest desk verification, 2026-11-23): the catalogue desk-assigned E1, but no learn.microsoft.com or support.microsoft.com page documents this registry value encoding - the Settings toggle is corroborated only via Microsoft Q&A community answers. Per the repo rule 'E1 requires a Microsoft/vendor documentation URL; otherwise E0 with provenance noted', this entry is recorded E0: the encoding is community-established and written identically by three independent references (XOS Win11 branch r1, SynergyOS final.bat r4, Vain 08-tweaks r3). Divergence from the catalogue's E1 is flagged to the coordinator for catalogue review. Composer sharing: NX04-003 and NX02-005 write different components of the same value through the same composer, which preserves every sibling field - no conflict remains between the entries.",
+      "modificationType": "function",
+      "defaultState": "Windows default: toggle state follows the Settings app; the value may be absent on a fresh profile (absent = Windows decides).",
+      "proposedState": "SwapEffectUpgradeEnable=1 composed into DirectXUserGlobalSettings under HKCU\\Software\\Microsoft\\DirectX\\UserGpuPreferences, siblings preserved and journaled.",
+      "risk": "CONDITIONAL", "evidence": "E0",
+      "profiles": ["P1","P2","P3","P4","P5","P6","P9"], "workloads": ["gaming","esports"],
+      "requiredHardware": {}, "excludedHardware": {},
+      "editions": ["Home","Pro","Enterprise","Education"],
+      "builds": { "min": 26100, "max": 26300, "excluded": [] },
+      "dependencies": [], "conflicts": [],
+      "privileges": "User", "restart": "None",
+      "apply": { "actions": [
+        { "type": "function", "function": "Set-NxDirectXGlobalSetting", "parameters": { "Component": "SwapEffectUpgradeEnable", "Value": 1 } }
+      ] },
+      "verify": { "procedure": "Test-NxConfigurationState read-back equals the intended String with kind preserved; verification journaled." },
+      "rollback": { "procedure": "Invoke-NxRollback -TweakId NX02-005 restores the exact journaled original blob (or deletes the value if it never existed).", "reversible": true },
+      "originalState": { "method": "Pipeline capture of the full original REG_SZ (all fields, exact bytes) before mutation - essential because this value is a multi-field blob." },
+      "sideEffects": [
+        "Sibling fields inside the same REG_SZ value (e.g. VRROptimizeEnable, composed by NX04-003 via the same Set-NxDirectXGlobalSetting composer) are preserved by the read-modify-write merge; the whole original value is journaled and restorable. No conflict remains (composer-enforced sharing).",
+        "Already-running games must be restarted to pick up the changed presentation path; no reboot is required.",
+        "XOS pairs this write with VRROptimizeEnable=0 (r1); NEXTRIX deliberately writes ONLY the SwapEffectUpgradeEnable field's minimal encoding and leaves VRR semantics to NX04 (cross-reference rule)."
+      ],
+      "approval": "Selection",
+      "documentationSource": [
+        "research/sources/r1-fsosx-xos.md (XOS Win11 branch: per-user DirectXUserGlobalSettings SwapEffectUpgradeEnable=1)",
+        "research/sources/r4-synergy-ultraos.md (final.bat: DirectX\\UserGpuPreferences SwapEffectUpgradeEnable=1)",
+        "research/sources/r3-sapphire-vain.md (08-tweaks: SwapEffectUpgradeEnable=1)",
+        "Verification note 2026-11-23: learn.microsoft.com settings reference (settings-windows-11) and support.microsoft.com checked - no Microsoft documentation of this registry value found; Settings toggle corroborated via Microsoft Q&A only. E0 per evidence rule; catalogue E1 divergence flagged to coordinator."
+      ],
+      "status": "Implemented", "presetExcluded": false, "version": 1
+    },
+    {
+      "id": "NX02-006", "name": "Game Mode notification suppression", "category": "NX02",
+      "subcategory": "Game Mode", "kind": "configuration",
+      "description": "Suppresses the Game Bar startup panel and its tips (per-user).",
+      "objective": "Remove the Game Bar startup suggestions/tips surface for users who never use it.",
+      "technicalExplanation": "Sets ShowStartupPanel=0 (DWord) under HKCU\\SOFTWARE\\Microsoft\\GameBar. E0: community-known family member (XOS GameBar family r1; Sophia's XBOXGameBar writes the identical value, MIT source fetched 2026-11-23); not documented on Microsoft's settings reference page (checked 2026-11-23). This entry is notification/tips suppression only - it does not disable Game Mode (NX02-001 owns the Game Mode values), Game Bar capture, or any capture capability, so P4 is not excluded.",
+      "modificationType": "registry",
+      "defaultState": "Windows default: Game Bar may show its startup panel/tips; value may be absent on a fresh profile.",
+      "proposedState": "ShowStartupPanel=0 (DWord) under HKCU\\SOFTWARE\\Microsoft\\GameBar, journaled.",
+      "risk": "CORE", "evidence": "E0",
+      "profiles": ["P1","P2","P3","P4","P5","P6","P9"], "workloads": ["gaming"],
+      "requiredHardware": {}, "excludedHardware": {},
+      "editions": ["Home","Pro","Enterprise","Education"],
+      "builds": { "min": 22631, "max": 26300, "excluded": [] },
+      "dependencies": [], "conflicts": [],
+      "privileges": "User", "restart": "None",
+      "apply": { "actions": [
+        { "type": "registry", "path": "HKCU:\\SOFTWARE\\Microsoft\\GameBar", "name": "ShowStartupPanel", "kind": "DWord", "data": 0, "capabilityPath": "HKCU:\\SOFTWARE\\Microsoft\\GameBar" }
+      ] },
+      "verify": { "procedure": "Test-NxConfigurationState read-back equals DWord 0; verification journaled." },
+      "rollback": { "procedure": "Invoke-NxRollback -TweakId NX02-006 restores the journaled original (only-if-ours).", "reversible": true },
+      "originalState": { "method": "Pipeline capture of ShowStartupPanel's prior existence/kind/value before mutation." },
+      "sideEffects": ["Game Bar startup panel/tips no longer appear (per-user); capture and Game Mode are unaffected."],
+      "approval": "Selection",
+      "documentationSource": [
+        "research/sources/r1-fsosx-xos.md (XOS GameBar family: ShowStartupPanel)",
+        "research/sources/r5-winutil-sophia.md (Sophia XBOXGameBar writes ShowStartupPanel with a matching Enable restore; MIT source fetched 2026-11-23)"
+      ],
+      "status": "Implemented", "presetExcluded": false, "version": 1
+    },
+    {
+      "id": "NX02-007", "name": "Game capture configuration", "category": "NX02",
+      "subcategory": "Game DVR & capture", "kind": "configuration",
+      "description": "Disables the Game Bar capture activation shortcuts (recording, broadcast, save-historical-video) for non-capture profiles.",
+      "objective": "Remove accidental capture-activation entry points during play while leaving the capture engine itself untouched.",
+      "technicalExplanation": "Sets the documented VKM* shortcut-enable family under HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\GameDVR: VKMToggleRecording=0, VKMToggleBroadcast=0, VKMSaveHistoricalVideo=0 (each documented on Microsoft's public Windows 11 settings reference as 'Toggles recording/broadcast/save historical video enabled' - E1 verified 2026-11-23; catalogue desk-assigned E0, raised on direct verification). Only the shortcut toggles that activate data-writing capture are changed; screenshot, microphone, camera and Game Bar shortcut toggles are left alone, and the capture engine values (AppCaptureEnabled, GameDVR_Enabled) belong to NX02-003.",
+      "modificationType": "registry",
+      "defaultState": "Windows default: Win+Alt capture shortcuts active when Game Bar capture is enabled; VKM* values documented by Microsoft.",
+      "proposedState": "VKMToggleRecording=0, VKMToggleBroadcast=0, VKMSaveHistoricalVideo=0 (DWord each), journaled; screenshot/Game Bar toggles untouched.",
+      "risk": "CONDITIONAL", "evidence": "E1",
+      "profiles": ["P1","P2","P3","P5","P6","P9"], "workloads": ["esports","gaming"],
+      "requiredHardware": {}, "excludedHardware": {},
+      "editions": ["Home","Pro","Enterprise","Education"],
+      "builds": { "min": 22631, "max": 26300, "excluded": [] },
+      "dependencies": [], "conflicts": [],
+      "privileges": "User", "restart": "None",
+      "apply": { "actions": [
+        { "type": "registry", "path": "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\GameDVR", "name": "VKMToggleRecording", "kind": "DWord", "data": 0, "capabilityPath": "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\GameDVR" },
+        { "type": "registry", "path": "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\GameDVR", "name": "VKMToggleBroadcast", "kind": "DWord", "data": 0, "capabilityPath": "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\GameDVR" },
+        { "type": "registry", "path": "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\GameDVR", "name": "VKMSaveHistoricalVideo", "kind": "DWord", "data": 0, "capabilityPath": "HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\GameDVR" }
+      ] },
+      "verify": { "procedure": "Test-NxConfigurationState read-back of all three values equals DWord 0; verification journaled per action." },
+      "rollback": { "procedure": "Invoke-NxRollback -TweakId NX02-007 restores each journaled original in reverse order (only-if-ours).", "reversible": true },
+      "originalState": { "method": "Pipeline capture of each VKM* value's prior existence/kind/value before mutation." },
+      "sideEffects": [
+        "Win+Alt+R / Win+Alt+B / Win+Alt+G-historical shortcut activation no longer starts recording/broadcast/background save; the capture engine itself (if enabled) is unchanged.",
+        "P4 (Streamer) is EXCLUDED from this entry by design (PROFILE_MATRIX.md capture preservation)."
+      ],
+      "approval": "Selection",
+      "documentationSource": [
+        "https://learn.microsoft.com/en-us/windows/apps/develop/settings/settings-windows-11 (VKMToggleRecording 'Toggles recording enabled', VKMToggleBroadcast 'Toggles broadcast enabled', VKMSaveHistoricalVideo 'Toggles save historical video enabled'; fetched and confirmed 2026-11-23)"
+      ],
+      "status": "Implemented", "presetExcluded": false, "version": 1
+    },
+    {
+      "id": "NX02-008", "name": "Xbox Gaming Services management", "category": "NX02",
+      "subcategory": "Xbox services", "kind": "diagnostic",
+      "description": "Read-only dependency report for Xbox Gaming Services: lists every consumer that depends on them BEFORE any change decision.",
+      "objective": "No Xbox service change is ever proposed without an explicit, machine-readable dependency list; the management change itself stays Defined until the NX11 services engine lands.",
+      "technicalExplanation": "Implements Get-NxXboxServicesDependencyReport (src/nxcore/functions/NX02.ps1): read-only enumeration of machine services (XboxGipSvc, XboxNetApiSvc, GamingServices, GamingServicesNet), the per-user BcastDVRUserService_* capture/broadcast family (wildcard-enumerated; the per-user suffix is never hardcoded - r4 rejected pattern), the machine-side Gaming Services install marker, per-user appx packages (Microsoft.GamingServices, Microsoft.GamingApp, Microsoft.XboxIdentityProvider, legacy Microsoft.XboxApp; current-user scope stated as a limitation), running Game Bar processes, and an informational consumer map (Game Bar capture, Game Pass install/play, Xbox identity, accessory input, Xbox Live networking). Every failed read is an Uncertainty entry, never a guessed value. Conflict with NX12-005 (Xbox app removal) is declared in both the registry entry and the report output. The change itself (service start-type management) is Defined and ships with NX11 (docs/TODO.md 2.5); this entry intentionally mutates nothing.",
+      "modificationType": "none",
+      "defaultState": "No NEXTRIX Xbox dependency report exists; services remain at Windows defaults.",
+      "proposedState": "Machine-readable dependency report available before any future Xbox service change; nothing is changed by this entry.",
+      "risk": "CONDITIONAL", "evidence": "E0",
+      "profiles": ["P1","P2","P3","P4","P5","P6","P9"], "workloads": ["gaming"],
+      "requiredHardware": {}, "excludedHardware": {},
+      "editions": ["Home","Pro","Enterprise","Education"],
+      "builds": { "min": 22631, "max": 26300, "excluded": [] },
+      "dependencies": [], "conflicts": ["NX12-005"],
+      "privileges": "User", "restart": "None",
+      "apply": { "actions": [
+        { "type": "function", "function": "Get-NxXboxServicesDependencyReport", "parameters": {} }
+      ] },
+      "verify": { "procedure": "Report object returns with tweakId NX02-008, readOnly=true, machineServices/packages/dependents populated; uncertainty entries explain every inconclusive read." },
+      "rollback": { "procedure": "Not applicable - read-only diagnostic; nothing to revert.", "reversible": true },
+      "originalState": { "method": "Not applicable - read-only." },
+      "sideEffects": ["None - strictly read-only (process/service/registry/appx queries only)."],
+      "approval": "Selection",
+      "documentationSource": [
+        "research/sources/r2-atlasos-revios.md (revert.yml ledger: svchost splitting broke XboxGipSvc - dependency-awareness precedent)",
+        "TWEAK_CATALOGUE.md NX12-005 (Xbox app removal conflict; Game Pass users excluded)",
+        "research/sources/r4-synergy-ultraos.md (uncertainty-state detection pattern adopted for the report)"
+      ],
+      "status": "Implemented", "presetExcluded": false, "version": 1
+    },
+    {
+      "id": "NX02-009", "name": "Per-game driver graphics application", "category": "NX02",
+      "subcategory": "Per-game composition", "kind": "composition",
+      "description": "COMPOSITION (future): applies a user-selected game's driver-profile graphics settings via the NX04 per-game profile framework.",
+      "objective": "One composition function that invokes the NX04 per-game driver mechanisms (NX04-009..NX04-023) for a user-chosen game, with no duplicate registry targets in NX02.",
+      "technicalExplanation": "NOT IMPLEMENTED BY DESIGN (status Defined): this entry is a composition shell. registry/NX04.json has landed, but its vendor per-profile mechanisms (NX04-009..NX04-015, NX04-017..NX04-021, NX04-023) and per-game profile frameworks (NX04-016, NX04-022) remain Defined; once they are implemented, Invoke-NxPerGameDriverGraphics will apply the vendor profile for a user-selected game through those frameworks. NX02 writes no per-game registry values itself - the driver-profile mechanisms are owned exclusively by NX04 (mechanism-owner rule). Games are user-selected at apply time; a hardcoded game-EXE table is a rejected pattern (Vain's closed 36-game list, r3). The function ships when those NX04 mechanisms are implemented.",
+      "modificationType": "function",
+      "defaultState": "No NEXTRIX per-game driver-profile composition exists.",
+      "proposedState": "A user-selected game's vendor driver profile (from NX04 mechanisms) is applied through one journaled composition function.",
+      "risk": "CONDITIONAL", "evidence": "E0",
+      "profiles": ["P1","P2","P3","P4","P5"], "workloads": ["gaming","esports"],
+      "requiredHardware": {}, "excludedHardware": {},
+      "editions": ["Home","Pro","Enterprise","Education"],
+      "builds": { "min": 22631, "max": 26300, "excluded": [] },
+      "dependencies": [], "conflicts": [],
+      "privileges": "Admin", "restart": "None",
+      "apply": { "actions": [
+        { "type": "function", "function": "Invoke-NxPerGameDriverGraphics", "parameters": { "gameId": "<user-selected>", "driverProfile": "<from NX04-009..NX04-023>" } }
+      ] },
+      "verify": { "procedure": "Future: composed NX04 apply steps each verify their own configuration state; composition reports per-mechanism verification results." },
+      "rollback": { "procedure": "Future: composed steps restore via the journal in reverse order; driver-profile rollback is NX04's documented responsibility.", "reversible": true },
+      "originalState": { "method": "Future: each composed NX04 mechanism captures its own original state before mutation." },
+      "sideEffects": ["Not yet applicable - composition unimplemented (Defined)."],
+      "approval": "SelectionPlusConfirmation",
+      "documentationSource": [
+        "TWEAK_CATALOGUE.md NX04-009..NX04-023 (composed mechanisms; mechanism-owner rule)",
+        "research/sources/r3-sapphire-vain.md (hardcoded 36-game EXE table is a REJECTED pattern - composition is user-selected per game)"
+      ],
+      "status": "Defined", "presetExcluded": false, "version": 1
+    },
+    {
+      "id": "NX02-010", "name": "Game-specific launch configuration", "category": "NX02",
+      "subcategory": "Per-game composition", "kind": "composition",
+      "description": "COMPOSITION (future): applies per-process affinity (NX19-004) and priority policy (NX19-005) to a user-selected game at launch.",
+      "objective": "One composition function that invokes the NX19 launch-time scheduling mechanisms for a user-chosen game, with no duplicate targets in NX02.",
+      "technicalExplanation": "NOT IMPLEMENTED BY DESIGN (status Defined): this entry is a composition shell. When NX19 lands, Invoke-NxGameLaunchConfiguration will apply the NX19-004 per-process affinity and NX19-005 per-process priority mechanisms to a user-selected game at launch, through the NX18 session lifecycle (apply at game start, watchdog re-check, verified restore on exit - r1/r6 session pattern). NX02 writes no per-game process values itself - the scheduling mechanisms are owned exclusively by NX19 (mechanism-owner rule). Topology-derived values come from NX19-002; no hardcoded core indexes (rejected pattern). The function ships with NX19/NX18's implementation wave; launcher detection data from NX02-012 feeds the launch chain.",
+      "modificationType": "function",
+      "defaultState": "No NEXTRIX per-game launch composition exists.",
+      "proposedState": "A user-selected game runs with its NX19-004/005 configured affinity/priority applied at launch and verified-restored on exit.",
+      "risk": "CONDITIONAL", "evidence": "E0",
+      "profiles": ["P1","P2","P3","P4"], "workloads": ["gaming","esports"],
+      "requiredHardware": {}, "excludedHardware": {},
+      "editions": ["Home","Pro","Enterprise","Education"],
+      "builds": { "min": 22631, "max": 26300, "excluded": [] },
+      "dependencies": ["NX02-012"], "conflicts": [],
+      "privileges": "User", "restart": "None",
+      "apply": { "actions": [
+        { "type": "function", "function": "Invoke-NxGameLaunchConfiguration", "parameters": { "gameId": "<user-selected>", "affinityPolicy": "NX19-004", "priorityPolicy": "NX19-005" } }
+      ] },
+      "verify": { "procedure": "Future: composed NX19 apply steps each verify their own configuration state; session report shows verified steps only (FSOS-X R11 semantics, r1)." },
+      "rollback": { "procedure": "Future: verified-step restore on any exit path per the NX18 session lifecycle; scheduling values never persist beyond the session.", "reversible": true },
+      "originalState": { "method": "Future: the NX18 session journal records pre-session process state; restore is verified per step." },
+      "sideEffects": ["Not yet applicable - composition unimplemented (Defined)."],
+      "approval": "SelectionPlusConfirmation",
+      "documentationSource": [
+        "TWEAK_CATALOGUE.md NX19-004/NX19-005 (composed mechanisms; affinity is separate from CPU Sets per directive)",
+        "docs/RESEARCH_RECONCILIATION.md adopt item 10 (session lifecycle: apply at game start, watchdog, verified restore)"
+      ],
+      "status": "Defined", "presetExcluded": false, "version": 1
+    },
+    {
+      "id": "NX02-011", "name": "Game-specific background app handling", "category": "NX02",
+      "subcategory": "Per-game composition", "kind": "composition",
+      "description": "COMPOSITION (future): applies NX18-006 user-allowlist background rules for a user-selected game's session.",
+      "objective": "One composition function that invokes the NX18-006 background-management rules per game, with capture and protected processes always preserved.",
+      "technicalExplanation": "NOT IMPLEMENTED BY DESIGN (status Defined): this entry is a composition shell. When NX18 lands, Invoke-NxGameBackgroundHandling will apply the NX18-006 per-session background rules (user allowlist only - blanket process termination is a rejected pattern, catalogue NX18-006) for a user-selected game. The NX18-012 protected-process guard is non-negotiable inside the composition: anti-cheat, security, launcher, OBS/recording, audio and peripheral processes are always protected, so P4 streamer capture remains safe (PROFILE_MATRIX.md). NX02 itself never terminates or reconfigures background apps - the mechanism is owned exclusively by NX18. The function ships with NX18's implementation wave; launcher detection data from NX02-012 feeds the session chain.",
+      "modificationType": "function",
+      "defaultState": "No NEXTRIX per-game background composition exists.",
+      "proposedState": "During a user-selected game's session, only user-allowlisted background apps are managed per NX18-006 rules; capture processes remain untouched.",
+      "risk": "CONDITIONAL", "evidence": "E0",
+      "profiles": ["P1","P2","P3","P4","P6"], "workloads": ["gaming","esports","low-end"],
+      "requiredHardware": {}, "excludedHardware": {},
+      "editions": ["Home","Pro","Enterprise","Education"],
+      "builds": { "min": 22631, "max": 26300, "excluded": [] },
+      "dependencies": ["NX02-012"], "conflicts": [],
+      "privileges": "User", "restart": "None",
+      "apply": { "actions": [
+        { "type": "function", "function": "Invoke-NxGameBackgroundHandling", "parameters": { "gameId": "<user-selected>", "allowlist": "<user-defined>", "rules": "NX18-006" } }
+      ] },
+      "verify": { "procedure": "Future: NX18 session report lists every managed process with its journaled before/after state; protected-process guard violations abort the session." },
+      "rollback": { "procedure": "Future: verified-step restore on any exit path per the NX18 session lifecycle (crash-safe recovery included).", "reversible": true },
+      "originalState": { "method": "Future: the NX18 session journal records per-process pre-session state before any management step." },
+      "sideEffects": ["Not yet applicable - composition unimplemented (Defined)."],
+      "approval": "Selection",
+      "documentationSource": [
+        "TWEAK_CATALOGUE.md NX18-006 (composed mechanism: user-allowlist only, never blanket termination)",
+        "PROFILE_MATRIX.md P4 standing rule (OBS/ShadowPlay/recording processes protected everywhere via NX18-012)"
+      ],
+      "status": "Defined", "presetExcluded": false, "version": 1
+    },
+    {
+      "id": "NX02-012", "name": "Game launcher detection registry", "category": "NX02",
+      "subcategory": "Launcher detection", "kind": "diagnostic",
+      "description": "Read-only detection of common game launchers (processes, services, registry install markers, appx packages) producing a per-launcher Detected/NotDetected/Uncertainty report.",
+      "objective": "Provide the detection data NX18 session management consumes (launcher chains, protected processes) with zero Windows mutation.",
+      "technicalExplanation": "Implements Get-NxLauncherDetectionReport (src/nxcore/functions/NX02.ps1): enumerates Steam, Epic Games Launcher, Xbox app/Gaming Services, EA app, Battle.net, GOG Galaxy, Ubisoft Connect and Riot Client by (a) running processes, (b) registered services, (c) community-known registry install markers (provenance-tagged 'well-known' vs 'community-reported'; a wrong marker can only cause a NotDetected verdict, never a false mutation), and (d) per-user appx packages for the Xbox family. The per-user broadcast service family is wildcard-enumerated, never hardcoded (r4). Every failed read becomes an Uncertainty entry; the overall verdict is Detected / DetectedWithUncertainty / Uncertain / NotDetected. This is detection data only: game and launcher choices are always user-selected at apply time (no hardcoded game tables - Vain counter-example r3).",
+      "modificationType": "none",
+      "defaultState": "No NEXTRIX launcher detection report exists.",
+      "proposedState": "Machine-readable launcher presence report available on demand; no system state is changed.",
+      "risk": "CONDITIONAL", "evidence": "E0",
+      "profiles": ["P1","P2","P3","P4","P5","P6","P9"], "workloads": ["gaming"],
+      "requiredHardware": {}, "excludedHardware": {},
+      "editions": ["Home","Pro","Enterprise","Education"],
+      "builds": { "min": 22631, "max": 26300, "excluded": [] },
+      "dependencies": [], "conflicts": [],
+      "privileges": "User", "restart": "None",
+      "apply": { "actions": [
+        { "type": "function", "function": "Get-NxLauncherDetectionReport", "parameters": {} }
+      ] },
+      "verify": { "procedure": "Report object returns with tweakId NX02-012, readOnly=true, one entry per known launcher with a verdict; uncertainty entries explain every inconclusive read." },
+      "rollback": { "procedure": "Not applicable - read-only diagnostic; nothing to revert.", "reversible": true },
+      "originalState": { "method": "Not applicable - read-only." },
+      "sideEffects": ["None - strictly read-only (process/service/registry/appx queries only)."],
+      "approval": "Selection",
+      "documentationSource": [
+        "research/sources/r1-fsosx-xos.md (FSOS-X launcher-chain waits and capture-process exclusions - the consumer pattern for this data)",
+        "TWEAK_CATALOGUE.md NX18-012 (protected-process guard that consumes launcher identity)",
+        "Marker corroboration 2026-11-23: Steam/Blizzard/Ubisoft install markers and GOG GalaxyClient clientPath appear in public launcher tooling sources (e.g. HeroicGamesLauncher GogLibrary.cs); Epic AppPath in 148 public code results - community-known, not vendor-documented"
+      ],
+      "status": "Implemented", "presetExcluded": false, "version": 1
+    }
+  ]
+}

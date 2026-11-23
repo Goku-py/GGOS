@@ -2,6 +2,18 @@
 
 All notable changes to the NEXTRIX repository. Dates are ISO. Statuses follow the verification ladder in `TWEAK_CLASSIFICATION.md`.
 
+## 2026-11-23 — Phase 4 Wave 1 (v0.3.0)
+
+- **NX01 Windows Foundation** — 16 entries (15 Implemented, 1 honest Defined); Microsoft documentation verified for policy evidence; CDM registry families E0 with provenance.
+- **NX02 Gaming & Esports** — 12 entries (9 Implemented, 3 composition Defines); Streamer-profile exclusions verified programmatically; no global FSO/IFEO patterns.
+- **NX04 GPU & Graphics** — 23 entries (5 Implemented, 18 honesty-driven Defined): vendor driver-profile settings are guided-only because no documented OS write path exists; vendor gating demonstrated live (Intel gate refused on an AMD+NVIDIA host).
+- **NX09 Power Management** — 15/15 Implemented; AC/DC journaled separately; powercfg parser fails closed; never-delete-active/stock-plan enforced and self-tested (62 assertions).
+- **NX16 Maintenance & Recovery** — all 17 entries Implemented; 63-assertion self-test (throttle-keep logic, identifier scrubber, secret-leak checks, capture gate).
+- **AME playbook generator** (`tools/Invoke-NxBuild.ps1`) — registry → playbook source, deterministic; 82 options, preflight-first ordering, presetExcluded mechanically unchecked, rollback surface emitted, NxCore manifest SHA256-pinned.
+- **Engine hardening** — function dispatcher with signature-aware context, `JournalPath` mapping, `$steps` summary fix, rollback category delegation (`Invoke-Nx09Rollback`), rollback filter fix, **journaled registry writer `Invoke-NxRegistryTweak`** so no configuration change can bypass the journal; validator 5.1 `$PSScriptRoot` fix; NX02-005 migrated to the shared DirectX composer (key-path correction).
+- **Journal integrity fix (found via flake investigation):** entry timestamps are now integers (`tsUtcUnixMs`, journal v1.1) because JSON date-like strings are auto-converted by `ConvertFrom-Json` and re-serialize lossily (~1 in 10 writes produced a phantom integrity mismatch that would have blocked rollback). Verified with a 40-iteration regression loop and 3× self-test runs. Read path also retries a fresh, permissively-shared read once so transient I/O can never be misreported as tampering.
+- **Validations:** registry validator 0 errors / 0 warnings (83 tweaks); parser 17 files clean; self-tests 63/63 (NX16), 62/62 (NX09), 11/11 (journal). No NEXTRIX modification applied to any machine.
+
 ## 2026-11-23 — Phase 3 Foundation (v0.2.0)
 
 - **Rollback engine implemented and self-tested:** state journal (`src/nxcore/NxJournal.ps1`) with capture-refusal (stacking detection), SHA-256 integrity chain, only-if-ours restore semantics, tamper detection — `tools/Test-NxJournal.ps1` **11/11 PASS**.

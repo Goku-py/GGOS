@@ -26,6 +26,8 @@ function Set-NxRegistryValue {
     $v = $Value
     if ($Kind -eq 'Binary')    { $v = [byte[]]$Value }
     if ($Kind -eq 'MultiString') { $v = [string[]]$Value }
+    if ($Kind -eq 'DWord')     { $v = [int][int64]$Value }
+    if ($Kind -eq 'QWord')     { $v = [int64]$Value }
     New-ItemProperty -Path $Path -Name $Name -Value $v -PropertyType $Kind -Force | Out-Null
 }
 
@@ -46,7 +48,7 @@ function Invoke-NxApply {
     # Step 1: eligibility (graceful skip with reasons - never a hard error).
     $elig = Get-NxTweakEligibility -Tweak $Tweak -HardwareReport $HardwareReport -BuildReport $BuildReport
     $steps += [pscustomobject]@{ step = 1; name = 'eligibility'; outcome = if ($elig.eligible) { 'Pass' } else { 'Skip' }; detail = ($elig.reasons -join '; ') }
-    if (-not $elig.eligible) { $summary | Add-Member -NotePropertyName skipped -NotePropertyValue $true; return $summary }
+    if (-not $elig.eligible) { $summary | Add-Member -NotePropertyName skipped -NotePropertyValue $true; $summary.steps = $steps; return $summary }
     foreach ($w in $elig.warnings) { $steps += [pscustomobject]@{ step = 1; name = 'eligibility-warning'; outcome = 'Warn'; detail = $w } }
 
     # Approval gate: real application requires -Approved (never automatic).
@@ -85,12 +87,14 @@ function Invoke-NxApply {
                     Restore-NxRegistryOriginal -Entry ([pscustomobject]@{ original = $orig }) | Out-Null
                     Add-NxJournalEntry -Path $JournalRoot -TweakId $Tweak.id -TweakVersion ([string]$Tweak.version) -Operation 'failed' -Approval $approval -Original $orig -Modified $modified -Result 'Failed-RestoredOriginal' -Verification 'NotRun' -ErrorInfo $check.reason -Profiles $Profiles
                     $summary | Add-Member -NotePropertyName failed -NotePropertyValue $true
+                    $summary.steps = $steps
                     return $summary
                 }
             } catch {
                 Add-NxJournalEntry -Path $JournalRoot -TweakId $Tweak.id -TweakVersion ([string]$Tweak.version) -Operation 'failed' -Approval $approval -Original $orig -Modified $modified -Result 'Failed' -Verification 'NotRun' -ErrorInfo ([string]$_.Exception.Message) -Profiles $Profiles
                 $steps += [pscustomobject]@{ step = 8; name = 'apply'; outcome = 'FAILED'; detail = [string]$_.Exception.Message }
                 $summary | Add-Member -NotePropertyName failed -NotePropertyValue $true
+                $summary.steps = $steps
                 return $summary
             }
             $steps += [pscustomobject]@{ step = 8; name = 'apply'; outcome = 'Applied'; detail = "seq $($jr.seq) -> verified seq $($jr2.seq)" }
@@ -100,14 +104,117 @@ function Invoke-NxApply {
             $steps += [pscustomobject]@{ step = 8; name = 'apply'; outcome = 'NotImplemented'; detail = "service engine function '$($a.function)' ships with its category implementation (Phase 4)" }
         }
         elseif ($a.type -eq 'function') {
-            if ($Plan) { $steps += [pscustomobject]@{ step = 8; name = 'apply'; outcome = 'Planned'; detail = "function '$($a.function)' (engine function)" }; continue }
-            $steps += [pscustomobject]@{ step = 8; name = 'apply'; outcome = 'NotImplemented'; detail = "engine function '$($a.function)' ships with its category implementation (Phase 4)" }
+            if ($Plan) {
+                $pdesc = ''
+                if ($a.parameters) { $pdesc = ($a.parameters | ConvertTo-Json -Compress -Depth 4) }
+                $steps += [pscustomobject]@{ step = 8; name = 'apply'; outcome = 'Planned'; detail = "function '$($a.function)' $pdesc" }
+                continue
+            }
+            # Category function dispatcher: resolve the function, pass declared
+            # parameters + engine context only where the signature accepts them.
+            $cmd = Get-Command -Name ([string]$a.function) -CommandType Function -ErrorAction SilentlyContinue
+            if ($null -eq $cmd) {
+                $steps += [pscustomobject]@{ step = 8; name = 'apply'; outcome = 'NotImplemented'; detail = "engine function '$($a.function)' is not loaded (category module missing for this build)" }
+                $summary | Add-Member -NotePropertyName failed -NotePropertyValue $true
+                return $summary
+            }
+            $splat = @{}
+            if ($a.parameters) {
+                foreach ($p in $a.parameters.PSObject.Properties) { $splat[$p.Name] = $p.Value }
+            }
+            $context = @{
+                JournalRoot = $JournalRoot; Approved = $true; Profiles = $Profiles
+                TweakVersion = ([string]$Tweak.version); Approval = ([string]$Tweak.approval); TweakId = ([string]$Tweak.id)
+            }
+            foreach ($k in $context.Keys) {
+                if ($cmd.Parameters.ContainsKey($k)) { $splat[$k] = $context[$k] }
+            }
+            # Some category modules name the journal parameter -JournalPath instead.
+            if (-not $cmd.Parameters.ContainsKey('JournalRoot') -and $cmd.Parameters.ContainsKey('JournalPath')) { $splat['JournalPath'] = $JournalRoot }
+            $engineEntry = [pscustomobject]@{ targetType = 'function'; name = [string]$a.function; parameters = $a.parameters }
+            $null = Add-NxJournalEntry -Path $JournalRoot -TweakId $Tweak.id -TweakVersion ([string]$Tweak.version) -Operation 'apply' -Approval ([string]$Tweak.approval) -Original $engineEntry -Modified $engineEntry -Result 'InProgress' -Verification 'NotRun' -Profiles $Profiles
+            try {
+                $fnResult = & $cmd.Name @splat
+                $null = Add-NxJournalEntry -Path $JournalRoot -TweakId $Tweak.id -TweakVersion ([string]$Tweak.version) -Operation 'verify' -Approval ([string]$Tweak.approval) -Original $engineEntry -Modified $engineEntry -Result 'Success' -Verification 'FunctionExecuted' -Profiles $Profiles
+                $steps += [pscustomobject]@{ step = 8; name = 'apply'; outcome = 'FunctionExecuted'; detail = "function '$($a.function)' completed (function journals its own mutations)" }
+            } catch {
+                $null = Add-NxJournalEntry -Path $JournalRoot -TweakId $Tweak.id -TweakVersion ([string]$Tweak.version) -Operation 'failed' -Approval ([string]$Tweak.approval) -Original $engineEntry -Modified $engineEntry -Result 'Failed' -Verification 'NotRun' -ErrorInfo ([string]$_.Exception.Message) -Profiles $Profiles
+                $steps += [pscustomobject]@{ step = 8; name = 'apply'; outcome = 'FAILED'; detail = [string]$_.Exception.Message }
+                $summary | Add-Member -NotePropertyName failed -NotePropertyValue $true
+                $summary.steps = $steps
+                return $summary
+            }
         }
         else {
             $steps += [pscustomobject]@{ step = 8; name = 'apply'; outcome = 'UnknownActionType'; detail = "action type '$($a.type)'" }
         }
     }
     $summary | Add-Member -NotePropertyName applied -NotePropertyValue $true
+    $summary.steps = $steps
+    return $summary
+}
+
+# Playbook-facing journaled registry writer: the generator routes registry
+# actions through this function so NO configuration change can bypass the
+# journal (ADR-006 journal-first invariant; replaces raw !registryValue writes).
+function Invoke-NxRegistryTweak {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)][string]$Path,
+        [Parameter(Mandatory)][string]$Name,
+        [Parameter(Mandatory)][ValidateSet('String','ExpandString','DWord','QWord')][string]$Kind,
+        [Parameter(Mandatory)][string]$Data,
+        [Parameter(Mandatory)][string]$TweakId,
+        [string]$TweakVersion = '1',
+        [string]$Approval = 'Selection',
+        [string]$JournalRoot,
+        [string[]]$Profiles = @(),
+        [switch]$Plan,
+        [switch]$Approved
+    )
+    # Binary/MultiString are refused from command-line routing (no lossless
+    # string encoding); entries using them must ship as dedicated functions.
+    $state = Read-NxManifest -Path $JournalRoot
+    if (-not $state.present) { throw "$TweakId : journal not initialized at '$JournalRoot' - refusing to mutate (journal-first invariant)" }
+    $value = $Data
+    switch ($Kind) {
+        'DWord' { $n = [int64]0; if (-not [int64]::TryParse($Data, [ref]$n) -or $n -lt 0 -or $n -gt 4294967295) { throw "$TweakId : DWord data '$Data' out of range" }; $value = [int]$n }
+        'QWord' { $n = [int64]0; if (-not [int64]::TryParse($Data, [ref]$n)) { throw "$TweakId : QWord data '$Data' invalid" }; $value = $n }
+        default { $value = $Data }
+    }
+    $steps = New-Object System.Collections.Generic.List[object]
+    $summary = [pscustomobject]@{ tweakId = $TweakId; plan = $Plan.IsPresent; steps = $null; planned = $false; skipped = $false; failed = $false; applied = $false }
+    $orig = Capture-NxRegistryValue -Path $Path -Name $Name
+    $modified = [pscustomobject]@{ targetType = 'registry'; path = $Path; name = $Name; kind = $Kind; value = $value }
+    $steps.Add([pscustomobject]@{ step = 2; name = 'capture-original'; outcome = 'Captured'; detail = "keyExisted=$($orig.keyExisted) existed=$($orig.existed) kind=$($orig.kind)" })
+    if (-not $Plan -and -not $Approved) { throw "$TweakId : real application requires -Approved (nothing applies without explicit approval evidence)" }
+    if ($Plan) {
+        $steps.Add([pscustomobject]@{ step = 8; name = 'apply'; outcome = 'Planned'; detail = "would set $Path :: $Name = $Kind : $Data" })
+        $summary | Add-Member -NotePropertyName planned -NotePropertyValue $true
+        $summary.steps = $steps.ToArray(); return $summary
+    }
+    $null = Add-NxJournalEntry -Path $JournalRoot -TweakId $TweakId -TweakVersion $TweakVersion -Operation 'apply' -Approval $Approval -Original $orig -Modified $modified -Result 'InProgress' -Verification 'NotRun' -Profiles $Profiles
+    try {
+        Set-NxRegistryValue -Path $Path -Name $Name -Kind $Kind -Value $value
+        $check = Test-NxConfigurationState -Path $Path -Name $Name -Kind $Kind -ExpectedValue $value
+        $null = Add-NxJournalEntry -Path $JournalRoot -TweakId $TweakId -TweakVersion $TweakVersion -Operation 'verify' -Approval $Approval -Original $orig -Modified $modified -Result $(if ($check.verified) { 'Success' } else { 'FailedVerification' }) -Verification $(if ($check.verified) { 'Verified' } else { 'NotVerified' }) -Profiles $Profiles
+        if (-not $check.verified) {
+            Restore-NxRegistryOriginal -Entry ([pscustomobject]@{ original = $orig }) | Out-Null
+            $null = Add-NxJournalEntry -Path $JournalRoot -TweakId $TweakId -TweakVersion $TweakVersion -Operation 'failed' -Approval $Approval -Original $orig -Modified $modified -Result 'Failed-RestoredOriginal' -Verification 'NotRun' -ErrorInfo $check.reason -Profiles $Profiles
+            $steps.Add([pscustomobject]@{ step = 9; name = 'verify'; outcome = 'FAILED'; detail = $check.reason })
+            $summary | Add-Member -NotePropertyName failed -NotePropertyValue $true
+            $summary.steps = $steps.ToArray(); return $summary
+        }
+        $steps.Add([pscustomobject]@{ step = 9; name = 'verify'; outcome = 'Verified'; detail = $check.reason })
+    } catch {
+        $null = Add-NxJournalEntry -Path $JournalRoot -TweakId $TweakId -TweakVersion $TweakVersion -Operation 'failed' -Approval $Approval -Original $orig -Modified $modified -Result 'Failed' -Verification 'NotRun' -ErrorInfo ([string]$_.Exception.Message) -Profiles $Profiles
+        $steps.Add([pscustomobject]@{ step = 8; name = 'apply'; outcome = 'FAILED'; detail = [string]$_.Exception.Message })
+        $summary | Add-Member -NotePropertyName failed -NotePropertyValue $true
+        $summary.steps = $steps.ToArray(); return $summary
+    }
+    $steps.Add([pscustomobject]@{ step = 8; name = 'apply'; outcome = 'Applied'; detail = "$Path :: $Name" })
+    $summary | Add-Member -NotePropertyName applied -NotePropertyValue $true
+    $summary.steps = $steps.ToArray()
     return $summary
 }
 
@@ -118,5 +225,12 @@ function Import-NxCore {
     if (-not $Root) { $Root = Join-Path (Split-Path $PSScriptRoot -Parent) 'src\nxcore' }
     foreach ($m in 'NxJournal.ps1','NxBuild.ps1','NxHardware.ps1','NxCompat.ps1','NxVerify.ps1','NxRollback.ps1','NxApply.ps1') {
         . (Join-Path $Root $m)
+    }
+    # Category engine functions are loaded after the core modules they depend on.
+    $fnDir = Join-Path $Root 'functions'
+    if (Test-Path $fnDir) {
+        foreach ($f in (Get-ChildItem -Path $fnDir -Filter '*.ps1' -File | Sort-Object Name)) {
+            . $f.FullName
+        }
     }
 }
