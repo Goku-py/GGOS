@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "description": "NEXTRIX tweak registry schema. Single source of truth for every tweak. The validator (tools/Test-NxRegistry.ps1) enforces every constraint in this file at build time.",
+  "idPattern": "^NX[0-9]{2}-[0-9]{3}$",
+  "supportedBuildRange": { "min": 22631, "max": 26300, "note": "ADR-003: Windows 11 23H2..26H2. 26H2 = 26300 (four code sources, RESEARCH_RECONCILIATION)." },
+  "riskClasses": ["CORE", "CONDITIONAL", "ADVANCED", "EXPERIMENTAL", "TROUBLESHOOTING"],
+  "evidenceLevels": ["E0", "E1", "E2", "E3", "E4"],
+  "statuses": ["Candidate", "Defined", "Implemented", "SyntaxValidated", "ConfigurationValidated", "OwnerFunctionallyValidated", "OwnerHardwareTested", "PerformanceTested", "ReleaseApproved"],
+  "kinds": ["configuration", "diagnostic", "engine", "composition"],
+  "modificationTypes": ["registry", "service", "task", "power", "appx", "function", "none"],
+  "privileges": ["User", "Admin", "TrustedInstaller"],
+  "restartRequirements": ["None", "Session", "Reboot"],
+  "approvalModels": ["Selection", "SelectionPlusConfirmation", "ExplicitConsent"],
+  "requiredFields": [
+    "id", "name", "category", "subcategory", "kind", "description", "objective",
+    "technicalExplanation", "modificationType", "defaultState", "proposedState",
+    "risk", "evidence", "profiles", "workloads", "requiredHardware",
+    "excludedHardware", "editions", "builds", "dependencies", "conflicts",
+    "privileges", "restart", "apply", "verify", "rollback", "originalState",
+    "sideEffects", "approval", "documentationSource", "status", "presetExcluded", "version"
+  ],
+  "presetRules": {
+    "presetExcludedMandatory": ["EXPERIMENTAL", "TROUBLESHOOTING"],
+    "presetExcludedMandatoryUnlessJustified": ["ADVANCED"]
+  },
+  "neverTouchServices": [
+    "wuauserv", "BITS", "UsoSvc", "DoSvc", "WaaSMedicSvc", "TrustedInstaller",
+    "Spooler", "Audiosrv", "AudioEndpointBuilder", "Winmgmt", "Schedule",
+    "profsvc", "UserMgr", "StateRepository", "InstallService", "AppXSvc",
+    "ClipSVC", "SecurityHealthService", "MDCoreSvc", "WinDefend", "WdNisSvc",
+    "WdFilter", "WdBoot", "WdNisDrv", "wscsvc", "BFE", "mpssvc", "WlanSvc",
+    "Netman", "netprofm", "NlaSvc", "CDPSvc", "CDPUserSvc", "cryptsvc",
+    "msiserver", "wuapi", "EFS", "hidserv", "DsmSvc", "DevQueryBroker",
+    "LicenseManager", "VSS", "swprv"
+  ],
+  "bannedRegistryTargets": [
+    {
+      "path": "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+      "name": "EnableLUA",
+      "badValues": [0],
+      "reason": "UAC disable is preset-excluded and never automatic (directive S15)."
+    },
+    {
+      "path": "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\CI\\Config",
+      "name": "VulnerableDriverBlocklistEnable",
+      "badValues": [0],
+      "reason": "ReviOS ledger: breaks THE FINALS; security-relevant (r2)."
+    },
+    {
+      "path": "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments",
+      "name": "SaveZoneInformation",
+      "badValues": [1],
+      "reason": "Kills Mark-of-the-Web (r1-r4)."
+    },
+    {
+      "path": "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer",
+      "name": "SmartScreenEnabled",
+      "badValues": ["Off"],
+      "reason": "SmartScreen removal is never a NEXTRIX target (S15)."
+    },
+    {
+      "path": "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\HypervisorEnforcedCodeIntegrity",
+      "name": "Enabled",
+      "badValues": [0],
+      "reason": "HVCI off requires ADVANCED/TROUBLESHOOTING risk + ExplicitConsent (NX14 policy)."
+    },
+    {
+      "path": "HKLM:\\SYSTEM\\ControlSet001\\Control\\BitLocker",
+      "name": "PreventDeviceEncryption",
+      "badValues": [1],
+      "reason": "Revi pattern rejected (r2)."
+    },
+    {
+      "path": "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management",
+      "name": "FeatureSettingsOverride",
+      "badValues": ["ANY_WITHOUT_EXPLICIT_CONSENT"],
+      "reason": "Mitigation override only as consent-gated troubleshooting (r1-r4)."
+    },
+    {
+      "path": "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\kernel",
+      "name": "MitigationOptions",
+      "badValues": ["ANY_WITHOUT_EXPLICIT_CONSENT"],
+      "reason": "All-2s masks are anti-cheat triggers (r2, r4)."
+    }
+  ],
+  "hardControlSetWrites": {
+    "rule": "Direct writes to HKLM:\\SYSTEM\\ControlSet001 or ControlSet002 are forbidden; use CurrentControlSet only (r3 finding).",
+    "pattern": "ControlSet00[12]"
+  }
+}

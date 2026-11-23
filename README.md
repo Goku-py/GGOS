@@ -17,7 +17,8 @@ NEXTRIX prioritizes hardware-aware configuration, workload-aware recommendations
 | Phase 0 — Repository discovery | COMPLETE | Repo was empty (greenfield); nothing to preserve. `docs/DECISIONS.md` ADR-001 |
 | Phase 1 — Research | **COMPLETE** | All 6 streams returned + read in full (`research/sources/r1–r6`); 6 synthesis deliverables at root; reconciliation in `docs/RESEARCH_RECONCILIATION.md`. Zero VERIFIED performance evidence exists anywhere in the references — none cited |
 | Phase 2 — Architecture & catalogue proposal | **DELIVERED, RECONCILED (v0.2)** | ADR-002/003/006 recorded; 26H2 = 26300 resolved; 272-candidate catalogue research-confirmed; architecture compensated per ADR-006 |
-| Phases 3–6 | NOT STARTED | Gated on owner approval of the catalogue + ADR-006 compensations are binding |
+| Phase 3 — Foundation | **IN PROGRESS — core delivered (v0.2.0)** | Rollback journal + engine (self-test 11/11 PASS), hardware/build detection, eligibility/verify/apply pipeline, registry schema + validator (17 NX16 entries, 0 errors). Remaining: playbook generator, NX16 category functions |
+| Phases 4–6 | NOT STARTED | Tweak categories (NX16 functions, then NX01/NX02/NX09/NX04…), Game Session Manager, full documentation & handover |
 
 **No NEXTRIX modification has been implemented or applied anywhere yet.** The full tweak inventory in `TWEAK_CATALOGUE.md` is a *proposal* awaiting owner review and research reconciliation.
 
@@ -44,7 +45,11 @@ NEXTRIX prioritizes hardware-aware configuration, workload-aware recommendations
 | `COMPATIBILITY_RESEARCH.md` | Phase 1 — build-guard matrix, capability patterns, incident catalog |
 | `LICENSING_REVIEW.md` | Phase 1 — all license texts verified; reuse rules; platform terms; PD-6 open |
 | `KNOWN_ISSUES.md` | Phase 1 — honest phase limitations, ecosystem issue knowledge, risk register |
-| `docs/DECISIONS.md` | ADR-001…006 + pending decisions (PD-1, PD-2 residual, PD-4, PD-5, PD-6) |
+| `docs/DECISIONS.md` | ADR-001…007 + pending decisions (PD-1, PD-2 residual, PD-4, PD-6) |
+| `STATE_JOURNAL.md` / `ROLLBACK_DESIGN.md` / `SECURITY_POLICY.md` | v1.0 — implemented designs (journal self-tested; validator-enforced security rules) |
+| `src/nxcore/` | Engine v0.1: NxJournal, NxBuild, NxHardware, NxCompat, NxVerify, NxRollback, NxApply (9/9 syntax-validated) |
+| `registry/` | `schema.json` (32-field schema + banned targets + never-touch list) · `NX16.json` (17 entries, validator PASSED) |
+| `tools/` | `Test-NxRegistry.ps1` (validator) · `Test-NxJournal.ps1` (self-test, 11/11 PASS) |
 | `docs/RESEARCH_RECONCILIATION.md` | Six-stream reconciliation: adopt/reject registers, change queue, engine escalation record |
 | `research/README.md` + `research/sources/r1–r6` | Methodology + full evidence base (all read by the coordinator) |
 | `CHANGELOG.md` | Current |

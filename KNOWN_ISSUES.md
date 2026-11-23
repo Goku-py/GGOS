@@ -6,14 +6,14 @@
 
 ## A. NEXTRIX current limitations (truthful status)
 
-1. **Nothing is implemented.** All 272 catalogue entries hold status CANDIDATE; no apply/rollback code, no playbook, no tooling exists yet. This document set is design + research.
+1. **Phase 3 foundation is implemented and self-tested** (v0.2.0): journal, detection, eligibility/verify/rollback/apply pipeline, validator, NX16 registry at full depth. NX16-012/013/014/015/016 hold status **Implemented** (registry-scope engine); the remaining NX16 functions and all other categories are `Defined`/`Candidate` — the apply pipeline reports unimplemented engine functions explicitly instead of pretending. Playbook generator not yet written.
 2. **All evidence is desk-level.** E0/E1 only across the catalogue; zero performance claims anywhere in the repository. E2+ requires the owner's physical testing (workflow defined in `TWEAK_RESEARCH.md` §15).
 3. **Engine platform carries documented limitations** (owner-accepted in ADR-006): AME Beta v0.8.4 has no standardized playbook uninstall; it is unsigned and its official instructions require Defender exclusions; verification status is discretionary and NEXTRIX will ship unverified. Compensations are binding (journal-only rollback, `UseKernelDriver: false`, no security-neutralization requirements, disclosed trust posture, pinned wizard version, hash-pinned artifacts).
 4. **Wizard EULA text is unpublished** (PD-2 residual) — user-facing docs must state this rather than assert unknown terms.
 5. **26H2 (26300) support is projection-based:** confirmed as the build number by four references' code, but no NEXTRIX tweak has been validated on it; SynergyOS already labels 26H2 "experimental, unexpected bugs may arise."
 6. **Research gaps inherited:** SapphireOS ISOs (Discord-gated), Vain's scheduling engine (closed, RE-prohibited), FSOS-X/Hone internals (closed), XOS's stable C# toolkit, all bundled binaries — unauditable, and documented as such; several large source files were not fetched (enumerated per stream in `research/sources/r1–r6` limitations sections).
 7. **24H2 (26100) is the divergent build** — skipped by XOS, UCPD-quirky per SynergyOS; 24H2-targeted tweaks carry extra capability checks by policy.
-8. **Per-tweak documentation depth is queued:** the 30-field registry entries are written during Phase 3/4 per category; the catalogue currently carries summary-level metadata.
+8. **Per-tweak documentation depth:** NX16 now carries full 32-field registry metadata; the remaining 19 categories are queued for the same depth as they are implemented (Phase 4 order: NX01, NX02, NX09, NX04, then the rest).
 
 ## B. Ecosystem issue knowledge shaping NEXTRIX (summary; full citations in `COMPATIBILITY_RESEARCH.md` §3)
 

@@ -2,6 +2,18 @@
 
 All notable changes to the NEXTRIX repository. Dates are ISO. Statuses follow the verification ladder in `TWEAK_CLASSIFICATION.md`.
 
+## 2026-11-23 — Phase 3 Foundation (v0.2.0)
+
+- **Rollback engine implemented and self-tested:** state journal (`src/nxcore/NxJournal.ps1`) with capture-refusal (stacking detection), SHA-256 integrity chain, only-if-ours restore semantics, tamper detection — `tools/Test-NxJournal.ps1` **11/11 PASS**.
+- **Detection layer:** `NxBuild.ps1` (edition/build/UBR/scope/Insider + registry/service capability probes with Failed/Uncertain sentinels) and `NxHardware.ps1` (CPU/GPU/RAM/storage/chassis, PCI-VID vendor gating, qwMemorySize VRAM fix, junk-SMBIOS sanitization — strictly read-only, uncertain values marked, never guessed).
+- **Pipeline:** `NxCompat.ps1` (eligibility with graceful skip + reasons), `NxVerify.ps1` (configuration verification only), `NxRollback.ps1` (four scopes, reverse-order, divergence-reporting), `NxApply.ps1` (the 10-step protocol with Plan mode and an explicit approval gate).
+- **Registry:** `registry/schema.json` (32-field tweak schema; banned targets; never-touch services; preset rules) + **first category populated: NX16 Maintenance & Recovery, 17 entries at full metadata depth** (5 Implemented, 12 Defined pending their category functions).
+- **Validator:** `tools/Test-NxRegistry.ps1` — duplicate IDs/targets, dependency cycles, conflict symmetry, build ranges, banned targets, never-touch enforcement. **PASSED: 17 tweaks, 0 errors.**
+- **Syntax validation:** 9/9 PowerShell files parse clean (5.1-compatible).
+- **Design docs delivered:** `STATE_JOURNAL.md`, `ROLLBACK_DESIGN.md`, `SECURITY_POLICY.md`.
+- **Not yet done (honest):** playbook generator (`tools/Invoke-NxBuild.ps1`), NX16's remaining engine functions, all other categories — queued next.
+- **No NEXTRIX modification applied to any machine:** validation was static, syntax-level, and temp-folder self-tests only.
+
 ## 2026-11-23
 
 - **Phase 0 complete:** repository discovery — empty greenfield repository confirmed; nothing to preserve (ADR-001).
