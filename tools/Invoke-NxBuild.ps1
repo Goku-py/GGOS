@@ -37,9 +37,13 @@
                                          gated, default off. The playbook platform
                                          has no uninstall (ADR-006); NxJournal/
                                          NxRollback is the sole rollback authority.
-      Executables/nxcore-manifest.json   what packaging must bundle from src/nxcore
-                                         into Executables/ (with SHA256 pins).
-                                         The generator does NOT copy binaries.
+      Executables/nxcore-manifest.json   what packaging must bundle (with SHA256 pins):
+                                         src/nxcore/**/*.ps1 plus the NX18 session
+                                         subsystem (src/nxsession/NX18.ps1). The
+                                         packaging tool stages them into
+                                         Executables/NxCore/ + NxCoreBootstrap.ps1
+                                         (flat task loader unchanged). The generator
+                                         does NOT copy binaries.
 
     Routing rules (mechanical, with reasons):
       - apply actions whose function is Invoke-NxPreFlight are NOT user options;
@@ -155,28 +159,48 @@ function ConvertTo-NxYamlFlowStrings($Items) {
 }
 
 # ----------------------------------------------------------------------------
-# NxCore inventory: parse src/nxcore/*.ps1 with the PowerShell AST to learn each
-# function's parameter names, switch parameters and mandatory JournalRoot.
+# Engine inventory: AST-parse every runtime module to learn each function's
+# parameter names, switch parameters and journal-root contract.
+# Sources: src/nxcore/**/*.ps1 (core + category functions) and the NX18 session
+# subsystem at src/nxsession/NX18.ps1 (it lives outside src/nxcore; KNOWN_ISSUES 16).
+# The task loader stays FLAT by decision (Executables/*.ps1, no recursion): the
+# Phase-6 packaging tool (tools/New-NxPackage.ps1) stages the engine into
+# Executables/NxCore/ and emits Executables/NxCoreBootstrap.ps1, which the flat
+# loader picks up and which loads the NxCore tree (NX18 included) in order.
 # ----------------------------------------------------------------------------
-function Get-NxCoreInventory([string]$NxCoreDir) {
-    # Recursive: core modules live in src/nxcore/*.ps1 AND engine functions in
-    # src/nxcore/functions/NX*.ps1 (concurrent workstreams).
+function Get-NxEngineFileList([string]$RepoRoot) {
+    # Returns engine sources as @{ full = <absolute path>; source = <repo-relative path> }.
+    $list = @()
+    $coreRoot = Join-Path $RepoRoot 'src\nxcore'
+    if (Test-Path -LiteralPath $coreRoot) {
+        $root = $coreRoot.TrimEnd('\')
+        foreach ($f in @(Get-ChildItem -LiteralPath $coreRoot -Filter '*.ps1' -File -Recurse | Sort-Object -Property FullName)) {
+            $rel = $f.FullName.Substring($root.Length + 1).Replace('\', '/')
+            $list += @{ full = $f.FullName; source = ('src/nxcore/' + $rel) }
+        }
+    }
+    $sessionModule = Join-Path (Join-Path $RepoRoot 'src\nxsession') 'NX18.ps1'
+    if (Test-Path -LiteralPath $sessionModule) {
+        $list += @{ full = $sessionModule; source = 'src/nxsession/NX18.ps1' }
+    }
+    # Unary comma: an empty list must reach the caller as an array (not $null).
+    return ,$list
+}
+
+function Get-NxCoreInventory($EngineFiles) {
     $inv = @{}
-    if (-not (Test-Path -LiteralPath $NxCoreDir)) { return $inv }
-    $root = $NxCoreDir.TrimEnd('\')
-    $files = @(Get-ChildItem -LiteralPath $NxCoreDir -Filter '*.ps1' -File -Recurse | Sort-Object -Property FullName)
-    foreach ($f in $files) {
-        $rel = $f.FullName.Substring($root.Length + 1).Replace('\', '/')
+    foreach ($ef in @($EngineFiles)) {
+        $rel = [string]$ef.source
         $tokens = $null; $parseErrors = $null
         $ast = $null
         try {
-            $ast = [System.Management.Automation.Language.Parser]::ParseFile($f.FullName, [ref]$tokens, [ref]$parseErrors)
+            $ast = [System.Management.Automation.Language.Parser]::ParseFile([string]$ef.full, [ref]$tokens, [ref]$parseErrors)
         } catch {
-            $script:warnings.Add("src/nxcore/${rel}: could not parse module (skipped for function inventory): $($_.Exception.Message)")
+            $script:warnings.Add("${rel}: could not parse module (skipped for function inventory): $($_.Exception.Message)")
             continue
         }
         if ($parseErrors -and @($parseErrors).Count -gt 0) {
-            $script:warnings.Add("src/nxcore/${rel}: parse error (skipped for function inventory): $($(@($parseErrors)[0]).Message)")
+            $script:warnings.Add("${rel}: parse error (skipped for function inventory): $($(@($parseErrors)[0]).Message)")
             continue
         }
         $defs = $ast.FindAll({ param($node) $node -is [System.Management.Automation.Language.FunctionDefinitionAst] }, $true)
@@ -192,7 +216,7 @@ function Get-NxCoreInventory([string]$NxCoreDir) {
                     $params[$declared.ToLowerInvariant()] = @{ isSwitch = $isSwitch; declaredName = $declared }
                 }
             }
-            $inv[$fn.Name] = @{ file = $rel; params = $params }
+            $inv[$fn.Name] = @{ source = $rel; params = $params }
         }
     }
     return $inv
@@ -337,6 +361,9 @@ $repoRoot = (Split-Path $PSScriptRoot -Parent)
 if (-not [System.IO.Path]::IsPathRooted($RegistryDir)) { $RegistryDir = Join-Path (Get-Location).Path $RegistryDir }
 if (-not [System.IO.Path]::IsPathRooted($OutDir)) { $OutDir = Join-Path (Get-Location).Path $OutDir }
 $nxCoreDir = Join-Path $repoRoot 'src\nxcore'
+# Engine sources for inventory + manifest hash pins: src/nxcore/**/*.ps1 plus
+# the NX18 session subsystem (outside src/nxcore; staged to NxCore/ by packaging).
+$engineFiles = Get-NxEngineFileList $repoRoot
 
 if ($Version -notmatch '^\d+(\.\d+){0,2}$') {
     Write-Output "FATAL: -Version '$Version' is not a plain version number (AME accepts 1 / 0.1 / 0.0.1)."
@@ -558,7 +585,7 @@ foreach ($t in $allTweaks) {
     }
 }
 
-$inventory = Get-NxCoreInventory $nxCoreDir
+$inventory = Get-NxCoreInventory $engineFiles
 $expectedFunctions = @{
     $NxPreflightFn = $true
     $NxRollbackFn = $true
@@ -1069,14 +1096,14 @@ function New-NxRollbackYml($Model) {
     return ($L -join "`r`n") + "`r`n"
 }
 
-function New-NxManifestJson($Model, $Inventory, $NxCoreFiles, $RegFiles, [string]$NxCoreDir) {
+function New-NxManifestJson($Model, $Inventory, $EngineFiles, $RegFiles) {
     $filesArr = @()
-    $nxRoot = $NxCoreDir.TrimEnd('\')
-    foreach ($f in $NxCoreFiles) {
+    foreach ($ef in @($EngineFiles | Sort-Object -Property source)) {
         $hash = ''
-        try { $hash = (Get-FileHash -LiteralPath $f.FullName -Algorithm SHA256).Hash.ToLowerInvariant() } catch { $hash = 'unavailable' }
-        $rel = $f.FullName.Substring($nxRoot.Length + 1).Replace('\', '/')
-        $filesArr += [pscustomobject]@{ source = "src/nxcore/$rel"; sha256 = $hash; bytes = $f.Length }
+        try { $hash = (Get-FileHash -LiteralPath $ef.full -Algorithm SHA256).Hash.ToLowerInvariant() } catch { $hash = 'unavailable' }
+        $bytes = 0
+        try { $bytes = (Get-Item -LiteralPath $ef.full).Length } catch { }
+        $filesArr += [pscustomobject]@{ source = $ef.source; sha256 = $hash; bytes = $bytes; stageTo = 'Executables/NxCore/' }
     }
     $regArr = @()
     foreach ($f in $RegFiles) {
@@ -1092,7 +1119,7 @@ function New-NxManifestJson($Model, $Inventory, $NxCoreFiles, $RegFiles, [string
         $present = $Inventory.ContainsKey($fn)
         $src = $null; $jr = $false; $params = @()
         if ($present) {
-            $src = "src/nxcore/$($Inventory[$fn].file)"
+            $src = [string]$Inventory[$fn].source
             $jr = $Inventory[$fn].params.ContainsKey('journalroot')
             $params = @($Inventory[$fn].params.Keys | Sort-Object)
         }
@@ -1109,8 +1136,8 @@ function New-NxManifestJson($Model, $Inventory, $NxCoreFiles, $RegFiles, [string
         generatedBy = 'tools/Invoke-NxBuild.ps1'
         nextrixVersion = $Model.version
         playbookUniqueId = $NxUniqueId
-        destination = 'Executables/'
-        instruction = 'Packaging step: copy every file listed below from the repository root into the playbook Executables/ directory before archiving the .apbx. The copy is FLAT: each file keeps its name and lands directly in Executables/ (including src/nxcore/functions/*.ps1). The generator does NOT copy binaries (ADR-006: hash-pinned artifacts, zero floating downloads at install time). The playbook runs each !powerShell action by dot-sourcing every Nx*.ps1 found in Executables/, so the copy must be flat and complete.'
+        destination = 'Executables/NxCore/'
+        instruction = 'Packaging: tools/New-NxPackage.ps1 stages every file listed below (flat, filename preserved) into Executables/NxCore/ and writes Executables/NxCoreBootstrap.ps1 at the Executables root. The generated tasks keep the FLAT loader contract: each !powerShell action dot-sources every Nx*.ps1 in Executables/ (exeDir: true), so the bootstrap is the only file the loader sees; it loads the NxCore/ tree in dependency order, including src/nxsession/NX18.ps1 (the session subsystem, outside src/nxcore). The generator does NOT copy binaries (ADR-006: hash-pinned artifacts, zero floating downloads at install time).'
         files = $filesArr
         registryInputs = $regArr
         expectedFunctions = $expectedArr
@@ -1121,12 +1148,6 @@ function New-NxManifestJson($Model, $Inventory, $NxCoreFiles, $RegFiles, [string
 # ----------------------------------------------------------------------------
 # Render everything (DryRun prints the graph; real runs write files)
 # ----------------------------------------------------------------------------
-$nxCoreFiles = @()
-if (Test-Path -LiteralPath $nxCoreDir) {
-    # recursive: engine functions live in src/nxcore/functions/NX*.ps1
-    $nxCoreFiles = @(Get-ChildItem -LiteralPath $nxCoreDir -Filter '*.ps1' -File -Recurse | Sort-Object -Property FullName)
-}
-
 $renderedFiles = @()
 $renderedFiles += @{ path = 'playbook.conf'; content = (New-NxPlaybookConf $model) }
 $renderedFiles += @{ path = 'Configuration\main.yml'; content = (New-NxMainYml $model) }
@@ -1135,13 +1156,13 @@ foreach ($cat in $model.categories) {
     $renderedFiles += @{ path = "Configuration\Tasks\$($cat.name.ToLowerInvariant()).yml"; content = (New-NxCategoryYml $model $cat) }
 }
 $renderedFiles += @{ path = 'Configuration\Tasks\rollback.yml'; content = (New-NxRollbackYml $model) }
-$renderedFiles += @{ path = 'Executables\nxcore-manifest.json'; content = ((New-NxManifestJson $model $inventory $nxCoreFiles $regFiles $nxCoreDir) + "`r`n") }
+$renderedFiles += @{ path = 'Executables\nxcore-manifest.json'; content = ((New-NxManifestJson $model $inventory $engineFiles $regFiles) + "`r`n") }
 
 # ---- dry run: print the resolved action graph, write nothing ----
 if ($DryRun) {
     Write-Output '=== NEXTRIX playbook generator: DRY RUN (no files written) ==='
     Write-Output "Registry:    $RegistryDir ($($regFiles.Count) file(s), $($allTweaks.Count) tweak(s))"
-    Write-Output "NxCore:      $nxCoreDir ($($nxCoreFiles.Count) module(s), $($inventory.Count) inventoried function(s))"
+    Write-Output "Engine:      $($engineFiles.Count) module(s) (src/nxcore/** + src/nxsession/NX18.ps1); $($inventory.Count) inventoried function(s)"
     Write-Output "Version:     $Version"
     Write-Output "Output:      $OutDir (NOT written in dry run)"
     Write-Output ''
