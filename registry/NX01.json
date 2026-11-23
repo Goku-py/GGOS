@@ -31,7 +31,7 @@
       "sideEffects": ["Windows tips and suggestion content no longer appear for the current user.", "Other and future user profiles are unaffected (per-user scope)."],
       "approval": "Selection",
       "documentationSource": ["r5-winutil-sophia.md (WindowsTips: SubscribedContent-* / SoftLandingEnabled / SystemPaneSuggestionsEnabled)", "r1-fsosx-xos.md (ContentDeliveryManager prompt-suppression families)", "Live read-only value-name verification on build 26300 (2026-11-23)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX01-002", "name": "Disable welcome experience", "category": "NX01",
@@ -58,7 +58,7 @@
       "sideEffects": ["The post-update welcome/'what's new' experience no longer opens for the current user.", "Documented policy analog (Enterprise/Education) not written by this entry."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience (AllowWindowsSpotlightWindowsWelcomeExperience)", "r5-winutil-sophia.md (WindowsWelcomeExperience)", "Live read-only value-name verification on build 26300 (2026-11-23)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX01-003", "name": "Disable consumer experience / suggested apps", "category": "NX01",
@@ -85,7 +85,7 @@
       "sideEffects": ["ReviOS revert.yml documents that DisableWindowsConsumerFeatures broke 'Your Phone' and was withdrawn (r2) - Phone Link users should deselect or test this entry.", "New-profile consumer content (Start suggestions, membership/redirect tiles, post-OOBE installs) is suppressed machine-wide."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience (AllowWindowsConsumerFeatures -> DisableWindowsConsumerFeatures)", "r5-winutil-sophia.md (WPFTweaksConsumerFeatures, <RemoveEntry> undo)", "r2-atlasos-revios.md (revert.yml: 'Breaks Your Phone')", "Local CloudContent.admx inspection, build 26300 (2026-11-23)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX01-004", "name": "Disable Start menu suggestions", "category": "NX01",
@@ -113,7 +113,7 @@
       "sideEffects": ["Start menu promotional suggestions stop for the current user.", "Recent-file/app recommendations (NX15-005 territory) are untouched by design."],
       "approval": "Selection",
       "documentationSource": ["r5-winutil-sophia.md (Start suggestion suppression family)", "r1-fsosx-xos.md (suggestion value families)", "COMPATIBILITY_RESEARCH.md section 2 (KB5089573 legacy Start paths -> capability gate)", "Live read-only value-name verification on build 26300 (2026-11-23)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX01-005", "name": "Disable silent promotional app installs", "category": "NX01",
@@ -140,7 +140,7 @@
       "sideEffects": ["Promoted/suggested apps are no longer installed silently for the current user.", "Apps the user installs explicitly are unaffected."],
       "approval": "Selection",
       "documentationSource": ["r1-fsosx-xos.md (app-reinstall blocking family)", "r5-winutil-sophia.md (AppsSilentInstalling)", "Live read-only value-name verification on build 26300 (2026-11-23)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX01-006", "name": "Disable lock-screen promotional content", "category": "NX01",
@@ -168,7 +168,7 @@
       "sideEffects": ["Lock-screen tips/tricks/fun-fact overlays stop for the current user.", "Lock-screen image rotation choice (NX15-012) is untouched."],
       "approval": "Selection",
       "documentationSource": ["r1-fsosx-xos.md (Spotlight overlay families)", "r5-winutil-sophia.md (Windows Spotlight per-user values)", "Live read-only value-name verification on build 26300 (2026-11-23)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX01-007", "name": "Notification defaults configuration", "category": "NX01",
@@ -196,7 +196,7 @@
       "sideEffects": ["Lock-screen toast previews stop for the current user.", "Users who had deliberately disabled all notifications get them re-enabled by layer (1) - deselect this entry if that is your intent."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-wpn (NoLockScreenToastNotification -> NoToastApplicationNotificationOnLockScreen)", "r5-winutil-sophia.md (real-key vs policy-key hygiene)", "Live read-only value-name verification on build 26300 (2026-11-23)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX01-008", "name": "Global UWP background-app permission policy", "category": "NX01",
@@ -223,7 +223,7 @@
       "sideEffects": ["Background apps stop updating tiles/notifications; background mail/voicemail sync may stop (Microsoft CSP warning).", "Xbox Game Bar KGL update breakage is documented for global background-app disables (ReviOS revert.yml, r2) - Streamer profile excluded, confirmation required.", "Open apps must be restarted to pick up the policy (Microsoft CSP text)."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy (LetAppsRunInBackground)", "r2-atlasos-revios.md (revert.yml: background-apps vs GameBar KGL)", "Local AppPrivacy.admx inspection, build 26300 (2026-11-23)", "Live read-only value-name verification on build 26300 (2026-11-23)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX01-009", "name": "Windows Search indexing scope configuration", "category": "NX01",
@@ -278,7 +278,7 @@
       "sideEffects": ["Search highlights (rotating seasonal/promotional content) stop appearing; ordinary search results are unaffected."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search (AllowSearchHighlights -> EnableDynamicContentInWSB)", "Local Search.admx inspection, build 26300 (2026-11-23)", "Live read-only value-name verification of IsDynamicSearchBoxEnabled on build 26300 (2026-11-23)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX01-011", "name": "Delivery Optimization configuration", "category": "NX01",
@@ -305,7 +305,7 @@
       "sideEffects": ["No peer-shared update downloads/uploads while set to 0.", "LAN update-content reuse lost; HTTP downloads remain (documented mode semantics)."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/deployment/do/waas-delivery-optimization-reference", "Local DeliveryOptimization.admx inspection, build 26300 (2026-11-23)", "registry/schema.json (neverTouchServices includes DoSvc)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX01-012", "name": "Automatic maintenance schedule", "category": "NX01",
@@ -332,7 +332,7 @@
       "sideEffects": ["Maintenance no longer wakes the machine (good for laptop bags/bedroom machines); it can drift into active hours on machines that never idle at the window.", "Maintenance and its tasks remain enabled - nothing is disabled."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update (AutomaticMaintenanceWakeUp)", "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-msched (ActivationBoundaryPolicy, RandomDelayPolicy)", "Local msched.admx inspection and read-only maintenance-key check, build 26300 (2026-11-23)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX01-013", "name": "Windows Update active hours configuration", "category": "NX01",
@@ -361,7 +361,7 @@
       "sideEffects": ["Active hours become machine-fixed for all users while set (the policy locks the window); restarts are deferred outside it.", "Documented max window is 18 hours - overnight-heavy schedules cannot be fully covered by one window."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update (ActiveHoursStart, ActiveHoursEnd, ActiveHoursMaxRange)", "Local WindowsUpdate.admx inspection, build 26300 (2026-11-23)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX01-014", "name": "Restart notification configuration", "category": "NX01",
@@ -389,7 +389,7 @@
       "sideEffects": ["Update-completion/tip notifications are suppressed; restart warnings still appear.", "With value 2 (owner override) restart warnings disappear too - security caution recorded from Microsoft's CSP text."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update (UpdateNotificationLevel; legacy restart-warning policies marked not applicable for Windows 11)", "Local WindowsUpdate.admx inspection, build 26300 (2026-11-23)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX01-015", "name": "Optional features & components management", "category": "NX01",
@@ -417,7 +417,7 @@
       "sideEffects": ["Disabling a feature removes its functionality and may require a reboot (or installation media to re-enable on some SKUs).", "RestartRequiring features report RestartNeeded; no restart is forced in-session."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/powershell/module/dism/get-windowsoptionalfeature", "https://learn.microsoft.com/en-us/powershell/module/dism/enable-windowsoptionalfeature", "https://learn.microsoft.com/en-us/powershell/module/dism/disable-windowsoptionalfeature", "COMPATIBILITY_RESEARCH.md section 2 (DISM cmdlets from PS7/MSIX broken - use Windows PowerShell 5.1)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX01-016", "name": "Default application associations", "category": "NX01",
@@ -444,7 +444,7 @@
       "sideEffects": ["New profiles get the imported defaults; per-user live choices are untouched (DISM XML semantics).", "Import requires an owner-prepared XML exported from a machine whose associations are known-good."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/export-or-import-default-application-associations", "COMPATIBILITY_RESEARCH.md section 2 (UCPD-protected per-user association values -> documented DISM path instead)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     }
   ]
 }

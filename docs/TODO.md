@@ -41,17 +41,19 @@ Gate 1 result (2026-11-23): **PASSED** — validator 0 errors/0 warnings (83 twe
 
 Gate 2 result (2026-11-23): **PASSED** — validator 0 errors/0 warnings (189 tweaks / 12 files, both PowerShell hosts); 10 self-test suites = 561 assertions, 0 failures; parser sweep 31 files clean; generator dry-runs 0 errors. Released as **v0.4.0**. Wave 3 launching immediately after.
 
-### Wave 3 — PENDING (launch after Gate 2)
+### Wave 3 — COMPLETE (all seven delivered 2026-11-23; gate: release v0.5.0)
 
 | # | Task | Notes |
 |---|---|---|
-| 3.1 | NX08 Input & Peripherals (7) | mouse/keyboard/HID read-heavy |
-| 3.2 | NX10 Thermal Management (8) | read-only monitoring; no firmware writes |
-| 3.3 | NX12 Windows Debloat (14) | AppX honesty labels; protected-dependency guard |
-| 3.4 | NX14 Security Configuration (15) | reports + consent gates; Section 15 enforced |
-| 3.5 | NX17 Advanced Windows Config (14) | isolated; individually selectable only |
-| 3.6 | NX19 CPU Topology & Scheduling (11) | **hardest module** — open topology engine (P/Invoke `GetLogicalProcessorInformationEx`, CPU-Set-ID mapping); no hardcoded indexes |
-| 3.7 | NX20 Hardware & Driver Management (11) | read-only inventory; never automated driver ops |
+| 3.1 | NX08 Input & Peripherals (8) — **DONE** | mouse/keyboard/HID; +NX08-008 DataQueueSize (researched 2026-11-23) |
+| 3.2 | NX10 Thermal Management (8) — **DONE** | read-only monitoring; no firmware writes |
+| 3.3 | NX12 Windows Debloat (14) — **DONE** | AppX honesty labels; protected-dependency guard; removal write functions await explicit-selection wiring |
+| 3.4 | NX14 Security Configuration (15) — **DONE** | reports + consent gates; Section 15 enforced; mutations never lower protection |
+| 3.5 | NX17 Advanced Windows Config (14) — **DONE** | isolated; individually selectable only; 2 Implemented / 12 read-only Defined by design |
+| 3.6 | NX19 CPU Topology & Scheduling (11) — **DONE** | open topology engine (P/Invoke, P/E/CCD/X3D via L3 asymmetry, CPU-Set-ID map); 149/149 synthetic tests; no hardcoded indexes |
+| 3.7 | NX20 Hardware & Driver Management (11) — **DONE** | read-only inventory; never automated driver ops |
+
+Gate 3 result (2026-11-23): **PASSED** — 17/17 self-test suites, **1,216 assertions, 0 failures** (bounded runner `tools/Test-NxAll.ps1` under Windows PowerShell 5.1; per-suite timeouts added after a PS7 DISM hang); parser 46 files clean; validator 0/0 (270 tweaks / 19 files) after status promotion (231 entries → SyntaxValidated); playbook v0.5.0 regenerated (24 files, 71 journaled writes, 0 raw). Released as **v0.5.0**. Phase 5 launching.
 
 ## PHASE 5 — Game Session Manager (Wave 4, PENDING)
 
@@ -76,6 +78,6 @@ Gate 2 result (2026-11-23): **PASSED** — validator 0 errors/0 warnings (189 tw
 |---|---|---|
 | 1 | v0.3.0 | **RELEASED 2026-11-23** — Gate 1 passed |
 | 2 | v0.4.0 | **RELEASED 2026-11-23** — Gate 2 passed |
-| 3 | v0.5.0 | Gate 3 passed |
+| 3 | v0.5.0 | **RELEASED 2026-11-23** — Gate 3 passed |
 | 4 | v0.6.0 | NX18 self-tested |
 | 5 | v0.7.0-rc | Full doc set + handover report; `ReleaseApproved` remains owner-only |

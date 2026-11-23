@@ -27,7 +27,7 @@
       "sideEffects": ["GPU scheduling behavior changes driver-internally; vendor/driver-conditional behavior means any outcome is owner-verifiable only (E2+ path).", "Reboot required."],
       "approval": "ExplicitConsent",
       "documentationSource": ["https://devblogs.microsoft.com/directx/hardware-accelerated-gpu-scheduling/", "r1-fsosx-xos.md (build >=19041 runtime gate; HwSchMode=2)", "r4-synergy-ultraos.md (HagsDetection uncertainty model: 2=On, 1=Off, missing=Default, RestartRequired computed)", "r5-winutil-sophia.md (Sophia gate: WDDM 2.7+ and dGPU, restart needed)", "r3-sapphire-vain.md (HwSchMode=2 labeled 'Disable HAGS' - canonical comment/value contradiction)", "TWEAK_RESEARCH.md negative-results ledger (HAGS forced without driver check)"],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX04-002", "name": "Per-application GPU preference", "category": "NX04",
@@ -52,7 +52,7 @@
       "sideEffects": ["Running instances of the target app keep their current adapter until relaunch; the setting is read at app start."],
       "approval": "Selection",
       "documentationSource": ["https://devblogs.microsoft.com/directx/navigating-the-redesigned-graphics-settings-page/", "https://learn.microsoft.com/en-us/answers/questions/4301937/ (community corroboration of the UserGpuPreferences value format)", "r1-fsosx-xos.md (FSOS-X Dash iGPU/dGPU-aware GPU-priority handling)", "TWEAK_RESEARCH.md section 1"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX04-003", "name": "Variable Refresh Rate (windowed)", "category": "NX04",
@@ -77,7 +77,7 @@
       "sideEffects": ["Running games pick the change up at relaunch; VRR behavior is display/GPU-conditional (owner-verifiable, not claimed)."],
       "approval": "Selection",
       "documentationSource": ["https://support.microsoft.com/en-us/windows/hardware/display-graphics/optimizations-for-windowed-games-in-windows-11", "https://devblogs.microsoft.com/directx/updates-in-graphics-and-gaming/", "r1-fsosx-xos.md (XOS composes 'SwapEffectUpgradeEnable=1; VRROptimizeEnable=0;' - shared-value evidence)", "r4-synergy-ultraos.md (SynToolkit uncertainty model for the DirectX settings family)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX04-004", "name": "Auto HDR", "category": "NX04",
@@ -152,7 +152,7 @@
       "sideEffects": ["Overlay-plane composition off system-wide can raise DWM composition cost or change capture/HDR behavior; strictly symptom-gated for that reason."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["https://nvidia.custhelp.com/app/answers/detail/a_id/5157 (NVIDIA KB: What is Multi-Plane Overlay (MPO) in Windows 11 - vendor documentation of OverlayTestMode)", "https://learn.microsoft.com/en-us/windows-hardware/drivers/display/multiplane-overlay-support (Microsoft documents MPO the capability, not the value)", "r1-fsosx-xos.md (FSOS-X MPO incident history R8/R10/R11; XOS global MPO disable)", "r3-sapphire-vain.md (SapphireOS global MPO disable - rejected pattern)", "TWEAK_RESEARCH.md negative-results ledger (MPO global disable)"],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX04-007", "name": "Display presentation configuration", "category": "NX04",
@@ -202,7 +202,7 @@
       "sideEffects": ["None (read-only)."],
       "approval": "Selection",
       "documentationSource": ["r4-synergy-ultraos.md (PCI vendor-ID classification; features gated on detected vendor)", "src/nxcore/NxHardware.ps1 (vendor map + 64-bit VRAM class-key pattern owner)", "r1-fsosx-xos.md (FSOS-X iGPU/dGPU detection fixes)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX04-009", "name": "NVIDIA power management mode (per-profile)", "category": "NX04",

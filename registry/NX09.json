@@ -30,7 +30,7 @@
         "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (setactive/getactivescheme/list; fetched 2026-11-23)",
         "research/sources/r1-fsosx-xos.md (ApplyPowerPlan.bat: switch-away-first lifecycle, per-value results log)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX09-002", "name": "Ultimate Performance provisioning", "category": "NX09",
@@ -59,7 +59,7 @@
         "research/sources/r5-winutil-sophia.md (Invoke-WPFUltimatePerformance duplicates e9a42b02-d5df-448d-aa00-03f14749eb61; category labeled NOT FOR LAPTOPS)",
         "research/sources/r1-fsosx-xos.md (template-derived creation into a fixed GUID; delete never while active)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX09-003", "name": "Custom NEXTRIX plan generation", "category": "NX09",
@@ -87,7 +87,7 @@
         "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (duplicatescheme/setacvalueindex/setdcvalueindex; fetched 2026-11-23)",
         "research/sources/r1-fsosx-xos.md (ApplyPowerPlan.bat: template-derived plan, ~45 AC/DC overrides, hidden-setting unhide NOT adopted here - NX09 configures only visible settings; per-value results log)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX09-004", "name": "PCIe ASPM link policy", "category": "NX09",
@@ -115,7 +115,7 @@
         "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (setacvalueindex/setdcvalueindex/query; fetched 2026-11-23)",
         "https://learn.microsoft.com/en-us/windows/win32/power/pci-express-aspm-settings (ASPM link state policy documentation)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX09-005", "name": "USB selective suspend policy", "category": "NX09",
@@ -143,7 +143,7 @@
         "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (setacvalueindex/setdcvalueindex/query; fetched 2026-11-23)",
         "TWEAK_CATALOGUE.md NX08-007 (USB controller & HID inspection feeds this decision; XREF)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX09-006", "name": "Display timeout configuration", "category": "NX09",
@@ -170,7 +170,7 @@
       "documentationSource": [
         "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (setacvalueindex/setdcvalueindex/query; fetched 2026-11-23)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX09-007", "name": "Sleep configuration", "category": "NX09",
@@ -197,7 +197,7 @@
       "documentationSource": [
         "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (setacvalueindex/setdcvalueindex/query/lastwake/devicequery; fetched 2026-11-23)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX09-008", "name": "Hibernate configuration", "category": "NX09",
@@ -225,7 +225,7 @@
         "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (/h; fetched 2026-11-23)",
         "research/sources/r5-winutil-sophia.md (WPFTweaksHiber pairs /hibernate off with HibernateEnabled - NEXTRIX uses /h only, registry as anchor)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX09-009", "name": "Fast Startup configuration", "category": "NX09",
@@ -253,7 +253,7 @@
         "https://learn.microsoft.com/en-us/windows/win32/power/distinguishing-fast-startup-from-wake-from-hibernate (HiberbootEnabled documented as the Fast Startup toggle)",
         "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (hibernate interplay; fetched 2026-11-23)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX09-010", "name": "Lid close behavior (laptops)", "category": "NX09",
@@ -280,7 +280,7 @@
       "documentationSource": [
         "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (setacvalueindex/setdcvalueindex/query; fetched 2026-11-23)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX09-011", "name": "OEM battery conservation reporting", "category": "NX09",
@@ -308,7 +308,7 @@
         "research/sources/r5-winutil-sophia.md (OEM power-settings family referenced; no conservation-mode state contract anywhere)",
         "TWEAK_CATALOGUE.md NX09 row (detection only where OEM exposes an interface)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX09-012", "name": "OEM performance mode detection", "category": "NX09",
@@ -336,7 +336,7 @@
         "research/sources/r1-fsosx-xos.md (XOS MSPower_DeviceEnable WMI sweep is the REJECTED inverse - NEXTRIX reports instead of writing)",
         "TWEAK_CATALOGUE.md NX10-006 (per-OEM module ownership for any documented switching)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX09-013", "name": "Power plan export/import/restore tooling", "category": "NX09",
@@ -367,7 +367,7 @@
         "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (export/import; fetched 2026-11-23)",
         "docs/RESEARCH_RECONCILIATION.md adopt register #14 (lifecycle guards; rejected-inverse context)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX09-014", "name": "Energy report (powercfg /energy)", "category": "NX09",
@@ -394,7 +394,7 @@
       "documentationSource": [
         "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (/energy; fetched 2026-11-23)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX09-015", "name": "Battery report (powercfg /batteryreport)", "category": "NX09",
@@ -421,7 +421,7 @@
       "documentationSource": [
         "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (/batteryreport; fetched 2026-11-23)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     }
   ]
 }

@@ -27,7 +27,7 @@
       "sideEffects": ["Disk space consumed by restore points within the chosen allocation."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/powershell/module/microsoft.powershell.management/enable-computerrestore", "r4-synergy-ultraos.md (L0)", "r5-winutil-sophia.md (CreateRestorePoint)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-002", "name": "Pre-change restore point creation ritual", "category": "NX16",
@@ -52,7 +52,7 @@
       "sideEffects": ["Brief VSS activity during point creation."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/powershell/module/microsoft.powershell.management/checkpoint-computer", "r4-synergy-ultraos.md (RESTOREPOINT.ps1)", "r4-synergy-ultraos.md (SynToolkit RestorePointService)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-003", "name": "Targeted registry backup", "category": "NX16",
@@ -77,7 +77,7 @@
       "sideEffects": ["Small disk usage under %ProgramData%\\NEXTRIX\\Backups."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/windows-server/administration/windows-commands/reg-export", "r2-atlasos-revios.md (winServices.reg validated-backup pattern)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-004", "name": "Pre-flight original-state snapshot bundle", "category": "NX16",
@@ -102,7 +102,7 @@
       "sideEffects": ["Disk usage for reports and backups."],
       "approval": "Selection",
       "documentationSource": ["r1-fsosx-xos.md (StockValueCapture capture-refusal + completeness gate)", "r2-atlasos-revios.md (transactional front door)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-005", "name": "Service configuration backup", "category": "NX16",
@@ -127,7 +127,7 @@
       "sideEffects": ["Small disk usage."],
       "approval": "Selection",
       "documentationSource": ["r2-atlasos-revios.md (validated winServices.reg, first-backup-kept)", "r3-sapphire-vain.md (service Start export-before-change)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-006", "name": "Scheduled task backup", "category": "NX16",
@@ -152,7 +152,7 @@
       "sideEffects": ["Small disk usage."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/powershell/module/scheduledtasks/export-scheduledtask", "r1-fsosx-xos.md (per-task backup + verified disable)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-007", "name": "DISM health check & repair tooling", "category": "NX16",
@@ -177,7 +177,7 @@
       "sideEffects": ["ScanHealth can take several minutes."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/windows-hardware/manufacture/desktop/repair-a-windows-image"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-008", "name": "SFC verification tooling", "category": "NX16",
@@ -202,7 +202,7 @@
       "sideEffects": ["Verify pass can take minutes."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/windows-server/administration/windows-commands/sfc"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-009", "name": "Component store cleanup (on-demand)", "category": "NX16",
@@ -227,7 +227,7 @@
       "sideEffects": ["Takes several minutes; temporary elevated CPU/disk usage."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["https://learn.microsoft.com/windows-hardware/manufacture/desktop/update-os-components", "r5-winutil-sophia.md (ResetBase rejected)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-010", "name": "Driver inventory & history report", "category": "NX16",
@@ -251,8 +251,8 @@
       "originalState": { "method": "Not applicable - read-only." },
       "sideEffects": ["None (read-only)."],
       "approval": "Selection",
-      "documentationSource": ["https://learn.microsoft.com/windows/win32/cimwin32prov/win32-pnpsigneddriver"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "documentationSource": ["https://learn.microsoft.com/powershell/module/pnpdevice/get-pnpdevice"],
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-011", "name": "Driver Store selective cleanup", "category": "NX16",
@@ -277,7 +277,7 @@
       "sideEffects": ["Removing the wrong package can break a device - hence per-package consent and orphan-only scope."],
       "approval": "ExplicitConsent",
       "documentationSource": ["https://learn.microsoft.com/windows-server/administration/windows-commands/pnputil"],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX16-012", "name": "Windows build & UBR verification report", "category": "NX16",
@@ -302,7 +302,7 @@
       "sideEffects": ["None (read-only)."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/windows/win32/msi/productversion", "COMPATIBILITY_RESEARCH.md (build matrix)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-013", "name": "Individual tweak rollback", "category": "NX16",
@@ -327,7 +327,7 @@
       "sideEffects": ["None beyond the restored configuration."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["docs/RESEARCH_RECONCILIATION.md (adopt register 1-3)", "r1-fsosx-xos.md (only-if-ours semantics)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-014", "name": "Category rollback", "category": "NX16",
@@ -352,7 +352,7 @@
       "sideEffects": ["None beyond restored configuration."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["ROLLBACK_DESIGN.md"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-015", "name": "Profile rollback", "category": "NX16",
@@ -377,7 +377,7 @@
       "sideEffects": ["None beyond restored configuration."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["PROFILE_MATRIX.md (conflict resolution: never silently override)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-016", "name": "Full NEXTRIX rollback", "category": "NX16",
@@ -402,7 +402,7 @@
       "sideEffects": ["Long-running on large journals; progress is reported per step."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["ROLLBACK_DESIGN.md", "docs/DECISIONS.md ADR-006"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX16-017", "name": "Owner support-bundle export", "category": "NX16",
@@ -427,7 +427,7 @@
       "sideEffects": ["Writes one zip file to the owner-chosen location."],
       "approval": "Selection",
       "documentationSource": ["r1-fsosx-xos.md (Export PC Specs; diagnostic ZIP uploads nothing)", "r5-winutil-sophia.md (session logging)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     }
   ]
 }

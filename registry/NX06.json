@@ -31,7 +31,7 @@
         "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/fsutil-behavior (rotational media and trim/unmap semantics)",
         "src/nxcore/NxHardware.ps1 Get-NxStorageReport (coarse eligibility summary; this entry is the deep report)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX06-002", "name": "TRIM enable & verification", "category": "NX06",
@@ -59,7 +59,7 @@
         "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/fsutil-behavior (disabledeletenotify semantics, no restart required; fetched 2026-11-23)",
         "research/sources/r3-sapphire-vain.md (SSD/HDD .reg pair with opposite TRIM values - reference only, rejected for HDD)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX06-003", "name": "Optimize Drives schedule configuration", "category": "NX06",
@@ -90,7 +90,7 @@
         "research/sources/r3-sapphire-vain.md (ScheduledDefrag disabled - reversed here)",
         "research/sources/r2-atlasos-revios.md (defrag breakage in the ReviOS negative ledger)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX06-004", "name": "Storage Sense policy configuration", "category": "NX06",
@@ -118,7 +118,7 @@
         "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-storage (AllowStorageSenseGlobal, ConfigStorageSenseGlobalCadence values 0/1/7/30 and registry key mapping; fetched 2026-11-23)",
         "https://learn.microsoft.com/en-us/windows/configuration/storage/storage-sense (Group Policy paths and cadence choices)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX06-005", "name": "Temporary files cleanup (on-demand)", "category": "NX06",
@@ -146,7 +146,7 @@
         "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-storage (AllowStorageSenseTemporaryFilesCleanup: Windows deletes user temporary files that are not in use; fetched 2026-11-23)",
         "https://learn.microsoft.com/en-us/windows/configuration/storage/storage-sense (documented temp-cleanup category)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX06-006", "name": "Windows Update cache cleanup (on-demand)", "category": "NX06",
@@ -174,7 +174,7 @@
         "https://learn.microsoft.com/en-us/troubleshoot/windows-client/installing-updates-features-roles/additional-resources-for-windows-update (documented reset: stop wuauserv, delete %systemroot%\\SoftwareDistribution, start wuauserv; NEXTRIX uses a narrower Download-only scope, an idle gate and an unconditional restart; fetched 2026-11-23)",
         "https://learn.microsoft.com/en-us/windows/deployment/update/windows-update-troubleshooting (Windows Update troubleshooting hub)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX06-007", "name": "Delivery Optimization cache cleanup (on-demand)", "category": "NX06",
@@ -202,7 +202,7 @@
         "https://learn.microsoft.com/en-us/powershell/module/deliveryoptimization/delete-deliveryoptimizationcache (default preserves pinned files; deletion cannot be undone; fetched 2026-11-23)",
         "registry/NX01.json NX01-011 (Delivery Optimization mode policy owner - XREF, no duplicate target)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX06-008", "name": "NTFS last-access update policy", "category": "NX06",
@@ -230,7 +230,7 @@
         "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/fsutil-behavior (disablelastaccess, NtfsDisableLastAccessUpdate mapping, restart requirement, backup-tool caveat; fetched 2026-11-23)",
         "research/sources/r2-atlasos-revios.md (ReviOS disables NTFS last access via revitool - precedent only)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX06-009", "name": "NTFS 8.3 short-name creation policy", "category": "NX06",
@@ -259,7 +259,7 @@
         "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/fsutil-8dot3name (per-volume query/set form)",
         "research/sources/r2-atlasos-revios.md (ReviOS disables 8.3 via revitool - precedent only)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX06-010", "name": "NTFS memory usage configuration", "category": "NX06",
@@ -286,7 +286,7 @@
       "documentationSource": [
         "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/fsutil-behavior (memoryusage values 1/2, NtfsMemoryUsage mapping, quoted risk and restart requirement; fetched 2026-11-23)"
       ],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX06-011", "name": "Write caching policy (per-device)", "category": "NX06",
@@ -315,7 +315,7 @@
         "https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntdddisk/ns-ntdddisk-_disk_cache_information (documented disk cache-mode structure behind the policy page)",
         "E0 provenance: the registry value name UserWriteCacheSetting is community-known and written by the Device Manager policy page; Microsoft does not document it. Verified registry read-back only."
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX06-012", "name": "Disk device power management (storage D3 in Modern Standby)", "category": "NX06",
@@ -344,7 +344,7 @@
         "https://learn.microsoft.com/en-us/windows/configuration/wcd/wcd-storaged3inmodernstandby (documented SATA/NVMe D3 behavior in Modern Standby)",
         "research/sources/r2-atlasos-revios.md (Atlas power policy refuses per-device Enum power writes - boundary respected)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX06-013", "name": "Drive health (SMART) report", "category": "NX06",
@@ -373,7 +373,7 @@
         "https://learn.microsoft.com/en-us/powershell/module/storage/get-storagereliabilitycounter (temperature/wear/error/latency counters)",
         "https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-diskdrive (device instance path used for device-scoped reports)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     }
   ]
 }

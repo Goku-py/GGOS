@@ -1,0 +1,463 @@
+{
+  "schemaVersion": 1,
+  "category": "NX08",
+  "categoryName": "Input & Peripherals",
+  "categoryNote": "Per-user pointer and keyboard configuration, read-only peripheral/device inspection, one documented Bluetooth power policy, and the researched input data-queue candidate (undocumented parameter, community-only floor, unverified effect - refused below 16 and above 100). XREF map (boundaries enforced in code): USB selective suspend POLICY -> NX09-005; IRQ affinity / MSI mode -> NX17; full USB hardware inventory -> NX20-007; Bluetooth service startup -> NX11-012. No kernel drivers (hidusbf and any similar polling-rate filter driver are rejected), no vendor driver or firmware writes, no IFEO patterns. Inspection entries report identity and state only and never fabricate an unreadable value.",
+  "tweaks": [
+    {
+      "id": "NX08-001",
+      "name": "Disable Enhance Pointer Precision",
+      "category": "NX08",
+      "subcategory": "Pointer behavior",
+      "kind": "configuration",
+      "description": "Sets the per-user pointer-acceleration triple (MouseSpeed, MouseThreshold1, MouseThreshold2) so Windows pointer acceleration is off, with exact originals journaled for rollback.",
+      "objective": "Offer esports-oriented owners a documented, reversible per-user way to disable pointer acceleration without touching the input stack system-wide, vendor drivers or device firmware.",
+      "technicalExplanation": "Implemented by Set-NxMouseAcceleration (src/nxcore/functions/NX08.ps1). Targets HKCU\\Control Panel\\Mouse values MouseSpeed, MouseThreshold1 and MouseThreshold2. All three are REG_SZ on Windows 11 (verified read-only on build 26300.9974, 2026-11-23), so the journal captures and restores the exact String kind rather than assuming a DWORD. Documented semantics: SystemParametersInfo SPI_GETMOUSE/SPI_SETMOUSE exposes the two thresholds plus the acceleration level, and mouse_event documents the level values (0 = no acceleration; 1 and 2 add one or two threshold-based doublings of relative motion). The mapping from those documented settings to these registry VALUE NAMES is community-known, which is why the entry is E0; the behavior itself is documented. With MouseSpeed=0 the threshold tests are inert, so the default 0/0/0 target is the standard disable triple while explicit values remain selectable. Every write goes through the shared journaled helper (capture -> journal -> apply -> verify -> journal); an already-correct value journals a skip and is never rewritten; a verification failure safe-stops and restores that value's exact original. Per-user only (HKCU, no elevation). Configuration intent: the Windows pointer mapping stops applying acceleration; no performance, aim or latency claim is made or implied, and no DPI/polling-rate/vendor state is touched.",
+      "modificationType": "function",
+      "defaultState": "Windows default: pointer acceleration (the Enhance pointer precision preference) is on for a standard profile, with whatever triple that profile currently holds (read before change; exact defaults are not asserted).",
+      "proposedState": "MouseSpeed=0 and the selected threshold values (0/0/0 by default) under HKCU\\Control Panel\\Mouse, journaled per value.",
+      "risk": "CONDITIONAL",
+      "evidence": "E0",
+      "profiles": ["P1","P2","P3","P9"],
+      "workloads": ["esports","gaming"],
+      "requiredHardware": {},
+      "excludedHardware": {},
+      "editions": ["Home","Pro","Enterprise","Education"],
+      "builds": { "min": 22631, "max": 26300, "excluded": [] },
+      "dependencies": [],
+      "conflicts": [],
+      "privileges": "User",
+      "restart": "Session",
+      "apply": {
+        "actions": [
+          {
+            "type": "function",
+            "function": "Set-NxMouseAcceleration",
+            "parameters": { "mouseSpeed": 0, "mouseThreshold1": 0, "mouseThreshold2": 0 }
+          }
+        ]
+      },
+      "verify": {
+        "procedure": "Set-NxMouseAcceleration re-reads each written value with Test-NxConfigurationState and journals a verify entry per value; the result reports layers, planned/verified state, and whether any layer had to restore its original."
+      },
+      "rollback": {
+        "procedure": "Invoke-NxRollback restores each value with its journaled kind (String) in reverse order; values that never existed are deleted; only-if-ours divergence is reported, never clobbered.",
+        "reversible": true
+      },
+      "originalState": {
+        "method": "Capture-NxRegistryValue per value (keyExisted, existed, kind, value) journaled before each mutation; the live check confirmed all three are REG_SZ."
+      },
+      "sideEffects": [
+        "With acceleration off, fast physical movements no longer receive the documented doubling that MouseSpeed>0 applies, so the same motion moves the pointer a shorter distance.",
+        "Per-user only: other accounts and the sign-in screen are unaffected.",
+        "Windows can hold the previous pointer mapping for the current session; a sign-out/sign-in may be needed before every surface reflects it.",
+        "No DPI, polling-rate, vendor driver or device firmware state is touched."
+      ],
+      "approval": "Selection",
+      "documentationSource": [
+        "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfow (SPI_GETMOUSE/SPI_SETMOUSE; fetched 2026-11-23)",
+        "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-mouse_event (acceleration levels and threshold tests; fetched 2026-11-23)",
+        "https://learn.microsoft.com/en-us/windows/win32/inputdev/about-mouse-input",
+        "r3-sapphire-vain.md (mouse acceleration off via MouseSpeed/Threshold1/2=0 [IMPLEMENTED]; registry value-name family)",
+        "Live read-only value-kind verification on build 26300.9974 (2026-11-23)"
+      ],
+      "status": "SyntaxValidated",
+      "presetExcluded": false,
+      "version": 1
+    },
+    {
+      "id": "NX08-002",
+      "name": "Mouse pointer speed/sensitivity",
+      "category": "NX08",
+      "subcategory": "Pointer speed",
+      "kind": "configuration",
+      "description": "Sets the per-user pointer speed (MouseSensitivity) inside the documented 1..20 range, journaled with the exact original String value.",
+      "objective": "Let the owner choose a pointer distance-per-motion preference per user, with a documented range and exact rollback, instead of guessing undocumented values.",
+      "technicalExplanation": "Implemented by Set-NxMousePointerSpeed (src/nxcore/functions/NX08.ps1). Targets HKCU\\Control Panel\\Mouse :: MouseSensitivity as a REG_SZ value (kind verified read-only on build 26300.9974). The value is validated to 1..20, the range SystemParametersInfo documents for SPI_GETMOUSESPEED (1 = slowest, 20 = fastest; 10 is the documented default). The mapping from that documented speed setting to the MouseSensitivity value name is community-known, so the entry stays E0 even though the range is documented. This is a pointer-gain preference, not a DPI change: NEXTRIX never writes vendor driver settings, device profiles or firmware, and it never touches the hardware DPI of the mouse. The journaled helper provides idempotent skip and exact-original restore on failure. Per-user only; no elevation. No performance or latency claim is made.",
+      "modificationType": "function",
+      "defaultState": "Windows default pointer speed for the profile (documented default is 10; the live value is captured before any change and never assumed).",
+      "proposedState": "MouseSensitivity equal to the selected 1..20 value (10 in the declared apply), journaled.",
+      "risk": "CONDITIONAL",
+      "evidence": "E0",
+      "profiles": ["P1","P2","P3","P9"],
+      "workloads": ["esports","gaming"],
+      "requiredHardware": {},
+      "excludedHardware": {},
+      "editions": ["Home","Pro","Enterprise","Education"],
+      "builds": { "min": 22631, "max": 26300, "excluded": [] },
+      "dependencies": [],
+      "conflicts": [],
+      "privileges": "User",
+      "restart": "Session",
+      "apply": {
+        "actions": [
+          { "type": "function", "function": "Set-NxMousePointerSpeed", "parameters": { "mouseSensitivity": 10 } }
+        ]
+      },
+      "verify": {
+        "procedure": "Set-NxMousePointerSpeed re-reads MouseSensitivity with Test-NxConfigurationState (kind String) and journals the verify entry; the result reports the layer and verified state."
+      },
+      "rollback": {
+        "procedure": "Invoke-NxRollback restores the journaled original MouseSensitivity String value (or deletes it if it never existed); only-if-ours divergence is reported.",
+        "reversible": true
+      },
+      "originalState": {
+        "method": "Capture-NxRegistryValue (keyExisted, existed, kind, value) before mutation; the value is a String on current builds."
+      },
+      "sideEffects": [
+        "Pointer distance per physical motion changes for the profile; this is a preference, not a correction of a defect.",
+        "No DPI, polling-rate, vendor driver or firmware state is touched; the declared 10 only restores the documented default, never a hardware profile.",
+        "A sign-out/sign-in can be needed before every surface reflects the new speed."
+      ],
+      "approval": "Selection",
+      "documentationSource": [
+        "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfow (SPI_GETMOUSESPEED range 1..20, default 10; fetched 2026-11-23)",
+        "https://learn.microsoft.com/en-us/windows/win32/inputdev/about-mouse-input",
+        "r3-sapphire-vain.md (mouse value family context)",
+        "Live read-only value-kind verification on build 26300.9974 (2026-11-23)"
+      ],
+      "status": "SyntaxValidated",
+      "presetExcluded": false,
+      "version": 1
+    },
+    {
+      "id": "NX08-003",
+      "name": "Mouse polling rate inspection",
+      "category": "NX08",
+      "subcategory": "Pointer diagnostics",
+      "kind": "diagnostic",
+      "description": "Read-only pointing-device report with device identity, bus hint and driver info; the polling rate is explicitly Unknown with the documented reason stated.",
+      "objective": "Show which pointing devices Windows reports and why a polling rate cannot be read through documented Windows surfaces, without installing a kernel driver or inventing a number.",
+      "technicalExplanation": "Implemented by Get-NxMousePollingRateReport (src/nxcore/functions/NX08.ps1). Enumerates Win32_PointingDevice (documented CIM class) and reports each row's name, hardware type, button count, pointing type and status verbatim, a bus hint derived from the PnP instance-ID prefix, and signed-driver version/provider from Win32_PnPSignedDriver. pollingRateHz is always null and pollingRateAvailable is false, with a per-device reason: Windows documents no user-mode API or CIM/WMI property that returns a USB HID polling rate; the interval is the endpoint descriptor bInterval field, which needs raw USB descriptor access. The reference projects obtain or force a rate only by bundling the third-party hidusbf kernel filter driver (r3); NEXTRIX ships no kernel drivers and installs none, and it refuses to infer a rate from a product name or vendor ID. Vendor utilities may display a configured rate, but NEXTRIX neither queries nor changes vendor software. NumberOfButtons/PointingType are reported verbatim (0 may mean the driver does not populate the field). PnP instance IDs are masked to bus + hardware ID because the trailing instance segment can encode a device serial; a truncated hash key supports correlation instead. No mutation and no journal requirement; an optional report-only journal note is written only when a journal directory is supplied.",
+      "modificationType": "none",
+      "defaultState": "Information only; no NEXTRIX pointing-device report exists.",
+      "proposedState": "Machine-readable pointing-device report (object and optional JSON in a chosen folder) with pollingRateAvailable=false and the limitation stated per device.",
+      "risk": "CORE",
+      "evidence": "E0",
+      "profiles": ["P1","P2","P3","P9"],
+      "workloads": ["esports","gaming"],
+      "requiredHardware": {},
+      "excludedHardware": {},
+      "editions": ["Home","Pro","Enterprise","Education"],
+      "builds": { "min": 22631, "max": 26300, "excluded": [] },
+      "dependencies": [],
+      "conflicts": [],
+      "privileges": "User",
+      "restart": "None",
+      "apply": {
+        "actions": [
+          { "type": "function", "function": "Get-NxMousePollingRateReport", "parameters": {} }
+        ]
+      },
+      "verify": {
+        "procedure": "Report carries readOnly=true, noWritesPerformed=true, one entry per Win32_PointingDevice row, pollingRateAvailable=false with a per-device reason, masked instance IDs, and the limitations list."
+      },
+      "rollback": {
+        "procedure": "Not applicable - strictly read-only reporting (optional JSON file lands in the owner-chosen folder).",
+        "reversible": true
+      },
+      "originalState": {
+        "method": "Not applicable - read-only."
+      },
+      "sideEffects": [
+        "None (read-only).",
+        "Vendor utilities may display a configured polling rate; NEXTRIX does not query or change vendor software or firmware."
+      ],
+      "approval": "Selection",
+      "documentationSource": [
+        "https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-pointingdevice",
+        "https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-pnpentity",
+        "https://learn.microsoft.com/en-us/powershell/module/pnpdevice/get-pnpdevice",
+        "https://learn.microsoft.com/en-us/windows-hardware/drivers/hid/selective-suspend-for-hid-over-usb-devices (HID-over-USB device behavior context; fetched 2026-11-23)",
+        "r3-sapphire-vain.md (hidusbf 1k/2-4k/4-8kHz kernel-driver polling-rate route - REJECTED: NEXTRIX installs no kernel drivers)"
+      ],
+      "status": "SyntaxValidated",
+      "presetExcluded": false,
+      "version": 1
+    },
+    {
+      "id": "NX08-004",
+      "name": "Keyboard repeat delay/rate",
+      "category": "NX08",
+      "subcategory": "Keyboard behavior",
+      "kind": "configuration",
+      "description": "Sets the per-user keyboard repeat delay (KeyboardDelay) and repeat rate (KeyboardSpeed) inside their documented ranges, journaled per value.",
+      "objective": "Give the owner explicit, documented keyboard repeat settings per user with exact rollback, instead of undocumented or vendor-specific keyboard software.",
+      "technicalExplanation": "Implemented by Set-NxKeyboardRepeat (src/nxcore/functions/NX08.ps1). Targets HKCU\\Control Panel\\Keyboard :: KeyboardDelay and :: KeyboardSpeed as REG_SZ values (kind verified read-only on build 26300.9974). Ranges are the documented SystemParametersInfo ranges: SPI_GETKEYBOARDDELAY is 0..3, where 0 is about a 250 ms delay and 3 about 1 s; SPI_GETKEYBOARDSPEED is 0..31, where 0 is about 2.5 repetitions/second and 31 about 30 repetitions/second, with actual rates hardware-dependent and possibly up to 20% off a linear scale. The mapping from those documented settings to these value names is community-known, while the value semantics are documented, so the entry is E1 on the documented values. Both parameters are mandatory: the declared apply uses delay 0 / speed 31, and no implicit default is invented at the function boundary. All writes use the journaled helper (capture -> journal -> apply -> verify -> journal); an already-correct value journals a skip; a failed verification restores that value's original. Per-user, no elevation. This is a text-entry preference: no input-latency, polling or performance claim is made.",
+      "modificationType": "function",
+      "defaultState": "Windows default keyboard repeat for the profile (the live pair is captured before any change; defaults are not asserted).",
+      "proposedState": "KeyboardDelay and KeyboardSpeed equal to the selected documented values (0 and 31 in the declared apply), journaled.",
+      "risk": "CONDITIONAL",
+      "evidence": "E1",
+      "profiles": ["P1","P2","P3","P9"],
+      "workloads": ["esports","gaming"],
+      "requiredHardware": {},
+      "excludedHardware": {},
+      "editions": ["Home","Pro","Enterprise","Education"],
+      "builds": { "min": 22631, "max": 26300, "excluded": [] },
+      "dependencies": [],
+      "conflicts": [],
+      "privileges": "User",
+      "restart": "Session",
+      "apply": {
+        "actions": [
+          { "type": "function", "function": "Set-NxKeyboardRepeat", "parameters": { "keyboardDelay": 0, "keyboardSpeed": 31 } }
+        ]
+      },
+      "verify": {
+        "procedure": "Set-NxKeyboardRepeat re-reads both values with Test-NxConfigurationState (kind String) and journals a verify entry per value; the result reports layers, planned/verified state and any restore."
+      },
+      "rollback": {
+        "procedure": "Invoke-NxRollback restores both journaled original String values in reverse order (deleting values that never existed); only-if-ours divergence is reported, never clobbered.",
+        "reversible": true
+      },
+      "originalState": {
+        "method": "Capture-NxRegistryValue per value (keyExisted, existed, kind, value) before mutation; both are REG_SZ on current builds."
+      },
+      "sideEffects": [
+        "A shorter repeat delay and higher repeat rate produce more repeated keystrokes while a key is held - useful for some text workflows and unwanted in others.",
+        "Text-entry preference only; accessibility features (Filter Keys, Sticky Keys) are not modified.",
+        "Per-user; a sign-out/sign-in can be needed before every surface reflects the change."
+      ],
+      "approval": "Selection",
+      "documentationSource": [
+        "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfow (SPI_GETKEYBOARDDELAY 0..3 with ~250 ms..1 s; SPI_GETKEYBOARDSPEED 0..31 with ~2.5..30 per second and hardware variance; fetched 2026-11-23)",
+        "https://learn.microsoft.com/en-us/windows/win32/inputdev/about-keyboard-input (automatic repeat behavior)",
+        "TWEAK_CATALOGUE.md NX08 row (documented values; per-user)",
+        "Live read-only value-kind verification on build 26300.9974 (2026-11-23)"
+      ],
+      "status": "SyntaxValidated",
+      "presetExcluded": false,
+      "version": 1
+    },
+    {
+      "id": "NX08-005",
+      "name": "Game controller inspection & configuration",
+      "category": "NX08",
+      "subcategory": "Controller diagnostics",
+      "kind": "diagnostic",
+      "description": "Read-only game-controller inventory (narrow detection that excludes system controllers) with vendor-UI deadzone guidance; no controller, driver or firmware is configured.",
+      "objective": "Tell the owner which game controllers the system reports and where a documented per-device/per-game deadzone surface lives, without writing vendor drivers or firmware.",
+      "technicalExplanation": "Implemented by Get-NxGameControllerReport (src/nxcore/functions/NX08.ps1). Detection is deliberately narrow: naive 'controller' matching also matches host, network, interrupt, memory, storage, GPIO and embedded controllers (observed read-only on the reference machine), so a row is reported only when its PnP class is a composite-controller class or its name matches a game-controller vocabulary (Xbox, gamepad, DualSense, DualShock, Joy-Con, Pro Controller, 8BitDo, Steam Controller, wheel/stick families), AND its name does not match the explicit system-controller exclusion list. Each row reports the masked instance ID, class, status, bus hint, manufacturer and signed-driver info. configurationSupported is false and the guidance is explicit: Windows documents no system-wide controller deadzone/sensitivity setting - XInput dead-zone handling is per application - so per-device tuning belongs to the vendor utility (for example the Xbox Accessories app for Xbox controllers) and per-game tuning to the game or an existing launcher mapping. NEXTRIX writes nothing, installs nothing and changes no pairing. A zero-controller result is valid: PnP presence is also not a claim about XInput slots (XInput exposes up to four controllers per application). Optional JSON output goes only to an owner-chosen folder; instance IDs are masked.",
+      "modificationType": "none",
+      "defaultState": "Information only; no NEXTRIX controller report exists.",
+      "proposedState": "Machine-readable controller report (object and optional JSON) with detected controllers, detection note and guidance; configurationSupported=false.",
+      "risk": "CONDITIONAL",
+      "evidence": "E0",
+      "profiles": ["P1","P2","P3","P4","P9"],
+      "workloads": ["gaming"],
+      "requiredHardware": {},
+      "excludedHardware": {},
+      "editions": ["Home","Pro","Enterprise","Education"],
+      "builds": { "min": 22631, "max": 26300, "excluded": [] },
+      "dependencies": [],
+      "conflicts": [],
+      "privileges": "User",
+      "restart": "None",
+      "apply": {
+        "actions": [
+          { "type": "function", "function": "Get-NxGameControllerReport", "parameters": {} }
+        ]
+      },
+      "verify": {
+        "procedure": "Report carries readOnly=true, noWritesPerformed=true, controllerCount, one masked row per detected controller, configurationSupported=false, the guidance list and the detection note; system controllers are absent from the result."
+      },
+      "rollback": {
+        "procedure": "Not applicable - read-only inspection with guidance only.",
+        "reversible": true
+      },
+      "originalState": {
+        "method": "Not applicable - read-only."
+      },
+      "sideEffects": [
+        "None (read-only); no controller, driver, pairing or firmware state is changed and no vendor software is installed."
+      ],
+      "approval": "Selection",
+      "documentationSource": [
+        "https://learn.microsoft.com/en-us/windows/win32/xinput/getting-started-with-xinput (XInput controller model and per-application dead zones; fetched 2026-11-23)",
+        "https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-pnpentity",
+        "https://learn.microsoft.com/en-us/powershell/module/pnpdevice/get-pnpdevice",
+        "r1-fsosx-xos.md (Xbox controller over Bluetooth issues in a reference project; guidance-only stance)"
+      ],
+      "status": "SyntaxValidated",
+      "presetExcluded": false,
+      "version": 1
+    },
+    {
+      "id": "NX08-006",
+      "name": "Bluetooth peripheral inspection & power policy",
+      "category": "NX08",
+      "subcategory": "Bluetooth power",
+      "kind": "configuration",
+      "description": "Detection-gated Bluetooth inventory plus the documented remote-wake power policy (machine and per-radio values), journaled per value with exact rollback.",
+      "objective": "Let the owner control whether Bluetooth peripherals may wake the computer, using only Microsoft-documented values, with the radio detected first and every original captured.",
+      "technicalExplanation": "Implemented by Set-NxBluetoothPowerPolicy plus the read-only Get-NxBluetoothPeripheralReport (src/nxcore/functions/NX08.ps1). Detection gate: at least one Win32_PnPEntity row with PNPClass Bluetooth must exist; with no radio the function skips gracefully and writes nothing. Inspection reports the radio(s), BTHENUM/BTHLE peripherals, the documented machine-level value and each radio's documented Device Parameters values; bthserv/BthAvctpSvc state is read as a dependency signal only (NX11-012 owns service startup, XREF). The only policy surface written is the Microsoft-documented remote-wake set from the Bluetooth FAQ: HKLM\\SYSTEM\\CurrentControlSet\\Services\\Bthport\\Parameters :: SystemRemoteWakeSupported (DWORD) and, per USB radio, <Enum>\\<instance>\\Device Parameters :: RemoteWakeEnabled and DeviceRemoteWakeSupported (DWORD). Enable writes the documented policy values (machine SystemRemoteWakeSupported=1 and per-radio RemoteWakeEnabled=1) and sets the DeviceRemoteWakeSupported capability flag only where the radio already declares it, so a capability is never fabricated for an unverified radio; if no USB-attached radio with a readable Device Parameters key can be targeted, Enable skips without writing because the documented recipe would be incomplete. Disable writes SystemRemoteWakeSupported=0 and RemoteWakeEnabled=0 and deliberately leaves DeviceRemoteWakeSupported (a capability declaration) unchanged; writing 0 to documented '1' flags is policy-off semantics and is labeled as such. The documented per-radio path is USB-radio-specific: a non-USB-attached radio is reported and its per-radio values are not written. No other Bluetooth surface is touched: no pairing data, no service start type, no vendor driver or firmware, and no blanket Enum power-value sweep (the reference pattern is rejected). The Device Manager 'Allow the computer to turn off this device to save power' checkbox has no Microsoft-documented registry contract in current documentation, so it is reported as undocumented and never written. Every value goes through the journaled helper; application stops after a failed layer so a half-applied wake policy never widens, and rollback restores each recorded original (including values that never existed).",
+      "modificationType": "function",
+      "defaultState": "Windows default Bluetooth remote-wake state for the detected radio(s); absent documented values are recorded as absent, never assumed.",
+      "proposedState": "Documented remote-wake values set to the selected policy (Disabled: machine=0 and per-radio RemoteWakeEnabled=0; Enabled: machine=1 and per-radio RemoteWakeEnabled=1, with DeviceRemoteWakeSupported=1 only where the radio already declares it), journaled per value.",
+      "risk": "CONDITIONAL",
+      "evidence": "E1",
+      "profiles": ["P1","P2","P3","P4","P9"],
+      "workloads": ["mobile","gaming"],
+      "requiredHardware": {},
+      "excludedHardware": {},
+      "editions": ["Home","Pro","Enterprise","Education"],
+      "builds": { "min": 22631, "max": 26300, "excluded": [] },
+      "dependencies": [],
+      "conflicts": [],
+      "privileges": "Admin",
+      "restart": "Reboot",
+      "apply": {
+        "actions": [
+          { "type": "function", "function": "Set-NxBluetoothPowerPolicy", "parameters": { "remoteWake": "Disabled" } }
+        ]
+      },
+      "verify": {
+        "procedure": "Every planned value is re-read with Test-NxConfigurationState and journaled; the result reports radioCount, layers with masked targets, unsupported/skipped radios with reasons, and whether a layer failed (application stops at the first failure). Get-NxBluetoothPeripheralReport re-reads the same documented surface read-only."
+      },
+      "rollback": {
+        "procedure": "Invoke-NxRollback (elevated, as the policy write requires) restores every journaled value with its recorded kind in reverse order - the machine-level Bthport value and each per-radio Enum value - deleting values that never existed; only-if-ours divergence is reported, never clobbered.",
+        "reversible": true
+      },
+      "originalState": {
+        "method": "Capture-NxRegistryValue per documented value before mutation (machine SystemRemoteWakeSupported plus per-radio RemoteWakeEnabled/DeviceRemoteWakeSupported), recording key existence, value existence, kind and data."
+      },
+      "sideEffects": [
+        "With remote wake disabled, a Bluetooth keyboard or mouse can no longer wake the computer from sleep/hibernate - the documented trade-off of this policy.",
+        "The machine-level flag applies to all Bluetooth radios on the device; per-radio values scope the effect to the detected radio.",
+        "The radio stack reads the wake flags at device start; a reboot or radio re-enumeration is the reliable way to apply the policy to subsequent sleep cycles.",
+        "If the machine-level Bthport\\Parameters key did not exist, rollback removes the value it created but the journal engine v0.1 restores values, not key deletion, so an empty key can remain.",
+        "Bluetooth service startup, pairing data, vendor drivers and firmware are untouched (NX11-012 owns service startup)."
+      ],
+      "approval": "SelectionPlusConfirmation",
+      "documentationSource": [
+        "https://learn.microsoft.com/en-us/windows-hardware/drivers/bluetooth/bluetooth-faq (How do I enable remote wake in Windows? - Bthport\\Parameters SystemRemoteWakeSupported and per-radio Device Parameters RemoteWakeEnabled/DeviceRemoteWakeSupported; fetched 2026-11-23)",
+        "https://learn.microsoft.com/en-us/powershell/module/pnpdevice/get-pnpdevice",
+        "https://learn.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server (Bluetooth Support Service bthserv documented; XREF NX11-012)",
+        "r2-atlasos-revios.md (Atlas power-saving-policy refusal of bulk per-device Enum idle/wake/D-state sweeps - NX08-006 writes only the two documented per-radio wake values with exact capture and rollback)",
+        "TWEAK_CATALOGUE.md NX08 row (XREF NX11-012 service dependency)"
+      ],
+      "status": "SyntaxValidated",
+      "presetExcluded": false,
+      "version": 1
+    },
+    {
+      "id": "NX08-007",
+      "name": "USB controller & HID device inspection",
+      "category": "NX08",
+      "subcategory": "USB & HID diagnostics",
+      "kind": "diagnostic",
+      "description": "Read-only USB controller, USB device-tree and HID-node report with per-device documented identity and read-only power-value presence; feeds NX09-005 and NX17 decisions.",
+      "objective": "Give the owner and the power/interrupt entries a factual device map before any USB decision, without changing devices or duplicating the full USB inventory entry.",
+      "technicalExplanation": "Implemented by Get-NxUsbHidReport (src/nxcore/functions/NX08.ps1). Documented surfaces: Win32_USBController for controllers, Win32_PnPEntity for USB-enumerated devices and HIDClass nodes, Win32_USBControllerDevice for controller/device associations, and Win32_PnPSignedDriver for driver version/provider. For every HID node it reports which per-device power value NAMES are present under the device's Device Parameters key (SelectiveSuspendEnabled, SelectiveSuspendOn, EnhancedPowerManagementEnabled, AllowIdleIrpInD3, DeviceSelectiveSuspended, D3ColdSupported, WdfDirectedPowerTransitionEnable, EnableIdlePowerManagement, WakeEnabled, RemoteWakeEnabled, DeviceRemoteWakeSupported) together with their kind and current data. Those names are community-known (r1/r3), so that sub-report is labeled E0 provenance; the entry is E1 on the documented CIM/cmdlet surfaces. Nothing is written: no device enable/disable, no selective-suspend plan value (NX09-005 owns policy), no MSI/interrupt/affinity value (NX17 owns that), no driver install/update/removal, no kernel driver. NX20-007 owns the full USB hardware inventory; this report is the controller/HID decision-support view. Documentation honesty is recorded: Microsoft's USB selective-suspend page says it is enabled by default and strongly recommends not disabling it, while the HID-over-USB page says it is disabled by default to avoid resume delay - both are reported and no verdict is derived. Instance IDs are masked to bus + hardware ID with a truncated hash correlation key; the optional JSON file goes only to an owner-chosen folder.",
+      "modificationType": "none",
+      "defaultState": "Information only; no NEXTRIX USB/HID report exists.",
+      "proposedState": "Machine-readable report (object and optional JSON) with controllers, associations, USB devices, HID nodes, power-value presence and boundary/feeds notes.",
+      "risk": "CORE",
+      "evidence": "E1",
+      "profiles": ["P1","P2","P3","P4","P9"],
+      "workloads": ["all"],
+      "requiredHardware": {},
+      "excludedHardware": {},
+      "editions": ["Home","Pro","Enterprise","Education"],
+      "builds": { "min": 22631, "max": 26300, "excluded": [] },
+      "dependencies": [],
+      "conflicts": [],
+      "privileges": "User",
+      "restart": "None",
+      "apply": {
+        "actions": [
+          { "type": "function", "function": "Get-NxUsbHidReport", "parameters": {} }
+        ]
+      },
+      "verify": {
+        "procedure": "Report carries readOnly=true, noWritesPerformed=true, controllerCount, controllerAssociations, usbDeviceCount, hidDeviceCount, per-HID powerValueNamesPresent, the feeds list and the boundary list; every instance ID is masked."
+      },
+      "rollback": {
+        "procedure": "Not applicable - strictly read-only inspection.",
+        "reversible": true
+      },
+      "originalState": {
+        "method": "Not applicable - read-only."
+      },
+      "sideEffects": [
+        "None (read-only); no device is disabled, enabled or reconfigured and no driver is installed, updated or removed.",
+        "Per-device power value names are community-known identifiers reported read-only; their presence is not a claim about the device's current power behavior."
+      ],
+      "approval": "Selection",
+      "documentationSource": [
+        "https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-usbcontroller",
+        "https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-usbcontrollerdevice",
+        "https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-pnpentity",
+        "https://learn.microsoft.com/en-us/windows-hardware/drivers/hid/selective-suspend-for-hid-over-usb-devices (fetched 2026-11-23)",
+        "https://learn.microsoft.com/en-us/windows-hardware/drivers/usbcon/usb-selective-suspend (fetched 2026-11-23)",
+        "r1-fsosx-xos.md and r3-sapphire-vain.md (per-device power value-name families; blanket Enum sweeps REJECTED)",
+        "r2-atlasos-revios.md (Atlas power-saving-policy refusal: per-device Enum idle/wake/D-state values and bulk MSPower_DeviceEnable excluded because no safe, exactly reversible route exists - the read-only stance this entry takes)",
+        "TWEAK_CATALOGUE.md NX08 row (feeds NX09-005; XREF NX20-007 and NX17)"
+      ],
+      "status": "SyntaxValidated",
+      "presetExcluded": false,
+      "version": 1
+    },
+    {
+      "id": "NX08-008",
+      "name": "Mouse/keyboard data-queue size configuration",
+      "category": "NX08",
+      "subcategory": "Input queue",
+      "kind": "configuration",
+      "description": "Sets the mouclass/kbdclass input data-queue depth (MouseDataQueueSize / KeyboardDataQueueSize) inside a bounded 16..100 range, journaled per DWORD with exact rollback.",
+      "objective": "Offer the researched queue-depth candidate only with its undocumented status, community-only floor and unverified effect stated up front, and refuse unsafe values instead of clamping them.",
+      "technicalExplanation": "Implemented by Set-NxDataQueueSize plus the read-only Get-NxDataQueueState (src/nxcore/functions/NX08.ps1). Targets HKLM\\SYSTEM\\CurrentControlSet\\Services\\mouclass\\Parameters :: MouseDataQueueSize and ...\\kbdclass\\Parameters :: KeyboardDataQueueSize (DWord; CurrentControlSet only - the research pages display ControlSet001 paths, which NEXTRIX never writes). The values set class-driver input queue depth in ENTRIES; the entry sizes are documented structures - MOUSE_INPUT_DATA is 24 bytes (ntddmou.h) and KEYBOARD_INPUT_DATA is 12 bytes (ntddkbd.h) - so the community-observed default 100 equals 2,400 bytes (mouse) / 1,200 bytes (keyboard) of nonpaged pool per device object. Honesty: Microsoft does not document these as user-tweakable parameters, and the default 100 itself is community-researched (poolmon measurements plus the ReactOS kbdclass registration table) even though the structures and the class-driver architecture are documented; the entry is therefore E0. The 16 decimal floor is COMMUNITY-ONLY (Reddit/overclock.net/Blur Busters/guides): no Microsoft documentation defines a floor, guides disagree on ranges, and at 1 community reports describe clicks or cursor keystrokes stopping until reboot. NEXTRIX refuses values below 16 with that reason and refuses values above 100 (no documented purpose) rather than silently clamping. The effect is UNVERIFIED: no independent benchmark exists, community sources contradict each other (the originating overclock.net thread's own summary calls the tweak placebo; the Nov 2026 xbitlabs article is recorded in TWEAK_RESEARCH.md section 16), and NEXTRIX makes no latency or responsiveness claim. Scope: only the class-driver values are written; the class-driver Parameters keys must already exist (never created), no device, driver, firmware or vendor stack is touched, and vendor stacks that bypass kbdclass/mouclass are unaffected. Journal-first per value with idempotent skip; application stops at the first failed layer; an absent value is captured as absent (driver default) so rollback deletes it and returns the driver to its default behavior.",
+      "modificationType": "function",
+      "defaultState": "Driver default 100 entries (mouse 2,400 bytes / keyboard 1,200 bytes of nonpaged pool per device object); the value is usually ABSENT from the registry - absence means the default is in effect (community-observed default; Microsoft does not document it as user-tweakable).",
+      "proposedState": "MouseDataQueueSize and/or KeyboardDataQueueSize equal to the selected 16..100 value (16 for both in the declared apply), journaled per DWORD.",
+      "risk": "CONDITIONAL",
+      "evidence": "E0",
+      "profiles": ["P1","P2","P3","P9"],
+      "workloads": ["input","esports"],
+      "requiredHardware": {},
+      "excludedHardware": {},
+      "editions": ["Home","Pro","Enterprise","Education"],
+      "builds": { "min": 22631, "max": 26300, "excluded": [] },
+      "dependencies": [],
+      "conflicts": [],
+      "privileges": "Admin",
+      "restart": "Reboot",
+      "apply": {
+        "actions": [
+          { "type": "function", "function": "Set-NxDataQueueSize", "parameters": { "device": "Both", "queueSize": 16 } }
+        ]
+      },
+      "verify": {
+        "procedure": "Each written value is re-read with Test-NxConfigurationState (kind DWord) and journaled; the result reports device, queueSize, per-layer verified state, missing class keys and whether application stopped at a failure. Get-NxDataQueueState re-reads both values read-only and marks absent values as the driver default 100."
+      },
+      "rollback": {
+        "procedure": "Invoke-NxRollback (elevated) restores both journaled DWORD originals in reverse order, deleting values that did not exist (returning the driver to its default depth); only-if-ours divergence is reported, never clobbered.",
+        "reversible": true
+      },
+      "originalState": {
+        "method": "Capture-NxRegistryValue per target (keyExisted, existed, kind, value) journaled before mutation; absent values are recorded as absent, which the research identifies as the driver default 100."
+      },
+      "sideEffects": [
+        "A shallower input queue buffers fewer entries; if the queue overflows, the class driver can drop or coalesce entries (generic queue behavior - the exact behavior at 16 is not Microsoft-documented).",
+        "Community reports associate values below the community floor - and especially 1 - with lost clicks/cursor input until reboot; NEXTRIX refuses below 16 for that reason.",
+        "Applies to every device using the kbdclass/mouclass class driver; vendor stacks that bypass them are unaffected.",
+        "Requires a reboot before the class driver reads the new depth at device start.",
+        "No latency or responsiveness effect is claimed; the performance effect is unverified (E0).",
+        "If a class-driver Parameters key is missing, that device is skipped and reported (this entry never creates the key)."
+      ],
+      "approval": "SelectionPlusConfirmation",
+      "documentationSource": [
+        "https://learn.microsoft.com/en-us/windows-hardware/drivers/hid/keyboard-and-mouse-hid-client-drivers (class-driver architecture; fetched 2026-11-23)",
+        "https://learn.microsoft.com/en-us/windows/win32/api/ntddmou/ns-ntddmou-mouse_input_data (MOUSE_INPUT_DATA structure, 24 bytes; fetched 2026-11-23)",
+        "https://learn.microsoft.com/en-us/windows/win32/api/ntddkbd/ns-ntddkbd-keyboard_input_data (KEYBOARD_INPUT_DATA structure, 12 bytes; fetched 2026-11-23)",
+        "https://djdallmann.github.io/GamingPCSetup/CONTENT/RESEARCH/WINDRIVERS/ (community research: default 100, poolmon byte arithmetic - marked community, not Microsoft)",
+        "https://www.overclock.net/threads/mousedataqueuesize-registry-tweak-to-reduce-input-delay-fact-or-fiction.1794122/ (community thread; the OP calls the tweak placebo; floor anecdotes - marked community)",
+        "TWEAK_RESEARCH.md section 16 (research reconciliation: xbitlabs Nov 2026 and Reddit/Blur Busters claims recorded; no Microsoft floor)"
+      ],
+      "status": "SyntaxValidated",
+      "presetExcluded": false,
+      "version": 1
+    }
+  ]
+}

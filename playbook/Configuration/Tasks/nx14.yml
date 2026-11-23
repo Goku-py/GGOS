@@ -1,0 +1,208 @@
+# NEXTRIX category task file. GENERATED FILE, do not edit by hand.
+# Source: registry/NX14.json (Security Configuration). Playbook version 0.5.0.
+# Every action is option-gated (option name = lowercase tweak id): unselected
+# tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
+---
+title: 'NEXTRIX NX14 - Security Configuration'
+description: >
+  Generated from registry/NX14.json: 15 selectable tweak option(s)
+  (option names are lowercase tweak ids). Function actions run the journaled
+  NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak
+  pipeline (capture -> journal -> apply -> verify), never a raw engine write.
+actions:
+  - !status: {status: 'NX14 Security Configuration: applying selected tweaks'}
+
+  # 'NX14-001 Defender status & health report'
+  - !status: {status: 'NX14-001 Defender status & health report', option: 'nx14-001'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-Nx14DefenderStatusReport
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx14-001'
+    weight: 2
+
+  # 'NX14-002 Firewall status & profile report'
+  - !status: {status: 'NX14-002 Firewall status & profile report', option: 'nx14-002'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-Nx14FirewallStatusReport
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx14-002'
+    weight: 2
+
+  # 'NX14-003 UAC level configuration' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX14-003 UAC level configuration', option: 'nx14-003'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-Nx14UacLevel -Level 'Default' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'SelectionPlusConfirmation'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx14-003'
+    weight: 2
+
+  # 'NX14-004 SmartScreen configuration' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX14-004 SmartScreen configuration', option: 'nx14-004'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-Nx14SmartScreen -Level 'Warn' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'SelectionPlusConfirmation'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx14-004'
+    weight: 2
+
+  # 'NX14-005 Secure Boot status report'
+  - !status: {status: 'NX14-005 Secure Boot status report', option: 'nx14-005'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-Nx14SecureBootStatus
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx14-005'
+    weight: 2
+
+  # 'NX14-006 TPM status report'
+  - !status: {status: 'NX14-006 TPM status report', option: 'nx14-006'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-Nx14TpmStatus
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx14-006'
+    weight: 2
+
+  # 'NX14-007 VBS / HVCI status report'
+  - !status: {status: 'NX14-007 VBS / HVCI status report', option: 'nx14-007'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-Nx14DeviceGuardStatus
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx14-007'
+    weight: 2
+
+  # 'NX14-008 Memory Integrity consent-gated configuration' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX14-008 Memory Integrity consent-gated configuration', option: 'nx14-008'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-Nx14MemoryIntegrity -Mode 'Enable' -DriverCompatibilityReviewed -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx14-008'
+    weight: 2
+
+  # 'NX14-009 Credential Guard status report'
+  - !status: {status: 'NX14-009 Credential Guard status report', option: 'nx14-009'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-Nx14CredentialGuardStatus
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx14-009'
+    weight: 2
+
+  # 'NX14-010 Controlled Folder Access configuration' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX14-010 Controlled Folder Access configuration', option: 'nx14-010'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-Nx14ControlledFolderAccess -Mode 'Enabled' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'SelectionPlusConfirmation'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx14-010'
+    weight: 2
+
+  # 'NX14-011 Exploit Protection report & selective policy' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX14-011 Exploit Protection report & selective policy', option: 'nx14-011'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-Nx14ExploitProtectionReport
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx14-011'
+    weight: 2
+
+  # 'NX14-012 BitLocker status report'
+  - !status: {status: 'NX14-012 BitLocker status report', option: 'nx14-012'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-Nx14BitLockerStatus
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx14-012'
+    weight: 2
+
+  # 'NX14-013 Windows Sandbox provisioning'
+  - !status: {status: 'NX14-013 Windows Sandbox provisioning', option: 'nx14-013'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-Nx14WindowsSandbox -State 'Enabled' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'SelectionPlusConfirmation'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx14-013'
+    weight: 2
+
+  # 'NX14-014 Hyper-V / virtualization platform configuration' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX14-014 Hyper-V / virtualization platform configuration', option: 'nx14-014'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-Nx14VirtualizationPlatformStatus
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx14-014'
+    weight: 2
+
+  # 'NX14-015 Windows Security health aggregate report'
+  - !status: {status: 'NX14-015 Windows Security health aggregate report', option: 'nx14-015'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-Nx14SecurityHealthReport
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx14-015'
+    weight: 2

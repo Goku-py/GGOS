@@ -33,7 +33,7 @@
         "https://learn.microsoft.com/en-us/windows/apps/develop/settings/settings-windows-11 (AutoGameModeEnabled documented as the Game Mode toggle backing value; fetched and confirmed 2026-11-23)",
         "research/sources/r1-fsosx-xos.md (XOS GameBar family: AllowAutoGameMode + AutoGameModeEnabled; community-known member AllowAutoGameMode is not on the Microsoft settings reference page)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX02-002", "name": "Xbox Game Bar configuration", "category": "NX02",
@@ -64,7 +64,7 @@
         "research/sources/r1-fsosx-xos.md (XOS GameBar family)",
         "research/sources/r4-synergy-ultraos.md (SynergyOS settings.yml: UseNexusForGameBarEnabled=0; its HKCR ms-gamebar protocol repoint is a rejected hijack pattern NOT adopted here)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX02-003", "name": "Disable Game DVR", "category": "NX02",
@@ -102,7 +102,7 @@
         "research/sources/r5-winutil-sophia.md (Sophia XBOXGameBar Disable/Enable pair: AppCaptureEnabled + GameDVR_Enabled; MIT source fetched 2026-11-23)",
         "research/sources/r4-synergy-ultraos.md (SynToolkit FSO fence: FSE values are NX04-005 territory, explicitly not GameDVR_Enabled/AppCaptureEnabled)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX02-004", "name": "Disable background game recording", "category": "NX02",
@@ -135,7 +135,7 @@
         "research/sources/r1-fsosx-xos.md (XOS GameDVR capture family = 0)",
         "GitHub corroboration 2026-11-23: HistoricalCaptureEnabled appears in 589 public code results incl. obsproject/obs-studio libobs/obs-windows.c (reads the value to detect Windows background recording) and FunkyFr3sh/GameDVR_Config - community-known E0, no Microsoft documentation found"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX02-005", "name": "Optimizations for windowed games", "category": "NX02",
@@ -171,7 +171,7 @@
         "research/sources/r3-sapphire-vain.md (08-tweaks: SwapEffectUpgradeEnable=1)",
         "Verification note 2026-11-23: learn.microsoft.com settings reference (settings-windows-11) and support.microsoft.com checked - no Microsoft documentation of this registry value found; Settings toggle corroborated via Microsoft Q&A only. E0 per evidence rule; catalogue E1 divergence flagged to coordinator."
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX02-006", "name": "Game Mode notification suppression", "category": "NX02",
@@ -201,7 +201,7 @@
         "research/sources/r1-fsosx-xos.md (XOS GameBar family: ShowStartupPanel)",
         "research/sources/r5-winutil-sophia.md (Sophia XBOXGameBar writes ShowStartupPanel with a matching Enable restore; MIT source fetched 2026-11-23)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX02-007", "name": "Game capture configuration", "category": "NX02",
@@ -235,7 +235,7 @@
       "documentationSource": [
         "https://learn.microsoft.com/en-us/windows/apps/develop/settings/settings-windows-11 (VKMToggleRecording 'Toggles recording enabled', VKMToggleBroadcast 'Toggles broadcast enabled', VKMSaveHistoricalVideo 'Toggles save historical video enabled'; fetched and confirmed 2026-11-23)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX02-008", "name": "Xbox Gaming Services management", "category": "NX02",
@@ -266,7 +266,7 @@
         "TWEAK_CATALOGUE.md NX12-005 (Xbox app removal conflict; Game Pass users excluded)",
         "research/sources/r4-synergy-ultraos.md (uncertainty-state detection pattern adopted for the report)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX02-009", "name": "Per-game driver graphics application", "category": "NX02",
@@ -387,7 +387,7 @@
         "TWEAK_CATALOGUE.md NX18-012 (protected-process guard that consumes launcher identity)",
         "Marker corroboration 2026-11-23: Steam/Blizzard/Ubisoft install markers and GOG GalaxyClient clientPath appear in public launcher tooling sources (e.g. HeroicGamesLauncher GogLibrary.cs); Epic AppPath in 148 public code results - community-known, not vendor-documented"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     }
   ]
 }

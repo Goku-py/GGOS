@@ -30,7 +30,7 @@
       "sideEffects": ["Ads shown by apps are no longer personalized with the advertising ID; the ID is turned off (Microsoft: off, not merely reset).", "Home enforcement of the policy layer is documentation-limited (see technicalExplanation); the setting layer is written on every edition."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services (18.1 General)", "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy (DisableAdvertisingId -> DisabledByGroupPolicy)", "Live read-only value-family verification on build 26300 (2026-11-23)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX13-002", "name": "Activity history disable", "category": "NX13",
@@ -59,7 +59,7 @@
       "sideEffects": ["Activity history is no longer stored/roamed/uploaded; previously stored local activities are not deleted (Microsoft: deletion is independent of these policies).", "Task View cross-device resume of activities stops working."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services (18.22 Activity History)", "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy (EnableActivityFeed, PublishUserActivities, UploadUserActivities)", "Live read-only value-family verification on build 26300 (2026-11-23)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX13-003", "name": "Tailored experiences disable", "category": "NX13",
@@ -86,7 +86,7 @@
       "sideEffects": ["Recommendations, tips and offers still appear but are no longer tailored with diagnostic data (Microsoft's documented wording).", "Current user profile only; other profiles unaffected."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience (AllowTailoredExperiencesWithDiagnosticData -> DisableTailoredExperiencesWithDiagnosticData)", "Live read-only value-name verification on build 26300 (2026-11-23)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX13-004", "name": "Diagnostic data level (edition-aware documented floor)", "category": "NX13",
@@ -113,7 +113,7 @@
       "sideEffects": ["On Home/Pro the diagnostics level stops at Required (1): 'diagnostic data off' is not available on these editions by documented configuration (Microsoft equivalence statement), so the entry does not pretend otherwise.", "Optional diagnostic data collection is disabled; dump/log detail is limited, which can reduce the detail available when troubleshooting crashes.", "Settings > Privacy & security > Diagnostics & feedback shows the policy-managed level and may not be user-editable."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-system (AllowTelemetry value 0 edition limitation; LimitDumpCollection; LimitDiagnosticLogCollection)", "https://learn.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization", "https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services (18.16 Feedback & diagnostics)", "r5-winutil-sophia.md (edition-aware AllowTelemetry floor, adopt register 12)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX13-005", "name": "App permission defaults (location/camera/microphone/contacts/calendar)", "category": "NX13",
@@ -140,7 +140,7 @@
       "sideEffects": ["Force-deny blocks Windows (packaged) apps from the capability for every user of the device and greys the Settings toggle out; meetings, camera apps and location-dependent apps can stop working until the policy is removed.", "Already-open apps must be restarted (Microsoft-documented).", "Desktop (Win32) apps are governed by the separate documented namespace policies, which this entry does not write."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy (LetAppsAccessLocation/Camera/Microphone/Contacts/Calendar)", "https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services (18.2 Location, 18.3 Camera, 18.4 Microphone, 18.8 Contacts, 18.9 Calendar)", "Local AppPrivacy.admx inspection, build 26300 (2026-11-23)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX13-006", "name": "App launch tracking policy (non-Start_Track)", "category": "NX13",
@@ -167,7 +167,7 @@
       "sideEffects": ["Windows no longer records program usage for Start/search personalization; frequently-used program lists stop adapting.", "Personalized menus are disabled while the policy is set (documented interplay with 'Turn off personalized menus').", "Start_TrackProgs/Start_TrackDocs (NX15 territory) are untouched by design."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-startmenu (NoInstrumentation, Turn off user tracking)", "https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services (18.1 General - Start_TrackProgs documented as the UI equivalent, owned by NX15)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX13-007", "name": "General consent & ad-personalization toggles", "category": "NX13",
@@ -195,7 +195,7 @@
       "sideEffects": ["Websites no longer receive the user's language list for 'locally relevant content'.", "Settings app stops showing suggested content (documented Spotlight-on-Settings behaviour).", "Current user profile only."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services (18.1 General - HttpAcceptLanguageOptOut)", "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience (AllowWindowsSpotlightOnSettings -> DisableWindowsSpotlightOnSettings; CSP text names the Settings > Privacy > General toggle)", "Live read-only value verification on build 26300 (2026-11-23)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX13-008", "name": "Feedback frequency configuration", "category": "NX13",
@@ -224,7 +224,7 @@
       "sideEffects": ["Windows stops asking for feedback; the user can still send feedback from Feedback Hub manually.", "Diagnostic data collection is unchanged by this entry (NX13-004 owns it)."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services (18.16 Feedback & diagnostics, including the Never row)", "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience (DoNotShowFeedbackNotifications)", "Live read-only value verification on build 26300 (2026-11-23)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX13-009", "name": "Inking & typing personalization policy", "category": "NX13",
@@ -252,7 +252,7 @@
       "sideEffects": ["Handwriting-recognition and typing-suggestion personalization stops learning from this user's input; personalized suggestions become less accurate over time.", "Dictation and online speech are NOT changed by this entry (separate documented switch, left to the owner).", "Current user profile only."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services (18.21 Inking & Typing; 18.6 Speech for the dictation boundary)", "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy (AllowInputPersonalization - recorded as the speech switch, not written)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX13-010", "name": "Cloud content search preferences", "category": "NX13",
@@ -280,7 +280,7 @@
       "sideEffects": ["No web/Bing answers and no OneDrive/SharePoint cloud content in Windows Search; search quality for online content is reduced (stated trade-off).", "Search highlights, indexing scope and the WSearch service are untouched (owned by NX01-010, NX01-009 and NX11-008)."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search (AllowCloudSearch; ConnectedSearchUseWeb via DoNotUseWebResults)", "https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services (2.1 Cortana and Search)", "Live read-only value-family verification on build 26300 (2026-11-23)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX13-011", "name": "Clipboard history configuration", "category": "NX13",
@@ -308,7 +308,7 @@
       "sideEffects": ["Clipboard history (Win+V) retains nothing new; copying and pasting itself still works.", "Cross-device clipboard synchronization is a separate switch (NX13-012) and is not changed here."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience (AllowClipboardHistory, including the documented validation steps)", "Live read-only value-name verification of EnableClipboardHistory on build 26300 (2026-11-23)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX13-012", "name": "Cross-device experiences configuration", "category": "NX13",
@@ -336,7 +336,7 @@
       "sideEffects": ["No phone-PC linking / Continue-on-PC experiences; previously linked phones are removed from the device list (Microsoft-documented) and must be re-linked after rollback.", "Clipboard items no longer roam to other devices of the same account.", "Conflicts with NX12-004 Phone Link removal - both reach the same feature; choose one."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-connectivity (AllowPhonePCLinking -> EnableMmx)", "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy (AllowCrossDeviceClipboard)", "https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services (18.1 General EnableCdp legacy spelling; 30 Cloud Clipboard)", "TWEAK_CATALOGUE.md NX12-004 (declared conflict)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX13-013", "name": "Telemetry-related scheduled tasks (selective)", "category": "NX13",
@@ -363,7 +363,7 @@
       "sideEffects": ["Compatibility appraisal, CEIP uploads and feedback-prompt tasks stop running; Microsoft's diagnostic pipeline loses those inputs (this is a privacy trade-off, not a performance change).", "Optional -IncludeErrorReportingQueue stops crash-report queuing for upload, reducing troubleshooting data available to Microsoft and to per-app crash flows.", "Task sets differ by build: absent tasks are reported as Missing, not treated as applied.", "NX11-006 overlaps 8 of the 9 task names; both entries are idempotent against each other, but selecting both for the same task is redundant (see technicalExplanation) and NX13 remains the owner of the telemetry selection."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["r5-winutil-sophia.md (ScheduledTasks allow-list pattern: MareBackup, Compatibility Appraiser, StartupAppTask, Proxy, Consolidator, UsbCeip, DiskDiagnosticDataCollector)", "r4-synergy-ultraos.md (telemetry-tasks.yml safe tier with ignoreErrors because Win10-era tasks no longer exist on Win11)", "r2-atlasos-revios.md (FINALIZE.cmd task list; Atlas NoTelemetry component inventory)", "https://learn.microsoft.com/en-us/powershell/module/scheduledtasks/export-scheduledtask", "https://learn.microsoft.com/en-us/powershell/module/scheduledtasks/disable-scheduledtask", "registry/NX11.json NX11-006 (mechanism owner for generic selective task management; Set-Nx11TaskEnabled reused)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX13-014", "name": "Permission audit report", "category": "NX13",
@@ -390,7 +390,7 @@
       "sideEffects": ["None (read-only registry/CIM reads; per-app consent-store enumeration is bounded)."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy (AppPrivacy capability policies)", "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-system (AllowTelemetry, LimitDumpCollection, LimitDiagnosticLogCollection)", "https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services (18.x Settings > Privacy reference values used by the report map)", "PROFILE_MATRIX.md (P8 Privacy-Focused consumption)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     }
   ]
 }

@@ -1,0 +1,117 @@
+# NEXTRIX category task file. GENERATED FILE, do not edit by hand.
+# Source: registry/NX10.json (Thermal Management). Playbook version 0.5.0.
+# Every action is option-gated (option name = lowercase tweak id): unselected
+# tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
+---
+title: 'NEXTRIX NX10 - Thermal Management'
+description: >
+  Generated from registry/NX10.json: 8 selectable tweak option(s)
+  (option names are lowercase tweak ids). Function actions run the journaled
+  NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak
+  pipeline (capture -> journal -> apply -> verify), never a raw engine write.
+actions:
+  - !status: {status: 'NX10 Thermal Management: applying selected tweaks'}
+
+  # 'NX10-001 CPU temperature & throttling detection report'
+  - !status: {status: 'NX10-001 CPU temperature & throttling detection report', option: 'nx10-001'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxCpuThermalReport
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx10-001'
+    weight: 2
+
+  # 'NX10-002 GPU temperature & throttling report'
+  - !status: {status: 'NX10-002 GPU temperature & throttling report', option: 'nx10-002'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxGpuThermalReport -TimeoutMs 10000
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx10-002'
+    weight: 2
+
+  # 'NX10-003 CPU power-limit monitoring'
+  - !status: {status: 'NX10-003 CPU power-limit monitoring', option: 'nx10-003'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxCpuPowerLimitReport
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx10-003'
+    weight: 2
+
+  # 'NX10-004 GPU power-limit monitoring'
+  - !status: {status: 'NX10-004 GPU power-limit monitoring', option: 'nx10-004'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxGpuPowerLimitReport -TimeoutMs 10000
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx10-004'
+    weight: 2
+
+  # 'NX10-005 Fan speed monitoring (where exposed)'
+  - !status: {status: 'NX10-005 Fan speed monitoring (where exposed)', option: 'nx10-005'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxFanSpeedReport -TimeoutMs 10000
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx10-005'
+    weight: 2
+
+  # 'NX10-006 OEM fan/cooling profile detection'
+  - !status: {status: 'NX10-006 OEM fan/cooling profile detection', option: 'nx10-006'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxOemCoolingProfile
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx10-006'
+    weight: 2
+
+  # 'NX10-007 AC/DC thermal behavior report'
+  - !status: {status: 'NX10-007 AC/DC thermal behavior report', option: 'nx10-007'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxAcDcThermalReport
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx10-007'
+    weight: 2
+
+  # 'NX10-008 Thermal session logging for owner testing'
+  - !status: {status: 'NX10-008 Thermal session logging for owner testing', option: 'nx10-008'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxThermalSessionLog -OutputPath '<user-chosen log file path>' -DurationSeconds 300 -SampleIntervalSeconds 10 -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approval 'Selection'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx10-008'
+    weight: 2

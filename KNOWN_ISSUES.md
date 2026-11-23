@@ -18,6 +18,9 @@
 10. **Parameterized rollback in the wizard UI:** the wizard cannot collect free-text parameters; per-tweak/-category/-profile rollback calls in `rollback.yml` carry placeholders to edit, while `-All` is fully functional (documented).
 11. **Packaging not yet automated:** the generator emits playbook source + a SHA256-pinned NxCore manifest; copying NxCore flat into `Executables/` and building the `.apbx` remains a documented manual step (TODO Wave 5).
 12. **HKCU scope in the generated playbook:** journaled registry writes execute as the invoking elevated user, so HKCU resolves to that user's hive (journal-consistent, matches `Invoke-NxApply`). Per-user rollout to other profiles would require dedicated functions (documented, W1-B note).
+13. **NX12 removal actions are plan-only in the generated playbook** (intentional): the removal write functions exist and are guarded, but require explicit-selection wiring in the selection tooling (Phase 6) before the wizard can remove apps. No hidden removals; the option currently surfaces the safe plan only.
+14. **NX14 interpretation decisions (ratified 2026-11-23):** Controlled Folder Access is implemented as Enabled/Audit with Off omitted (Section 15 forbids lowering protection via a CONDITIONAL entry); NX14-014's playbook action is the read-only dependency report, with the setter available for explicit owner use.
+15. **Host provider hangs during validation (not a product defect):** PowerShell 7's DISM/Appx path and some WMI/TPM calls hang or are extremely slow on the dev host (NX12 was caught in PS7 DISM enumeration; NX14 once stalled on TPM/DeviceGuard queries). Gate runs now use `tools/Test-NxAll.ps1` under Windows PowerShell 5.1 with per-suite timeouts; a TIMEOUT on a flaky provider does not imply a suite failure — agent-run evidence stands and reruns confirm.
 
 ## B. Ecosystem issue knowledge shaping NEXTRIX (summary; full citations in `COMPATIBILITY_RESEARCH.md` §3)
 

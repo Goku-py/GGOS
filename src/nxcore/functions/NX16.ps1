@@ -118,7 +118,7 @@ function Convert-NxToDateTime {
     # Honest multi-format datetime conversion: DateTime passthrough, WMI DMTF strings
     # (yyyymmddHHmmss.xxxxxx+zzz), and best-effort parse. Never guessed on failure: $null.
     [CmdletBinding()]
-    param([Parameter(Mandatory)]$Value)
+    param([Parameter(Mandatory)][AllowNull()]$Value)
     if ($null -eq $Value) { return $null }
     if ($Value -is [datetime]) { return $Value }
     $s = [string]$Value

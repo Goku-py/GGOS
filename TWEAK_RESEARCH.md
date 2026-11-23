@@ -108,6 +108,24 @@ SynToolkit's uncertainty-state model + WMI inventory + VRAM wraparound fix + san
 | `SvcHostSplitThresholdInKB` RAM-blind | 8–16 GB hard-fault increase | UltraOS research [r4] | Not catalogued |
 | Hardcoded per-user service suffix | Cross-build misses | Synergy `_389fd` [r4] | Name-resolution at runtime |
 
+## 16. Pending candidate research — input data-queue sizes (DataQueueSize)
+
+Research request (2026-11-23): does the guidance "data queue size not below 16 decimal" hold up?
+
+**What the setting is.** `MouseDataQueueSize` under `HKLM\SYSTEM\CurrentControlSet\Services\mouclass\Parameters` and `KeyboardDataQueueSize` under `HKLM\SYSTEM\CurrentControlSet\Services\kbdclass\Parameters` set the keyboard/mouse class drivers' internal input queue depth in *entries*. Each entry is a documented structure — `MOUSE_INPUT_DATA` (24 bytes, ntddmou.h) and `KEYBOARD_INPUT_DATA` (12 bytes, ntddkbd.h) — so the default 100 (0x64) equals 2,400 bytes (mouse) / 1,200 bytes (keyboard) of nonpaged pool per device object. Default 100 is corroborated by community poolmon measurements and the kbdclass parameter-registration table (ReactOS source mirror); **Microsoft does not document these as user-tweakable values** [E0].
+
+**The "16 decimal floor" claim.** Community-only: Reddit r/computers, overclock.net, Blur Busters, and several tweak guides state 16 decimal is the practical minimum (lower reportedly causes cursor stutter; at 1, clicks reportedly stop working until reboot). No Microsoft documentation defines a floor [COMMUNITY-CLAIM / E0]. Guide ranges conflict (16–60, "sweet spot 30–60"), and the original overclock.net thread's own summary calls the tweak placebo.
+
+**Performance effect.** UNVERIFIED. No independent benchmark exists; community sources contradict each other (placebo vs. claimed input-latency reduction). Per NEXTRIX discipline: **E0, performance PENDING** — never promoted without owner-supplied results.
+
+**NEXTRIX decision.** Adopt as candidate `NX08-008` (CONDITIONAL, E0, restart=Reboot):
+- Configures both values through the journaled pipeline; **floor 16 enforced in code** (below-16 requests refused, not silently clamped), range 16–100, values above 100 refused (no purpose).
+- Honest technical explanation: undocumented parameter, default 100, community floor 16, contradicting evidence, and the click-loss observation at extreme values.
+- Read-only state report (present values; absent = driver default 100, marked as such).
+- No performance claims; owner hardware testing can promote evidence.
+
+Sources: djdallmann GamingPCSetup research (poolmon measurements + ReactOS kbdclass registration); overclock.net "MouseDataQueueSize Registry Tweak" thread (OP calls it placebo; floor/anecdotes); Reddit r/computers thread; Blur Busters thread; xbitlabs article (Nov 2026); Microsoft struct docs (ntddmou.h/ntddkbd.h) and HID class-driver docs.
+
 ## 15. Pending owner testing (the only legitimate E2 path)
 
 Per the Hone-style admission scorecard adapted for NEXTRIX: metric-matched claim → baseline runs (3–5) → single change → after runs (3–5) → one-PC result (E2) → multi-config results (E3). Candidates whose *configuration* effect is verifiable now but whose *performance* effect requires owner evidence: NX03-008 (Win32PrioritySeparation), NX17-001/-002 (timer/dynamic tick), NX04-005 (per-game FSO), NX19-003/-006 (CPU Sets, competitive profile), NX18-008/-009 (session graphics/priority), NX02-005 (windowed-games optimization), NX04-010 (Low Latency Mode per-profile). Until owner results exist, all remain at their catalogued E0/E1 with performance expressly PENDING.

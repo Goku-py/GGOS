@@ -31,7 +31,7 @@
         "Research note: the StartupApproved binary encoding is community-established (E0 layer) and is journaled as exact bytes, never guessed.",
         "Verification note 2026-11-23: the Task Manager startup-apps support article URL was checked and returned 404, so it is not cited; E1 rests on the documented Win32_StartupCommand class."
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX11-002", "name": "Per-app background permissions (UWP)", "category": "NX11",
@@ -60,7 +60,7 @@
         "Local AppPrivacy.admx inspection, build 26300 (2026-11-23): LetAppsRunInBackground_ForceAllowTheseApps / _ForceDenyTheseApps / _UserInControlOfTheseApps",
         "Catalogue mechanism owner: NX01-008 (global enum) - XREF"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX11-003", "name": "Edge background mode disable", "category": "NX11",
@@ -85,7 +85,7 @@
       "sideEffects": ["While Edge is closed, background extensions and background web apps stop running.", "No browsing data, profile or extension configuration is changed.", "Edge must be restarted before the policy takes effect."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/backgroundmodeenabled"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX11-004", "name": "Edge startup boost disable", "category": "NX11",
@@ -110,7 +110,7 @@
       "sideEffects": ["Edge no longer preloads at sign-in; the first launch can be slower (trade-off stated).", "No profile, extension or browsing data is changed.", "Edge must be restarted before the policy takes effect."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies/startupboostenabled"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX11-005", "name": "Scheduled task inventory report", "category": "NX11",
@@ -135,7 +135,7 @@
       "sideEffects": ["None on task state (read-only).", "XML export writes files to the chosen folder and can take time on systems with many tasks."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/powershell/module/scheduledtasks/export-scheduledtask", "https://learn.microsoft.com/en-us/powershell/module/scheduledtasks/get-scheduledtask"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX11-006", "name": "Selective scheduled task management", "category": "NX11",
@@ -165,7 +165,7 @@
         "research/sources/r1-fsosx-xos.md (DisableScheduledTasks.ps1: 3 fallbacks, per-task verification, protected skip list, counters)",
         "Catalogue XREF: NX13-013 (telemetry-related tasks, selective)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX11-007", "name": "Resource-heavy process identification report", "category": "NX11",
@@ -190,7 +190,7 @@
       "sideEffects": ["None on processes; -SampleSeconds briefly waits to collect an interval sample."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-process"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX11-008", "name": "Windows Search service configuration", "category": "NX11",
@@ -216,7 +216,7 @@
       "sideEffects": ["Manual keeps search/indexing available on demand without automatic startup.", "Disabled stops automatic indexing; existing index data remains but search falls back to non-indexed behavior and results may be less complete.", "Indexing scope is unchanged - use NX01-009 for scope decisions."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-service", "https://learn.microsoft.com/en-us/windows/win32/search/-search-3x-wds-overview", "Catalogue XREF: NX01-009 (indexing scope), NX06 (storage guidance)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX11-009", "name": "SysMain service configuration", "category": "NX11",
@@ -242,7 +242,7 @@
       "sideEffects": ["On <16 GB systems, disabling SysMain can increase hard faults (research-recorded trade-off, r4).", "On HDD boot volumes, prefetch/superfetch behavior is more valuable; the gate protects that case.", "NX05 memory-compression changes require SysMain to be running - do not pair them with a SysMain disable.", "No memory, pagefile or storage configuration is changed."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-service", "research/sources/r4-synergy-ultraos.md (16 GB/NVMe SysMain threshold guidance; blanket-disable rejection)", "Catalogue XREF: NX06 storage ownership, NX03 memory boundaries"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX11-010", "name": "Xbox services configuration", "category": "NX11",
@@ -268,7 +268,7 @@
       "sideEffects": ["Xbox accessory management and Xbox Live networking features that use these services degrade when disabled.", "Game Pass installs/updates/launches depend on GamingServices/GamingServicesNet - those services are never changed.", "Game Bar capture is not affected by this entry."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-service", "research/sources/r2-atlasos-revios.md (XboxGipSvc fallout ledger; svchost-split lesson)", "research/sources/r5-winutil-sophia.md (individual, documented service functions - no blanket list)", "Catalogue XREF: NX02-008 dependency report, NX12-005 Xbox app removal conflict", "research/sources/r4-synergy-ultraos.md (hardcoded per-user service suffix rejection; BcastDVRUserService_* wildcard)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX11-011", "name": "Print Spooler configuration", "category": "NX11",
@@ -319,7 +319,7 @@
       "sideEffects": ["Bluetooth peripherals stop working when the services are disabled; the detection gate prevents this on systems with hardware unless explicitly acknowledged.", "No device, driver or pairing data is removed.", "NX08-006 owns Bluetooth power policy."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-service", "Catalogue XREF: NX08-006 (Bluetooth peripheral inspection & power policy)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX11-013", "name": "Fax service configuration", "category": "NX11",
@@ -345,7 +345,7 @@
       "sideEffects": ["Fax send/receive through this service stops while disabled.", "The Fax optional component and all documents remain installed."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-service"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX11-014", "name": "Remote Registry configuration", "category": "NX11",
@@ -371,7 +371,7 @@
       "sideEffects": ["Remote registry tools and some enterprise management workflows that rely on this service fail while it is disabled.", "No local registry access or permissions are changed."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server", "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-service"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX11-015", "name": "Windows Error Reporting configuration", "category": "NX11",
@@ -396,7 +396,7 @@
       "sideEffects": ["Crash reports and WER queue data stop being collected/sent while disabled - troubleshooting evidence is reduced.", "WerSvc remains installed and untouched; the policy is the only changed target.", "Some enterprise support workflows that read WER reports are affected."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["Local ErrorReporting.admx inspection, build 26300 (2026-11-23): policy WerDisable_2, value 'Disabled'", "https://learn.microsoft.com/en-us/windows/win32/wer/wer-settings", "research/sources/r2-atlasos-revios.md (ErrorReporting policy preferred over WerSvc startup change)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX11-016", "name": "Maps-related services configuration", "category": "NX11",
@@ -422,7 +422,7 @@
       "sideEffects": ["With MapsBroker disabled, offline map updates and map-related background operations stop; Manual keeps on-demand use.", "Installed map data and the Maps app are never deleted."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-service", "research/sources/r5-winutil-sophia.md (MapsBroker set to Manual, not blanket disable)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX11-017", "name": "DiagTrack (Connected User Experiences) configuration", "category": "NX11",
@@ -448,7 +448,7 @@
       "sideEffects": ["Xbox achievements and Feedback Hub can be affected (documented r5 impact).", "Disabling the service is not a privacy guarantee and does not replace NX13 policy decisions.", "No firewall rule is created or modified."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization", "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-service", "research/sources/r5-winutil-sophia.md (individual DiagTrack function; firewall-block pattern rejected)", "Catalogue XREF: NX13 telemetry policy set"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX11-018", "name": "Third-party service inventory & selective configuration", "category": "NX11",
@@ -474,7 +474,7 @@
       "sideEffects": ["Changing a vendor service can break the vendor application; explicit consent and vendor guidance are required.", "Windows-component services and never-touch names are refused.", "Exactly one service is changed per call."],
       "approval": "ExplicitConsent",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-service", "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-service"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX11-019", "name": "Service dependency inspection engine", "category": "NX11",
@@ -499,7 +499,7 @@
       "sideEffects": ["None (read-only)."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/dotnet/api/system.serviceprocess.servicecontroller.dependentservices", "https://learn.microsoft.com/en-us/dotnet/api/system.serviceprocess.servicecontroller.requiredservices", "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-service"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     }
   ]
 }

@@ -37,7 +37,7 @@
       "sideEffects": ["Window, menu and control animations no longer play for the current user.", "No performance outcome is claimed or measured by this entry."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-explorer (TurnOffSPIAnimations)", "Live read-only value-name verification on build 26300.9974 (2026-11-23)"],
-      "status": "Implemented",
+      "status": "SyntaxValidated",
       "presetExcluded": false,
       "version": 1
     },
@@ -74,7 +74,7 @@
       "sideEffects": ["Start, taskbar and supported app surfaces render opaque instead of translucent for the current user."],
       "approval": "Selection",
       "documentationSource": ["r5-winutil-sophia.md (transparency/theme value family)", "Live read-only value-name and kind verification on build 26300.9974 (2026-11-23)"],
-      "status": "Implemented",
+      "status": "SyntaxValidated",
       "presetExcluded": false,
       "version": 1
     },
@@ -111,7 +111,7 @@
       "sideEffects": ["Menus open immediately on hover instead of after the configured delay; owners who prefer the delay should not select this entry.", "Window shadows are unchanged by design (undocumented bitmask not written)."],
       "approval": "Selection",
       "documentationSource": ["r5-winutil-sophia.md (desktop value families)", "Live read-only value/kind verification on build 26300.9974 (2026-11-23)"],
-      "status": "Implemented",
+      "status": "SyntaxValidated",
       "presetExcluded": false,
       "version": 1
     },
@@ -148,7 +148,7 @@
       "sideEffects": ["Taskbar icons move left; the search box and Task View button disappear; the widgets entry disappears.", "On 24H2+ the widgets policy disallows the entire widgets experience machine-wide (documented policy semantics), which is broader than hiding only the taskbar button.", "An Explorer restart or sign-out may be needed for all taskbar surfaces to reflect the change."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-newsandinterests (AllowNewsAndInterests)", "COMPATIBILITY_RESEARCH.md section 2 item 2 (UCPD-aware writes: policy fallback)", "r4-synergy-ultraos.md (TaskbarDa UCPD-protected on 24H2+; AllowNewsAndInterests fallback)", "Live read-only value-name verification on build 26300.9974 (2026-11-23)"],
-      "status": "Implemented",
+      "status": "SyntaxValidated",
       "presetExcluded": false,
       "version": 1
     },
@@ -185,7 +185,7 @@
       "sideEffects": ["The Start Recommended section no longer appears; recently opened items (Start, Jump Lists, File Explorer) and the most-used-apps list are no longer tracked.", "On 24H2+ account-related notifications in the Start user tile stop.", "An existing machine-level (HKLM) HideRecommendedSection policy takes precedence over this per-user policy - if one is present, the machine value wins and NEXTRIX reports only its own journaled state.", "Explorer restart or sign-out may be required for the policy layers to apply."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-start (HideRecommendedSection)", "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-notifications (DisableAccountNotifications, Windows 11 24H2+)", "r4-synergy-ultraos.md (HideRecommendedSection / Start_Track* family)", "Live read-only value-name verification on build 26300.9974 (2026-11-23)"],
-      "status": "Implemented",
+      "status": "SyntaxValidated",
       "presetExcluded": false,
       "version": 1
     },
@@ -223,7 +223,7 @@
       "sideEffects": ["File Explorer opens at This PC instead of Home.", "Separate-process mode isolates each folder window in its own process (Microsoft-documented option behaviour), which changes process count and failure isolation."],
       "approval": "Selection",
       "documentationSource": ["https://support.microsoft.com/en-us/windows/view-hidden-files-and-folders-in-windows-97fbc472-c603-9d90-91d0-1166d1d9f4b5 ('File Explorer in Windows': Open File Explorer to This PC)", "Live read-only value-name verification on build 26300.9974 (2026-11-23)"],
-      "status": "Implemented",
+      "status": "SyntaxValidated",
       "presetExcluded": false,
       "version": 1
     },
@@ -260,7 +260,7 @@
       "sideEffects": ["File name extensions are shown for all files in File Explorer."],
       "approval": "Selection",
       "documentationSource": ["https://support.microsoft.com/en-us/windows/view-hidden-files-and-folders-in-windows-97fbc472-c603-9d90-91d0-1166d1d9f4b5 ('File Explorer in Windows': Show file name extensions)", "Live read-only value-name verification on build 26300.9974 (2026-11-23)"],
-      "status": "Implemented",
+      "status": "SyntaxValidated",
       "presetExcluded": false,
       "version": 1
     },
@@ -297,7 +297,7 @@
       "sideEffects": ["Ordinary hidden files and folders become visible in File Explorer; protected operating-system files remain hidden by design."],
       "approval": "Selection",
       "documentationSource": ["https://support.microsoft.com/en-us/windows/view-hidden-files-and-folders-in-windows-97fbc472-c603-9d90-91d0-1166d1d9f4b5 ('File Explorer in Windows': Show hidden files)", "Live read-only value-name verification on build 26300.9974 (2026-11-23)"],
-      "status": "Implemented",
+      "status": "SyntaxValidated",
       "presetExcluded": false,
       "version": 1
     },
@@ -371,7 +371,7 @@
       "sideEffects": ["File Explorer item views use tighter spacing for the current user."],
       "approval": "Selection",
       "documentationSource": ["https://support.microsoft.com/en-us/windows/view-hidden-files-and-folders-in-windows-97fbc472-c603-9d90-91d0-1166d1d9f4b5 ('File Explorer in Windows': View > Compact view)", "Live read-only value-presence verification on build 26300.9974 (2026-11-23)"],
-      "status": "Implemented",
+      "status": "SyntaxValidated",
       "presetExcluded": false,
       "version": 1
     },
@@ -408,7 +408,7 @@
       "sideEffects": ["The notification center panel and its history are unavailable for the current user.", "Toast delivery and lock-screen toast policy remain NX01-007's and are not changed here.", "The Explorer policy mechanism is applied through its documented value name but is not documented for Home; the value is journaled and verified as written, not as an observed outcome (E0)."],
       "approval": "Selection",
       "documentationSource": ["r5-winutil-sophia.md (Explorer policy value family)", "Live read-only value-name verification on build 26300.9974 (2026-11-23)"],
-      "status": "Implemented",
+      "status": "SyntaxValidated",
       "presetExcluded": false,
       "version": 1
     },
@@ -445,7 +445,7 @@
       "sideEffects": ["The lock screen stops rotating Windows Spotlight images; the user-selected static image is used.", "Spotlight promotional overlay values are unchanged (NX01-006 owns them).", "The documented ConfigureWindowsSpotlight policy is owned by this entry but is not written by this action (machine-wide scope)."],
       "approval": "Selection",
       "documentationSource": ["r5-winutil-sophia.md (Spotlight per-user value family)", "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience (AllowWindowsSpotlight - documented policy analog, owned but not written)", "Live read-only value-name verification on build 26300.9974 (2026-11-23)"],
-      "status": "Implemented",
+      "status": "SyntaxValidated",
       "presetExcluded": false,
       "version": 1
     },
@@ -484,7 +484,7 @@
       "sideEffects": ["Desktop icons are visible; This PC and Recycle Bin are shown.", "Per-icon visibility for other shell folders is not changed."],
       "approval": "Selection",
       "documentationSource": ["r4-synergy-ultraos.md (desktop/Explorer configuration family)", "Live read-only value-name verification on build 26300.9974 (2026-11-23)"],
-      "status": "Implemented",
+      "status": "SyntaxValidated",
       "presetExcluded": false,
       "version": 1
     },
@@ -522,7 +522,7 @@
       "sideEffects": ["Text uses ClearType subpixel smoothing; owners on unusual display configurations may prefer Standard (1) or smoothing off.", "Per-display ClearType tuning is not run; the owner can tune it in Control Panel."],
       "approval": "Selection",
       "documentationSource": ["r5-winutil-sophia.md (desktop value family)", "Live read-only value-name and kind verification on build 26300.9974 (2026-11-23)"],
-      "status": "Implemented",
+      "status": "SyntaxValidated",
       "presetExcluded": false,
       "version": 1
     }

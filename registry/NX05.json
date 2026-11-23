@@ -33,7 +33,7 @@
         "r5-winutil-sophia.md / r1-fsosx-xos.md (AutomaticManagedPagefile=true used as a stability probe before other changes)",
         "TWEAK_RESEARCH.md section 3 (pagefile: references leave it managed or untouched)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX05-002", "name": "Custom pagefile configuration", "category": "NX05",
@@ -63,7 +63,7 @@
         "https://learn.microsoft.com/en-us/troubleshoot/windows-client/performance/introduction-to-the-page-file (fetched 2026-11-23)",
         "TWEAK_RESEARCH.md section 3 (pagefile: no reference project generalizes a size; NEXTRIX requires owner analysis)"
       ],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX05-003", "name": "Disable pagefile", "category": "NX05",
@@ -93,7 +93,7 @@
         "https://learn.microsoft.com/en-us/troubleshoot/windows-server/performance/memory-dump-file-options (dump types require a boot-volume pagefile; fetched 2026-11-23)",
         "TWEAK_CLASSIFICATION.md section 5 and TWEAK_CATALOGUE.md rejected list (automatic pagefile disable never in presets)"
       ],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX05-004", "name": "Memory compression configuration", "category": "NX05",
@@ -125,7 +125,7 @@
         "r3-sapphire-vain.md (unconditional Disable-MMAgent - rejected pattern)",
         "TWEAK_RESEARCH.md section 3 (RAM-threshold parameters required; 8-16 GB hard-fault note)"
       ],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX05-005", "name": "Memory pressure & commit monitoring report", "category": "NX05",
@@ -155,7 +155,7 @@
         "https://learn.microsoft.com/en-us/troubleshoot/windows-client/performance/how-to-determine-the-appropriate-page-file-size-for-64-bit-versions-of-windows (commit limit definition; fetched 2026-11-23)",
         "https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-performance_information (CommitTotal/CommitLimit/PhysicalAvailable semantics; fetched 2026-11-23)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX05-006", "name": "Standby memory diagnostic report", "category": "NX05",
@@ -185,7 +185,7 @@
         "https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-performance_information (SystemCache/PhysicalAvailable semantics; fetched 2026-11-23)",
         "r4-synergy-ultraos.md (EmptyStandbyList shipped as a benchmark tool - not adopted as a NEXTRIX tweak; continuous standby cleaners rejected)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX05-007", "name": "Large System Cache", "category": "NX05",
@@ -215,7 +215,7 @@
         "TWEAK_CATALOGUE.md NX05-007 and NX17-012 (XREF only; no duplicate target)",
         "research/sources r1-r6: none of the six reference projects document a validated use of LargeSystemCache, so no reference claim is adopted"
       ],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX05-008", "name": "Clear pagefile at shutdown", "category": "NX05",
@@ -243,7 +243,7 @@
         "https://learn.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/shutdown-clear-virtual-memory-pagefile (policy definition and shutdown-time cost; fetched 2026-11-23)",
         "TWEAK_CATALOGUE.md NX05-008 (TROUBLESHOOTING E1; security-motivated, not perf)"
       ],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX05-009", "name": "Crash dump configuration", "category": "NX05",
@@ -273,7 +273,7 @@
         "https://learn.microsoft.com/en-us/troubleshoot/windows-client/performance/generate-a-kernel-or-complete-crash-dump (pagefile sizing for kernel/complete dumps; fetched 2026-11-23)",
         "docs/RESEARCH_RECONCILIATION.md REJECT register (crash-dump destruction by reference projects; NEXTRIX inverts it - no 'None' option)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX05-010", "name": "Pool limit configuration", "category": "NX05",
@@ -302,7 +302,7 @@
         "TWEAK_CATALOGUE.md NX05-010 (TROUBLESHOOTING E0: only with a documented symptom, preset-excluded)",
         "docs/RESEARCH_RECONCILIATION.md REJECT register (undocumented kernel configuration is never a default; consent-gated troubleshooting only)"
       ],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX05-011", "name": "Memory diagnostics suite", "category": "NX05",
@@ -334,7 +334,7 @@
         "https://learn.microsoft.com/en-us/windows/win32/memory/memory-performance-information (page-list buckets; fetched 2026-11-23)",
         "r4-synergy-ultraos.md (SynToolkit uncertainty model: a failed read is an explicit state, never a guessed value)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     }
   ]
 }

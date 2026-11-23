@@ -30,7 +30,7 @@
         "https://learn.microsoft.com/en-us/windows-hardware/customize/power-settings/options-for-perf-state-engine-minperformance (MinPerformance semantics; PowerCfg alias PROCTHROTTLEMIN; range 0..100 %; fetched 2026-11-23)",
         "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (setacvalueindex/setdcvalueindex/query; fetched 2026-11-23)"
       ],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX03-002", "name": "Maximum processor state", "category": "NX03",
@@ -58,7 +58,7 @@
         "https://learn.microsoft.com/en-us/windows-hardware/customize/power-settings/options-for-perf-state-engine-maxperformance (MaxPerformance semantics; PowerCfg alias PROCTHROTTLEMAX; range 0..100 %; fetched 2026-11-23)",
         "https://learn.microsoft.com/en-us/windows-hardware/customize/power-settings/options-for-perf-state-engine-perfboostmode (documented boost/ceiling interplay; fetched 2026-11-23)"
       ],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX03-003", "name": "Processor boost mode policy", "category": "NX03",
@@ -87,7 +87,7 @@
         "https://learn.microsoft.com/en-us/windows-hardware/customize/power-settings/options-for-perf-state-engine-perfboostmode (GUID be337238-0d82-4146-a960-4f3749d470c7; alias PERFBOOSTMODE; index table per platform type; hidden setting; fetched 2026-11-23)",
         "https://learn.microsoft.com/en-us/windows-hardware/customize/power-settings/configure-processor-power-management-options (silicon-vendor tuning caution; fetched 2026-11-23)"
       ],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX03-004", "name": "Energy Performance Preference", "category": "NX03",
@@ -116,7 +116,7 @@
         "https://learn.microsoft.com/en-us/windows-hardware/customize/power-settings/options-for-perf-state-engine-perfenergypreference (GUID 36687f9e-e3a5-4dbf-b1dc-15eb381c6863; alias PERFEPP; CPPC v2 + autonomous-mode precondition; (setting*255)/100 mapping; hidden setting; fetched 2026-11-23)",
         "https://learn.microsoft.com/en-us/windows-hardware/customize/power-settings/configure-processor-power-management-options (heterogeneous/CPPC settings family context; silicon-vendor tuning caution; fetched 2026-11-23)"
       ],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX03-005", "name": "Core parking policy", "category": "NX03",
@@ -145,7 +145,7 @@
         "https://learn.microsoft.com/en-us/windows-hardware/customize/power-settings/options-for-core-parking-cpmaxcores (CPMaxCores; PowerCfg CPMAXCORES; 0..100 %; hidden setting; fetched 2026-11-23)",
         "https://learn.microsoft.com/en-us/windows-hardware/customize/power-settings/configure-processor-power-management-options (core parking engine described as the global scalability component; fetched 2026-11-23)"
       ],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX03-006", "name": "CPU power throttling policy", "category": "NX03",
@@ -174,7 +174,7 @@
         "research/sources/r2-atlasos-revios.md (Atlas power policy deliberately leaves PowerThrottlingOff alone 'so leaving it alone keeps rollback exact')",
         "research/sources/r3-sapphire-vain.md (desktops PowerThrottlingOff=1, laptops 0 - the hardware split NEXTRIX encodes through profiles)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX03-007", "name": "MMCSS configuration", "category": "NX03",
@@ -203,7 +203,7 @@
         "research/sources/r4-synergy-ultraos.md (stock SystemResponsiveness recorded as 20; revert entry added when the stock capture was missing)",
         "TWEAK_CATALOGUE.md NX17-008/-010 (XREF: MMCSS ownership is NX03-007)"
       ],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX03-008", "name": "Win32PrioritySeparation", "category": "NX03",
@@ -232,7 +232,7 @@
         "docs/RESEARCH_RECONCILIATION.md (adopt register item 4: Win32PrioritySeparation values stay ADVANCED/preset-excluded - 36/38/42/0x2a across five projects with no evidence)",
         "research/sources/r2-atlasos-revios.md (ReviOS revert.yml as the negative-results ledger for global scheduler/service tweaks)"
       ],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX03-009", "name": "Processor performance policy set", "category": "NX03",
@@ -265,7 +265,7 @@
         "https://learn.microsoft.com/en-us/windows-hardware/customize/power-settings/options-for-perf-state-engine-perfdecreasepolicy (index 0..2 with documented meanings; fetched 2026-11-23)",
         "https://learn.microsoft.com/en-us/windows-hardware/customize/power-settings/configure-processor-power-management-options (settings family and profile model; autonomous-mode precondition; fetched 2026-11-23)"
       ],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX03-010", "name": "SMT / Hyper-Threading configuration", "category": "NX03",
@@ -378,7 +378,7 @@
         "https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-processor (inventory fields incl. NumberOfCores, NumberOfLogicalProcessors, MaxClockSpeed, CurrentClockSpeed, cache sizes, virtualization flags; fetched 2026-11-23)",
         "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (read-only /query the override snapshot relies on; fetched 2026-11-23)"
       ],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     }
   ]
 }

@@ -27,7 +27,7 @@
       "sideEffects": ["None (read-only)."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/powershell/module/netadapter/get-netadapter", "https://learn.microsoft.com/en-us/powershell/module/netadapter/get-netadapteradvancedproperty", "https://learn.microsoft.com/en-us/windows-hardware/drivers/network/standardized-inf-keywords-for-network-devices", "r4-synergy-ultraos.md (Ndi\\Params probing; virtual-adapter exclusion; PhysicalAdapter filter)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX07-002", "name": "Adapter power management", "category": "NX07",
@@ -52,7 +52,7 @@
       "sideEffects": ["Higher idle power draw / heat when sleep-on-disconnect and selective suspend are disabled.", "Driver-conditional behavior: Unsupported features are never forced.", "Effective at the next adapter restart/reboot (NEXTRIX does not restart adapters)."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["https://learn.microsoft.com/en-us/powershell/module/netadapter/get-netadapterpowermanagement", "https://learn.microsoft.com/en-us/powershell/module/netadapter/set-netadapterpowermanagement", "r4-synergy-ultraos.md (NIC power keywords: per-adapter, presence-gated, documented costs)", "r1-fsosx-xos.md (NIC power values only-if-present)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX07-003", "name": "Energy Efficient Ethernet", "category": "NX07",
@@ -77,7 +77,7 @@
       "sideEffects": ["Link-partner dependent behavior; a marginal cable/switch may negotiate differently.", "Effective at the next adapter restart/reboot."],
       "approval": "ExplicitConsent",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows-hardware/drivers/network/standardized-inf-keywords-for-network-devices", "https://learn.microsoft.com/en-us/powershell/module/netadapter/set-netadapteradvancedproperty", "r4-synergy-ultraos.md (*EEE set only after Ndi\\Params capability probing)"],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX07-004", "name": "Interrupt moderation", "category": "NX07",
@@ -102,7 +102,7 @@
       "sideEffects": ["Vendor-defined behavior; a specific driver may expose only a rate variant, in which case this entry skips.", "Effective at the next adapter restart/reboot."],
       "approval": "ExplicitConsent",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows-hardware/drivers/network/standardized-inf-keywords-for-network-devices", "https://learn.microsoft.com/en-us/powershell/module/netadapter/get-netadapteradvancedproperty", "r4-synergy-ultraos.md (Intel ITR noted; vendor rate keywords deliberately not touched)"],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX07-005", "name": "Receive Side Scaling configuration", "category": "NX07",
@@ -127,7 +127,7 @@
       "sideEffects": ["Queue distribution is driver- and topology-dependent; reducing queues can concentrate interrupt work on fewer CPUs (vendor-defined).", "Effective at the next adapter restart/reboot."],
       "approval": "ExplicitConsent",
       "documentationSource": ["https://learn.microsoft.com/en-us/powershell/module/netadapter/get-netadapterrss", "https://learn.microsoft.com/en-us/windows-hardware/drivers/network/standardized-inf-keywords-for-network-devices", "r4-synergy-ultraos.md (RSS keyword set only after capability probing)"],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX07-006", "name": "Receive Segment Coalescing", "category": "NX07",
@@ -152,7 +152,7 @@
       "sideEffects": ["Coalescing can interact with capture/filter drivers (vendor-documented boundary).", "Effective at the next adapter restart/reboot."],
       "approval": "ExplicitConsent",
       "documentationSource": ["https://learn.microsoft.com/en-us/powershell/module/netadapter/get-netadapterrsc", "https://learn.microsoft.com/en-us/windows-hardware/drivers/network/standardized-inf-keywords-for-network-devices", "r4-synergy-ultraos.md (RSC keywords presence-gated)"],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX07-007", "name": "Large Send Offload", "category": "NX07",
@@ -177,7 +177,7 @@
       "sideEffects": ["Documented driver-dependent frame handling; some vendors report dropped frames when offloads are forced (hence preset-excluded and opt-in).", "Effective at the next adapter restart/reboot."],
       "approval": "ExplicitConsent",
       "documentationSource": ["https://learn.microsoft.com/en-us/powershell/module/netadapter/get-netadapterlso", "https://learn.microsoft.com/en-us/windows-hardware/drivers/network/standardized-inf-keywords-for-network-devices", "r4-synergy-ultraos.md (LSO/FlowControl/offloads listed as 'unknown benefit - do not touch'; Atlas loop bug noted)"],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX07-008", "name": "Checksum offloads (TCP/UDP)", "category": "NX07",
@@ -202,7 +202,7 @@
       "sideEffects": ["Disabling checksum offloads moves checksum work to the CPU (vendor/driver-dependent).", "Effective at the next adapter restart/reboot."],
       "approval": "ExplicitConsent",
       "documentationSource": ["https://learn.microsoft.com/en-us/powershell/module/netadapter/get-netadapterchecksumoffload", "https://learn.microsoft.com/en-us/windows-hardware/drivers/network/standardized-inf-keywords-for-network-devices", "r4-synergy-ultraos.md (offload keywords excluded from blind tuning)"],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX07-009", "name": "Flow Control", "category": "NX07",
@@ -227,7 +227,7 @@
       "sideEffects": ["Switch-dependent: a host-side setting cannot guarantee segment behavior.", "Effective at the next adapter restart/reboot."],
       "approval": "ExplicitConsent",
       "documentationSource": ["https://learn.microsoft.com/en-us/powershell/module/netadapter/set-netadapteradvancedproperty", "https://learn.microsoft.com/en-us/windows-hardware/drivers/network/standardized-inf-keywords-for-network-devices", "r4-synergy-ultraos.md (FlowControl in the do-not-touch list; 'could cause dropped network frames')"],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX07-010", "name": "Jumbo Frames", "category": "NX07",
@@ -252,7 +252,7 @@
       "sideEffects": ["Any hop without matching MTU support can drop or fragment large frames - a connectivity symptom, not a performance claim.", "Effective at the next adapter restart/reboot."],
       "approval": "ExplicitConsent",
       "documentationSource": ["https://learn.microsoft.com/en-us/powershell/module/netadapter/get-netadapteradvancedproperty", "https://learn.microsoft.com/en-us/windows-hardware/drivers/network/standardized-inf-keywords-for-network-devices", "r4-synergy-ultraos.md (jumbo keyword capped to the driver/path; capability-aware writes)"],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX07-011", "name": "Receive/Transmit buffer sizing", "category": "NX07",
@@ -277,7 +277,7 @@
       "sideEffects": ["Larger buffers reserve more driver/host memory; a driver may cap far below the request (reported).", "Effective at the next adapter restart/reboot."],
       "approval": "ExplicitConsent",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows-hardware/drivers/network/standardized-inf-keywords-for-network-devices", "https://learn.microsoft.com/en-us/powershell/module/netadapter/set-netadapteradvancedproperty", "r4-synergy-ultraos.md (SynergyOS caps receive/transmit buffers; UltraOS only-if-present rule)"],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX07-012", "name": "Wi-Fi roaming aggressiveness", "category": "NX07",
@@ -302,7 +302,7 @@
       "sideEffects": ["RF-environment dependent: behavior can change near roaming boundaries; no guarantee either way.", "Effective at the next adapter restart/reboot."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows-hardware/drivers/network/standardized-inf-keywords-for-network-devices", "https://learn.microsoft.com/en-us/powershell/module/netadapter/get-netadapter", "r1-fsosx-xos.md (Wi-Fi identification via *PhysicalMediaType before NIC tuning)", "r4-synergy-ultraos.md (vendor keyword probing before writes)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX07-013", "name": "Wi-Fi preferred band", "category": "NX07",
@@ -327,7 +327,7 @@
       "sideEffects": ["If the AP does not serve the preferred band, the client can end up on a weaker alternative or re-scan more often (AP-dependent, owner-visible).", "Effective at the next adapter restart/reboot."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows-hardware/drivers/network/standardized-inf-keywords-for-network-devices", "https://learn.microsoft.com/en-us/powershell/module/netadapter/set-netadapteradvancedproperty", "r4-synergy-ultraos.md (Wi-Fi keywords presence-gated)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX07-014", "name": "Wi-Fi channel width", "category": "NX07",
@@ -352,7 +352,7 @@
       "sideEffects": ["AP- and interference-dependent; a width the AP cannot use may be silently ignored by the driver.", "Effective at the next adapter restart/reboot."],
       "approval": "ExplicitConsent",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows-hardware/drivers/network/standardized-inf-keywords-for-network-devices", "https://learn.microsoft.com/en-us/powershell/module/netadapter/get-netadapteradvancedproperty", "r4-synergy-ultraos.md (Wi-Fi/advanced keyword probing rules)"],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX07-015", "name": "Wi-Fi transmit power", "category": "NX07",
@@ -377,7 +377,7 @@
       "sideEffects": ["Regulatory/driver caps apply; lower power can reduce usable range (owner-visible).", "Effective at the next adapter restart/reboot."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows-hardware/drivers/network/standardized-inf-keywords-for-network-devices", "https://learn.microsoft.com/en-us/powershell/module/netadapter/set-netadapteradvancedproperty", "r4-synergy-ultraos.md (vendor keyword probing; no blind integer writes)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX07-016", "name": "DNS configuration", "category": "NX07",
@@ -402,7 +402,7 @@
       "sideEffects": ["A non-answering resolver is rolled back automatically; a resolver that answers but filters content is not detectable by the probe.", "DoH availability depends on the resolver; UDP fallback is enabled so name resolution still works if DoH fails.", "No improvement in any network timing metric is claimed or measured."],
       "approval": "SelectionPlusConfirmation",
       "documentationSource": ["https://learn.microsoft.com/en-us/powershell/module/dnsclient/get-dnsclientserveraddress", "https://learn.microsoft.com/en-us/powershell/module/dnsclient/set-dnsclientserveraddress", "https://learn.microsoft.com/en-us/powershell/module/dnsclient/resolve-dnsname", "https://learn.microsoft.com/en-us/powershell/module/dnsclient/add-dnsclientdohserveraddress", "r5-winutil-sophia.md (verify-and-auto-rollback DNS change; DoH interface)", "TWEAK_RESEARCH.md section 5 (no latency claims)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX07-017", "name": "TCP auto-tuning & ECN inspection/config", "category": "NX07",
@@ -427,7 +427,7 @@
       "sideEffects": ["A non-default auto-tuning level or ECN mode changes stack behavior in ways that are workload-dependent; no outcome is claimed.", "Applies immediately (no reboot)."],
       "approval": "ExplicitConsent",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/netsh", "https://learn.microsoft.com/en-us/powershell/module/netadapter/get-netadapter", "r4-synergy-ultraos.md (network.bat TCP settings; documented-cmdlet discipline)"],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX07-018", "name": "MTU inspection & configuration", "category": "NX07",
@@ -452,7 +452,7 @@
       "sideEffects": ["An MTU above what the path supports can drop large packets; below-path values trade payload size per packet.", "Applies immediately."],
       "approval": "ExplicitConsent",
       "documentationSource": ["https://learn.microsoft.com/en-us/powershell/module/nettcpip/get-netipinterface", "https://learn.microsoft.com/en-us/powershell/module/nettcpip/set-netipinterface", "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/netsh", "r3-sapphire-vain.md (network symptom-gated troubleshooting discipline)"],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX07-019", "name": "Network diagnostics report", "category": "NX07",
@@ -477,7 +477,7 @@
       "sideEffects": ["None (read-only). Optional pathping can take minutes and sends probe traffic."],
       "approval": "Selection",
       "documentationSource": ["https://learn.microsoft.com/en-us/powershell/module/netadapter/get-netadapterstatistics", "https://learn.microsoft.com/en-us/powershell/module/netadapter/get-netadapterhardwareinfo", "https://learn.microsoft.com/en-us/powershell/module/dnsclient/clear-dnsclientcache", "r1-fsosx-xos.md (diagnostic export that uploads nothing)"],
-      "status": "Implemented", "presetExcluded": false, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": false, "version": 1
     },
     {
       "id": "NX07-020", "name": "DNS cache management", "category": "NX07",
@@ -502,7 +502,7 @@
       "sideEffects": ["Next resolutions are uncached until the cache warms again (owner-visible; no latency claim)."],
       "approval": "ExplicitConsent",
       "documentationSource": ["https://learn.microsoft.com/en-us/powershell/module/dnsclient/clear-dnsclientcache", "r5-winutil-sophia.md (Clear-DnsClientCache used at the end of DNS changes)"],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX07-021", "name": "Network stack reset", "category": "NX07",
@@ -527,7 +527,7 @@
       "sideEffects": ["Network briefly disconnects; adapters re-enumerate.", "Static IP/DNS/MTU settings may be reset and are NOT re-applied automatically.", "Third-party Winsock LSP entries are removed; those products may need repair.", "Reboot required."],
       "approval": "ExplicitConsent",
       "documentationSource": ["https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/netsh", "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/netsh-winsock", "r3-sapphire-vain.md (Vain full-stack reset at install - narrowed here to documented resets)", "r5-winutil-sophia.md (documented reset/repair tooling precedent)"],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     },
     {
       "id": "NX07-022", "name": "Per-game QoS/DSCP profile", "category": "NX07",
@@ -552,7 +552,7 @@
       "sideEffects": ["Marking is effective only if network equipment honors DSCP - router/infrastructure dependent.", "A stale policy persists until rolled back explicitly (journal holds the name)."],
       "approval": "ExplicitConsent",
       "documentationSource": ["https://learn.microsoft.com/en-us/powershell/module/netqos/new-netqospolicy", "https://learn.microsoft.com/en-us/powershell/module/netqos/get-netqospolicy", "https://learn.microsoft.com/en-us/powershell/module/netqos/remove-netqospolicy", "r3-sapphire-vain.md (Auto DSCP & FSE per-game profile idea; DHCP/DSCP scope narrowed)", "TWEAK_CATALOGUE.md NX07-022 (E0, router-dependent)"],
-      "status": "Implemented", "presetExcluded": true, "version": 1
+      "status": "SyntaxValidated", "presetExcluded": true, "version": 1
     }
   ]
 }

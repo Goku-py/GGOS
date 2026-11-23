@@ -181,6 +181,7 @@ USB selective suspend → NX09-005; IRQ affinity / MSI mode → NX17; USB hardwa
 | NX08-005 | Game controller inspection & configuration | CONDITIONAL | E0 | Read-only inspection + Deadzone via vendor UI guidance |
 | NX08-006 | Bluetooth peripheral inspection & power policy | CONDITIONAL | E1 | XREF NX11-012 (service dependency) |
 | NX08-007 | USB controller & HID device inspection | CORE | E1 | Read-only; feeds NX09-005 decisions |
+| NX08-008 | Mouse/keyboard data-queue size configuration | CONDITIONAL | E0 | Undocumented mouclass/kbdclass queue depth (default 100, entries×24/12 bytes); community floor 16 enforced in code (click-loss-at-1 report); placebo claims recorded; Reboot; no perf claim (research: TWEAK_RESEARCH §16) |
 
 ## NX09 — Power Management
 
@@ -459,5 +460,5 @@ Phase 1 research-confirmed additions (each with source evidence in `research/sou
 
 ## Catalogue statistics (v0.1)
 
-272 candidate entries across 20 categories · risk mix: CORE ≈ 26%, CONDITIONAL ≈ 45%, ADVANCED ≈ 22%, EXPERIMENTAL ≈ 3%, TROUBLESHOOTING ≈ 5% · evidence: E1 ≈ 60%, E0 ≈ 40%, E2+ = 0 (none claimed; E2+ only via owner-supplied results).
+273 candidate entries across 20 categories · risk mix: CORE ≈ 26%, CONDITIONAL ≈ 45%, ADVANCED ≈ 22%, EXPERIMENTAL ≈ 3%, TROUBLESHOOTING ≈ 5% · evidence: E1 ≈ 60%, E0 ≈ 40%, E2+ = 0 (none claimed; E2+ only via owner-supplied results).
 Implementation status per entry lives in `registry/*.json` (source of truth). Wave 1 (2026-11-23) implemented NX01/NX02/NX04/NX09/NX16 at the levels recorded there; evidence corrections applied to the rows above (NX01-010, NX02-002/-003/-007 → E1; NX02-005 → E0).

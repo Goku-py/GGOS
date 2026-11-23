@@ -218,19 +218,8 @@ function Invoke-NxRegistryTweak {
     return $summary
 }
 
-# Convenience wrapper: dot-source all NxCore modules in dependency order.
-function Import-NxCore {
-    [CmdletBinding()]
-    param([string]$Root)
-    if (-not $Root) { $Root = Join-Path (Split-Path $PSScriptRoot -Parent) 'src\nxcore' }
-    foreach ($m in 'NxJournal.ps1','NxBuild.ps1','NxHardware.ps1','NxCompat.ps1','NxVerify.ps1','NxRollback.ps1','NxApply.ps1') {
-        . (Join-Path $Root $m)
-    }
-    # Category engine functions are loaded after the core modules they depend on.
-    $fnDir = Join-Path $Root 'functions'
-    if (Test-Path $fnDir) {
-        foreach ($f in (Get-ChildItem -Path $fnDir -Filter '*.ps1' -File | Sort-Object Name)) {
-            . $f.FullName
-        }
-    }
-}
+# Module loading: dot-source src/nxcore/Import-NxCore.ps1 at YOUR script scope:
+#   . (Join-Path $PSScriptRoot 'src\nxcore\Import-NxCore.ps1')
+# A function cannot persist dot-sourced definitions to its caller's scope
+# (PowerShell scoping; found by W3-E 2026-11-23), so the old Import-NxCore
+# function was removed. The generated playbook uses its own inline loader.
