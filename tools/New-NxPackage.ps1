@@ -292,9 +292,8 @@ RUNTIME ENGINE LAYOUT
   Invoke-NxPreFlight, Invoke-NxRegistryTweak and Invoke-NxRollback are in scope.
   Import-NxCore.ps1 is bundled for source parity, but the flat bundle has no
   functions/ subdirectory, so the bootstrap performs the same load order itself.
-  NX18 lives outside src/nxcore (KNOWN_ISSUES 16): the generator inventories
-  src/nxcore only, so NX18.ps1 is bundled here but is not hash-pinned by
-  nxcore-manifest.json.
+  NX18 is pinned by nxcore-manifest.json (the generator now inventories
+  src/nxsession/NX18.ps1: 28 engine pins); the hash sync below covers it.
 
 HASH SYNC
   Engine files compared to nxcore-manifest.json: {{MATCH}} match, {{MISMATCH}} mismatch.

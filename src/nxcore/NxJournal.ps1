@@ -31,17 +31,27 @@ function Initialize-NxJournal {
     )
     $manifestPath = Join-Path $Path 'manifest.json'
     $entriesPath  = Join-Path $Path 'journal.jsonl'
+    $rearmReason  = $null
     if (Test-Path $manifestPath) {
-        $manifest = Get-Content $manifestPath -Raw | ConvertFrom-Json
-        if ($manifest.captureStatus -eq 'Complete' -and -not $Force) {
+        $existing = Get-Content $manifestPath -Raw | ConvertFrom-Json
+        $restoredMarker = $null
+        if ($existing.PSObject.Properties['restoredVerifiedUtc']) { $restoredMarker = [string]$existing.restoredVerifiedUtc }
+        if ($existing.captureStatus -eq 'Complete' -and -not $restoredMarker -and -not $Force) {
             # Capture-refusal (stacking detection): an existing journal means this
             # machine state is not pristine stock. Refuse to re-arm silently.
             return [pscustomobject]@{
                 created = $false; path = $Path
                 reason  = 'CAPTURE_REFUSAL_EXISTING_JOURNAL'
-                manifest = $manifest
+                manifest = $existing
             }
         }
+        # Re-arm path: a verified full restore (restoredVerifiedUtc) or -Force.
+        # The old entries file is ARCHIVED so audit history survives the reset.
+        if (Test-Path $entriesPath) {
+            $stamp = (Get-Date).ToUniversalTime().ToString('yyyyMMddHHmmss')
+            Move-Item -Path $entriesPath -Destination (Join-Path $Path ("journal.$stamp.jsonl")) -Force -ErrorAction SilentlyContinue
+        }
+        $rearmReason = 'REARMED_AFTER_VERIFIED_RESTORE'
     }
     if (-not (Test-Path $Path)) { New-Item -Path $Path -ItemType Directory -Force | Out-Null }
     $manifest = [ordered]@{
@@ -55,7 +65,7 @@ function Initialize-NxJournal {
     }
     if (-not (Test-Path $entriesPath)) { New-Item -Path $entriesPath -ItemType File | Out-Null }
     $manifest | ConvertTo-Json -Depth 4 | Set-Content -Path $manifestPath -Encoding UTF8
-    return [pscustomobject]@{ created = $true; path = $Path; reason = $null; manifest = $manifest }
+    return [pscustomobject]@{ created = $true; path = $Path; reason = $rearmReason; manifest = $manifest }
 }
 
 function Read-NxManifest {

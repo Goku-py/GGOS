@@ -73,6 +73,9 @@ foreach ($t in $allTweaks) {
         $errors.Add("$($t.id): ADVANCED risk must be presetExcluded or require ExplicitConsent")
     }
     # ---- 3. status sanity ----
+    if ($t.rollback -and -not $t.rollback.PSObject.Properties['reversible']) {
+        $errors.Add("$($t.id): rollback.reversible missing (schema requires honest reversibility labeling)")
+    }
     if (@('Defined','Implemented','SyntaxValidated','ConfigurationValidated') -contains $t.status -and -not @($t.apply.actions).Count) {
         $errors.Add("$($t.id): status '$($t.status)' requires non-empty apply.actions")
     }

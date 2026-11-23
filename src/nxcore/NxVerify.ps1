@@ -13,7 +13,7 @@ function Test-NxConfigurationState {
         [Parameter(Mandatory)][string]$Path,
         [Parameter(Mandatory)][string]$Name,
         [Parameter(Mandatory)][string]$Kind,
-        [Parameter(Mandatory)]$ExpectedValue   # $null means: value must be absent
+        [Parameter(Mandatory)][AllowNull()]$ExpectedValue   # $null means: value must be absent
     )
     $live = Capture-NxRegistryValue -Path $Path -Name $Name
     if ($null -eq $ExpectedValue) {

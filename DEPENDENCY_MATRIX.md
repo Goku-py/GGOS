@@ -10,7 +10,7 @@
 |---|---|
 | Registry entries | 282 |
 | Entries declaring dependencies | 75 |
-| Dependency edges | 109 |
+| Dependency edges | 110 |
 | Entries that others depend on | 48 |
 | Rows in section 3 (has dependencies and/or dependents) | 116 |
 | Entries with an engine function action | 239 |
@@ -136,14 +136,14 @@ One row per entry that declares dependencies and/or is depended upon. `Depends o
 | NX18-003 | Game-specific session profiles | CONDITIONAL / E0 | - | NX18-006, NX18-007, NX18-008, NX18-010 | engine module outside src/nxcore: Get-Nx18Capability (src/nxsession/NX18.ps1) |
 | NX18-004 | Session CPU Sets application | ADVANCED / E0 | NX18-001 Running game detection engine; NX19-002 CPU Set derivation engine; NX19-003 Per-process CPU Set application | - | engine module outside src/nxcore: Get-Nx18Capability (src/nxsession/NX18.ps1); engine call: New-NxCpuSetPlan (NX19-002); cross-category dependency: NX19-002 (NX19); wave-order inversion: playbook wave order emits NX19-002 (NX19) after NX18; engine call: Set-NxProcessCpuSets (NX19-003); cross-category dependency: NX19-003 (NX19); wave-order inversion: playbook wave order emits NX19-003 (NX19) after NX18 |
 | NX18-005 | Session power plan switching | CONDITIONAL / E1 | NX09-001 Active power plan selection | - | engine module outside src/nxcore: Get-Nx18Capability (src/nxsession/NX18.ps1); engine call: Set-NxActivePowerPlan (NX09-001); cross-category dependency: NX09-001 (NX09) |
-| NX18-006 | Session background app management | CONDITIONAL / E0 | NX18-003 Game-specific session profiles; NX19-005 Per-process priority policy | - | engine module outside src/nxcore: Get-Nx18Capability (src/nxsession/NX18.ps1); engine call: Set-NxProcessPriority (NX19-005); cross-category dependency: NX19-005 (NX19); wave-order inversion: playbook wave order emits NX19-005 (NX19) after NX18 |
+| NX18-006 | Session background app management | CONDITIONAL / E0 | NX18-003 Game-specific session profiles; NX19-002 CPU Set derivation engine; NX19-005 Per-process priority policy | - | engine module outside src/nxcore: Get-Nx18Capability (src/nxsession/NX18.ps1); cross-category dependency: NX19-002 (NX19); wave-order inversion: playbook wave order emits NX19-002 (NX19) after NX18; engine call: Set-NxProcessPriority (NX19-005); cross-category dependency: NX19-005 (NX19); wave-order inversion: playbook wave order emits NX19-005 (NX19) after NX18 |
 | NX18-007 | Session service suspension (allowlisted) | ADVANCED / E0 | NX18-003 Game-specific session profiles | - | engine module outside src/nxcore: Get-Nx18Capability (src/nxsession/NX18.ps1) |
 | NX18-008 | Session graphics configuration | CONDITIONAL / E0 | NX18-003 Game-specific session profiles | - | engine module outside src/nxcore: Get-Nx18Capability (src/nxsession/NX18.ps1) |
 | NX18-009 | Session process priority configuration | CONDITIONAL / E1 | NX18-001 Running game detection engine; NX19-005 Per-process priority policy | - | engine module outside src/nxcore: Get-Nx18Capability (src/nxsession/NX18.ps1); engine call: Set-NxProcessPriority (NX19-005); cross-category dependency: NX19-005 (NX19); wave-order inversion: playbook wave order emits NX19-005 (NX19) after NX18 |
 | NX18-010 | Session journal & crash/interruption recovery | CORE / E0 | NX18-003 Game-specific session profiles | NX18-011 | engine module outside src/nxcore: Get-Nx18Capability (src/nxsession/NX18.ps1) |
 | NX18-011 | Manual session control | CORE / E0 | NX18-010 Session journal & crash/interruption recovery | - | engine module outside src/nxcore: Get-Nx18Capability (src/nxsession/NX18.ps1) |
 | NX19-001 | CPU topology detection & report engine | CORE / E1 | - | NX19-002, NX19-011 | - |
-| NX19-002 | CPU Set derivation engine | CORE / E1 | NX19-001 CPU topology detection & report engine | NX18-004, NX19-003, NX19-004, NX19-006, NX19-007, NX19-008, NX19-009, NX19-010 | - |
+| NX19-002 | CPU Set derivation engine | CORE / E1 | NX19-001 CPU topology detection & report engine | NX18-004, NX18-006, NX19-003, NX19-004, NX19-006, NX19-007, NX19-008, NX19-009, NX19-010 | - |
 | NX19-003 | Per-process CPU Set application | ADVANCED / E0 | NX19-002 CPU Set derivation engine | NX18-004 | - |
 | NX19-004 | Per-process affinity application | ADVANCED / E1 | NX19-002 CPU Set derivation engine | - | - |
 | NX19-005 | Per-process priority policy | CONDITIONAL / E1 | - | NX18-006, NX18-009 | - |
@@ -497,7 +497,7 @@ PASS: every dependency edge resolves to a registry entry and the Kahn ordering e
 
 ## 6. Export-time warnings
 
-- curated engine edge: NX18-006 calls NX19-002 but does not declare it as a dependency
+None.
 
 ---
 

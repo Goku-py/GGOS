@@ -29,7 +29,8 @@ function Get-NxTweakEligibility {
         if ($BuildReport.build -lt $minB) { $supported = $false; $reasons += "build $($BuildReport.build) below tweak minimum $minB" }
         if ($BuildReport.build -gt $maxB) { $supported = $false; $reasons += "build $($BuildReport.build) above tweak maximum $maxB" }
         if ($Tweak.builds.excluded) {
-            if (@($Tweak.builds.excluded) -contains $BuildReport.build) { $supported = $false; $reasons += "build $($BuildReport.build) is explicitly excluded for this tweak" }
+            $excludedBuilds = @($Tweak.builds.excluded | Where-Object { $null -ne $_ })
+            if ($excludedBuilds -contains $BuildReport.build) { $supported = $false; $reasons += "build $($BuildReport.build) is explicitly excluded for this tweak" }
         }
         if ($BuildReport.insiderChannel) { $warnings += 'Insider channel: experimental per directive Section 10' }
         if ($BuildReport.build -eq 26100) { $warnings += '24H2 (26100) is the reference-divergent build: extra capability checks apply (COMPATIBILITY_RESEARCH)' }
@@ -43,7 +44,7 @@ function Get-NxTweakEligibility {
 
     # 1c. Edition gate (house rule TWEAK_CLASSIFICATION Section 6): metadata editions
     # are enforced only when the edition is known; unknown edition is a warning, never a guess.
-    $editions = @($Tweak.editions)
+    $editions = @($Tweak.editions | Where-Object { $null -ne $_ -and ([string]$_).Trim().Length -gt 0 })
     if ($editions.Count -gt 0) {
         $ed = [string]$BuildReport.editionId
         if (-not $ed) { $warnings += 'edition unavailable - edition applicability not enforced' }

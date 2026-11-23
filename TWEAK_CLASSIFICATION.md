@@ -48,7 +48,7 @@ Rules:
 | PERFORMANCE-TESTED | Owner supplied benchmark evidence per the tweak's defined metric and methodology | **Owner only** |
 | RELEASE-APPROVED | Owner approved inclusion in a release | **Owner only** |
 
-No entry in this repository currently holds any status beyond CANDIDATE.
+At v0.6.0, **242 entries hold `SyntaxValidated` and 40 hold `Defined`**; no entry holds any owner-gated status (`ConfigurationValidated` and above are owner-only, per the ladder).
 
 ## 4. Performance-claim policy
 

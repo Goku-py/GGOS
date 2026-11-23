@@ -2,6 +2,16 @@
 
 All notable changes to the NEXTRIX repository. Dates are ISO. Statuses follow the verification ladder in `TWEAK_CLASSIFICATION.md`.
 
+## 2026-11-23 - Phase 6 Documentation & Handover (v0.7.0-rc)
+
+- **Docs delivered:** `MANUAL_TESTING_GUIDE.md` (282 per-tweak sheets, generation-verified: 0 missing/duplicate IDs, 33 code blocks parsed), `HARDWARE_COMPATIBILITY.md` + `WINDOWS_COMPATIBILITY.md` (registry/engine-traced matrices), `DEPENDENCY_MATRIX.md` + `CONFLICT_MATRIX.md` (generated: 109 edges, 12 symmetric pairs, 5 groups, cycle PASS), `docs/PACKAGING.md`, `OWNER_HANDOVER.md`.
+- **Resolver hardening from the compatibility audit:** `excludedHardware` evaluated; `builds.excluded` honoured; edition gate (Home/Pro/Enterprise/Education mapping, unknown-edition = warning) and x64 architecture gate added and live-verified; null-element hardening for synthetic inputs.
+- **Two engine defects found by the testing-guide audit and fixed:** `NxVerify` null `ExpectedValue` binding (rollback of never-existed values could throw) and journal re-arm after a verified restore now archives the old entries file instead of losing audit history (`Initialize-NxJournal` semantics updated).
+- **Data/schema completeness:** `rollback.reversible` added to the 18 NX07 entries and required by the validator; NX18-006 declares its NX19-002 dependency; README/classification/catalogue counts synced (282 entries; 242 SyntaxValidated / 40 Defined).
+- **Packaging verified:** staging 56 files, 28/28 manifest hashes matched (NX18 pinned), 55 `SHA256SUMS`; bootstrap loader proven in a clean PowerShell 5.1 process; owner 7-Zip step documented.
+- **Gate 5:** 18/18 suites, **1,293 assertions, 0 failures**; validator 0/0 (282 tweaks / 20 files). Final release candidate **v0.7.0-rc**. **Phases 0-6 complete; owner hardware validation remains owner-only.**
+- **No NEXTRIX modification applied to any machine.**
+
 ## 2026-11-23 - Phase 5 NX18 Game Session Manager (v0.6.0)
 
 - **NX18 subsystem delivered** (`src/nxsession/NX18.ps1`, 12 registry entries): game/launcher detection (read-only, never launches), user-authored profile store, plan-first start with `-Approved`, journaled apply, 2 s monitor with heartbeat, **verified-step restore** (failed steps are never restored - FSOS-X R11 lesson), cooldown against rapid re-sessions, manual stop, integrity-gated crash recovery (`Invoke-NxSessionRecovery`) with journal-root restriction (session records treated as untrusted data), and the hard-coded **protected-process guard** across anti-cheat/security/recording/audio/peripherals/launchers with no override parameter.

@@ -64,7 +64,7 @@ Gate 3 result (2026-11-23): **PASSED** — 17/17 self-test suites, **1,216 asser
 
 Gate 4 result (2026-11-23): **PASSED** — 18/18 suites, **1,293 assertions, 0 failures**; validator 0/0 (282 tweaks / 20 files); parser clean; playbook v0.6.0 (25 files, 0 errors); 11 NX18 entries promoted to SyntaxValidated. Released as **v0.6.0**. Phase 6 (Wave 5) launching.
 
-## PHASE 6 — Documentation & handover (Wave 5, PENDING)
+## PHASE 6 — Documentation & handover (Wave 5, COMPLETE 2026-11-23)
 
 | # | Task | Notes |
 |---|---|---|
@@ -74,6 +74,8 @@ Gate 4 result (2026-11-23): **PASSED** — 18/18 suites, **1,293 assertions, 0 f
 | 5.4 | Catalogue status sync | `TWEAK_CATALOGUE.md` statuses aligned with registry truth (coordinator-owned) |
 | 5.5 | Owner handover report | implemented / not implemented / unresolved research / risks / testing instructions / future priorities (directive §18F) |
 
+Gate 5 result (2026-11-23): **PASSED** — 18/18 suites, **1,293 assertions, 0 failures**; validator 0/0 (282 tweaks / 20 files); package staged (56 files, 28/28 manifest hashes matched, 55 SHA256SUMS); docs complete including the 282-sheet testing guide and the owner handover. Released as **v0.7.0-rc**. **Phases 0–6 complete — owner hardware validation is the remaining, owner-only step.**
+
 ## Release cadence
 
 | Wave | Version | Trigger |
@@ -82,4 +84,4 @@ Gate 4 result (2026-11-23): **PASSED** — 18/18 suites, **1,293 assertions, 0 f
 | 2 | v0.4.0 | **RELEASED 2026-11-23** — Gate 2 passed |
 | 3 | v0.5.0 | **RELEASED 2026-11-23** — Gate 3 passed |
 | 4 | v0.6.0 | **RELEASED 2026-11-23** — Gate 4 passed |
-| 5 | v0.7.0-rc | Full doc set + handover report; `ReleaseApproved` remains owner-only |
+| 5 | v0.7.0-rc | **RELEASED 2026-11-23** — Gate 5 passed; full doc set + handover |

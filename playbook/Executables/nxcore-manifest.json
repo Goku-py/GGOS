@@ -1,7 +1,7 @@
 {
     "manifestVersion":  1,
     "generatedBy":  "tools/Invoke-NxBuild.ps1",
-    "nextrixVersion":  "0.3.0",
+    "nextrixVersion":  "0.7.0",
     "playbookUniqueId":  "8550805b-2928-46a0-8daf-2e1732b55421",
     "destination":  "Executables/NxCore/",
     "instruction":  "Packaging: tools/New-NxPackage.ps1 stages every file listed below (flat, filename preserved) into Executables/NxCore/ and writes Executables/NxCoreBootstrap.ps1 at the Executables root. The generated tasks keep the FLAT loader contract: each !powerShell action dot-sources every Nx*.ps1 in Executables/ (exeDir: true), so the bootstrap is the only file the loader sees; it loads the NxCore/ tree in dependency order, including src/nxsession/NX18.ps1 (the session subsystem, outside src/nxcore). The generator does NOT copy binaries (ADR-006: hash-pinned artifacts, zero floating downloads at install time).",
@@ -56,8 +56,8 @@
                   },
                   {
                       "source":  "src/nxcore/NxVerify.ps1",
-                      "sha256":  "569ca8f84b3671630efde96a3a4b1f68e025e805e1dd628f7fc278da7f022009",
-                      "bytes":  1693,
+                      "sha256":  "c857ee51d62b206461e94547d575a7c77a6646202f7da9e3469e4043ec9492da",
+                      "bytes":  1706,
                       "stageTo":  "Executables/NxCore/"
                   },
                   {
@@ -68,8 +68,8 @@
                   },
                   {
                       "source":  "src/nxcore/NxJournal.ps1",
-                      "sha256":  "52057aa8bfbeeb7c2c8268df92dcee4a67d7588e0f90d5318f331f5cd08e7f03",
-                      "bytes":  10175,
+                      "sha256":  "f1fe36e9c74aa3341fba32b63e666185c2a4ae16e44c67c4cef44b535da33728",
+                      "bytes":  10867,
                       "stageTo":  "Executables/NxCore/"
                   },
                   {
@@ -80,8 +80,8 @@
                   },
                   {
                       "source":  "src/nxcore/NxCompat.ps1",
-                      "sha256":  "14558eb296246af20cd8fa44e0a48704c5f8a498f3293690b7501daeea009f10",
-                      "bytes":  6735,
+                      "sha256":  "87b7f2ccc913ff33e07b1fa7bd2f20ac0ad1a8f8b104befd04677ab8bf874e5d",
+                      "bytes":  6883,
                       "stageTo":  "Executables/NxCore/"
                   },
                   {
@@ -208,8 +208,8 @@
                            },
                            {
                                "source":  "registry/NX07.json",
-                               "sha256":  "12c6b96996badc26d905d0fea24abf1730798b76c5c9cfdeb3f275b8b80c6b61",
-                               "bytes":  72218
+                               "sha256":  "5cbff76085cb27031e1f9e8051ac3e411046b4ca86b04fbf5d4db897f195ae70",
+                               "bytes":  84472
                            },
                            {
                                "source":  "registry/NX08.json",
