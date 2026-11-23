@@ -32,6 +32,7 @@ Original-state descriptors (registry scope in engine v0.1; one descriptor type p
 5. **Exact-original restoration:** values are rewritten with their original kind; values that never existed are deleted; the original **existence** and **key existence** are part of the record — never guessed Windows defaults.
 6. **Concurrency:** appends hold a named mutex (`Local\NEXTRIX_Journal_v1`); the manifest is rewritten via temp-file + atomic move.
 7. **Protection:** append-only entries + hash chain make silent modification detectable. On target machines the apply session is elevated; ACL tightening of the journal root is applied by the pre-flight (NX16-004) when it lands.
+8. **Testing note (PS 5.1):** `Read-NxJournal().entries` is a `List[object]`; `@($journal.entries)` throws "Argument types do not match" in Windows PowerShell 5.1 — use `.Count` or pipeline forms in test code (engine code already does).
 
 ## 4. Scopes (NX16-013…016, all `Implemented`)
 

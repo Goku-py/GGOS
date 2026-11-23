@@ -1,0 +1,182 @@
+# NEXTRIX category task file. GENERATED FILE, do not edit by hand.
+# Source: registry/NX03.json (CPU & Processor Configuration). Playbook version 0.4.0.
+# Every action is option-gated (option name = lowercase tweak id): unselected
+# tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
+---
+title: 'NEXTRIX NX03 - CPU & Processor Configuration'
+description: >
+  Generated from registry/NX03.json: 13 selectable tweak option(s)
+  (option names are lowercase tweak ids). Function actions run the journaled
+  NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak
+  pipeline (capture -> journal -> apply -> verify), never a raw engine write.
+actions:
+  - !status: {status: 'NX03 CPU & Processor Configuration: applying selected tweaks'}
+
+  # 'NX03-001 Minimum processor state' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX03-001 Minimum processor state', option: 'nx03-001'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxProcessorMinState -AcPercent 100 -DcPercent 5 -SchemeGuid 'SCHEME_CURRENT' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx03-001'
+    weight: 2
+
+  # 'NX03-002 Maximum processor state' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX03-002 Maximum processor state', option: 'nx03-002'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxProcessorMaxState -AcPercent 100 -DcPercent 100 -SchemeGuid 'SCHEME_CURRENT' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx03-002'
+    weight: 2
+
+  # 'NX03-003 Processor boost mode policy' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX03-003 Processor boost mode policy', option: 'nx03-003'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxProcessorBoostMode -AcMode 1 -DcMode 1 -SchemeGuid 'SCHEME_CURRENT' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx03-003'
+    weight: 2
+
+  # 'NX03-004 Energy Performance Preference' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX03-004 Energy Performance Preference', option: 'nx03-004'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxProcessorEnergyPreference -AcEpp 0 -DcEpp 100 -SchemeGuid 'SCHEME_CURRENT' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx03-004'
+    weight: 2
+
+  # 'NX03-005 Core parking policy' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX03-005 Core parking policy', option: 'nx03-005'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxCoreParkingPolicy -AcMinCores 100 -SchemeGuid 'SCHEME_CURRENT' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx03-005'
+    weight: 2
+
+  # 'NX03-006 CPU power throttling policy'
+  - !status: {status: 'NX03-006 CPU power throttling policy', option: 'nx03-006'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxPowerThrottlingPolicy -Mode 'Disabled' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'Selection'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx03-006'
+    weight: 2
+
+  # 'NX03-007 MMCSS configuration' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX03-007 MMCSS configuration', option: 'nx03-007'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxMmcssConfiguration -SystemResponsiveness 10 -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx03-007'
+    weight: 2
+
+  # 'NX03-008 Win32PrioritySeparation' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX03-008 Win32PrioritySeparation', option: 'nx03-008'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxWin32PrioritySeparation -Value 2 -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx03-008'
+    weight: 2
+
+  # 'NX03-009 Processor performance policy set' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX03-009 Processor performance policy set', option: 'nx03-009'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxProcessorPerformancePolicy -AcIncreasePolicy 0 -DcIncreasePolicy 0 -AcDecreasePolicy 0 -DcDecreasePolicy 0 -SchemeGuid 'SCHEME_CURRENT' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx03-009'
+    weight: 2
+
+  # 'NX03-010 SMT / Hyper-Threading configuration' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX03-010 SMT / Hyper-Threading configuration', option: 'nx03-010'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxSmtTopologyReport
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx03-010'
+    weight: 2
+
+  # 'NX03-011 AMD CPPC preferred cores' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX03-011 AMD CPPC preferred cores', option: 'nx03-011'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxAmdPreferredCoreReport
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx03-011'
+    weight: 2
+
+  # 'NX03-012 Intel hybrid P/E power policy' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX03-012 Intel hybrid P/E power policy', option: 'nx03-012'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxIntelHybridPolicyReport
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx03-012'
+    weight: 2
+
+  # 'NX03-013 CPU inventory & frequency report'
+  - !status: {status: 'NX03-013 CPU inventory & frequency report', option: 'nx03-013'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxCpuInventoryReport
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx03-013'
+    weight: 2

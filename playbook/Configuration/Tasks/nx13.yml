@@ -1,0 +1,335 @@
+# NEXTRIX category task file. GENERATED FILE, do not edit by hand.
+# Source: registry/NX13.json (Privacy & Telemetry). Playbook version 0.4.0.
+# Every action is option-gated (option name = lowercase tweak id): unselected
+# tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
+---
+title: 'NEXTRIX NX13 - Privacy & Telemetry'
+description: >
+  Generated from registry/NX13.json: 14 selectable tweak option(s)
+  (option names are lowercase tweak ids). Function actions run the journaled
+  NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak
+  pipeline (capture -> journal -> apply -> verify), never a raw engine write.
+actions:
+  - !status: {status: 'NX13 Privacy & Telemetry: applying selected tweaks'}
+
+  # 'NX13-001 Advertising ID disable'
+  - !status: {status: 'NX13-001 Advertising ID disable', option: 'nx13-001'}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo' -Name 'Enabled' -Kind 'DWord' -Data '0' -TweakId 'NX13-001' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P7','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx13-001'
+    weight: 2
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo' -Name 'DisabledByGroupPolicy' -Kind 'DWord' -Data '1' -TweakId 'NX13-001' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P7','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx13-001'
+    weight: 2
+
+  # 'NX13-002 Activity history disable'
+  - !status: {status: 'NX13-002 Activity history disable', option: 'nx13-002'}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System' -Name 'EnableActivityFeed' -Kind 'DWord' -Data '0' -TweakId 'NX13-002' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P7','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx13-002'
+    weight: 2
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System' -Name 'PublishUserActivities' -Kind 'DWord' -Data '0' -TweakId 'NX13-002' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P7','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx13-002'
+    weight: 2
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System' -Name 'UploadUserActivities' -Kind 'DWord' -Data '0' -TweakId 'NX13-002' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P7','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx13-002'
+    weight: 2
+
+  # 'NX13-003 Tailored experiences disable'
+  - !status: {status: 'NX13-003 Tailored experiences disable', option: 'nx13-003'}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\Software\Policies\Microsoft\Windows\CloudContent' -Name 'DisableTailoredExperiencesWithDiagnosticData' -Kind 'DWord' -Data '1' -TweakId 'NX13-003' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P7','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx13-003'
+    weight: 2
+
+  # 'NX13-004 Diagnostic data level (edition-aware documented floor)'
+  - !status: {status: 'NX13-004 Diagnostic data level (edition-aware documented floor)', option: 'nx13-004'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxDiagnosticDataLevel -Level 'Minimal' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'Selection'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx13-004'
+    weight: 2
+
+  # 'NX13-005 App permission defaults (location/camera/microphone/contacts/calendar)'
+  - !status: {status: 'NX13-005 App permission defaults (location/camera/microphone/contacts/calendar)', option: 'nx13-005'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxAppPermissionDefaults -Permissions 'location','camera','microphone','contacts','calendar' -Mode 'Deny' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'SelectionPlusConfirmation'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx13-005'
+    weight: 2
+
+  # 'NX13-006 App launch tracking policy (non-Start_Track)'
+  - !status: {status: 'NX13-006 App launch tracking policy (non-Start_Track)', option: 'nx13-006'}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer' -Name 'NoInstrumentation' -Kind 'DWord' -Data '1' -TweakId 'NX13-006' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P7','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx13-006'
+    weight: 2
+
+  # 'NX13-007 General consent & ad-personalization toggles'
+  - !status: {status: 'NX13-007 General consent & ad-personalization toggles', option: 'nx13-007'}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\Control Panel\International\User Profile' -Name 'HttpAcceptLanguageOptOut' -Kind 'DWord' -Data '1' -TweakId 'NX13-007' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P7','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx13-007'
+    weight: 2
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\Software\Policies\Microsoft\Windows\CloudContent' -Name 'DisableWindowsSpotlightOnSettings' -Kind 'DWord' -Data '1' -TweakId 'NX13-007' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P7','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx13-007'
+    weight: 2
+
+  # 'NX13-008 Feedback frequency configuration'
+  - !status: {status: 'NX13-008 Feedback frequency configuration', option: 'nx13-008'}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection' -Name 'DoNotShowFeedbackNotifications' -Kind 'DWord' -Data '1' -TweakId 'NX13-008' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P7','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx13-008'
+    weight: 2
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\Software\Microsoft\Siuf\Rules' -Name 'PeriodInNanoSeconds' -Kind 'DWord' -Data '0' -TweakId 'NX13-008' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P7','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx13-008'
+    weight: 2
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\Software\Microsoft\Siuf\Rules' -Name 'NumberOfSIUFInPeriod' -Kind 'DWord' -Data '0' -TweakId 'NX13-008' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P7','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx13-008'
+    weight: 2
+
+  # 'NX13-009 Inking & typing personalization policy'
+  - !status: {status: 'NX13-009 Inking & typing personalization policy', option: 'nx13-009'}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\Software\Microsoft\InputPersonalization' -Name 'RestrictImplicitTextCollection' -Kind 'DWord' -Data '1' -TweakId 'NX13-009' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P7','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx13-009'
+    weight: 2
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\Software\Microsoft\InputPersonalization' -Name 'RestrictImplicitInkCollection' -Kind 'DWord' -Data '1' -TweakId 'NX13-009' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P7','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx13-009'
+    weight: 2
+
+  # 'NX13-010 Cloud content search preferences'
+  - !status: {status: 'NX13-010 Cloud content search preferences', option: 'nx13-010'}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search' -Name 'AllowCloudSearch' -Kind 'DWord' -Data '0' -TweakId 'NX13-010' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P7','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx13-010'
+    weight: 2
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search' -Name 'ConnectedSearchUseWeb' -Kind 'DWord' -Data '0' -TweakId 'NX13-010' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P7','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx13-010'
+    weight: 2
+
+  # 'NX13-011 Clipboard history configuration'
+  - !status: {status: 'NX13-011 Clipboard history configuration', option: 'nx13-011'}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System' -Name 'AllowClipboardHistory' -Kind 'DWord' -Data '0' -TweakId 'NX13-011' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P7','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx13-011'
+    weight: 2
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\Software\Microsoft\Clipboard' -Name 'EnableClipboardHistory' -Kind 'DWord' -Data '0' -TweakId 'NX13-011' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P7','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx13-011'
+    weight: 2
+
+  # 'NX13-012 Cross-device experiences configuration'
+  - !status: {status: 'NX13-012 Cross-device experiences configuration', option: 'nx13-012'}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System' -Name 'EnableMmx' -Kind 'DWord' -Data '0' -TweakId 'NX13-012' -TweakVersion '1' -Approval 'SelectionPlusConfirmation' -Profiles 'P1','P2','P3','P4','P5','P6','P7','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx13-012'
+    weight: 2
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System' -Name 'AllowCrossDeviceClipboard' -Kind 'DWord' -Data '0' -TweakId 'NX13-012' -TweakVersion '1' -Approval 'SelectionPlusConfirmation' -Profiles 'P1','P2','P3','P4','P5','P6','P7','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx13-012'
+    weight: 2
+
+  # 'NX13-013 Telemetry-related scheduled tasks (selective)'
+  - !status: {status: 'NX13-013 Telemetry-related scheduled tasks (selective)', option: 'nx13-013'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxTelemetryTasks -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'SelectionPlusConfirmation'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx13-013'
+    weight: 2
+
+  # 'NX13-014 Permission audit report'
+  - !status: {status: 'NX13-014 Permission audit report', option: 'nx13-014'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxPrivacyAuditReport
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx13-014'
+    weight: 2

@@ -1,7 +1,7 @@
 {
   "manifestVersion": 1,
   "generatedBy": "tools/Invoke-NxBuild.ps1",
-  "nextrixVersion": "0.3.0",
+  "nextrixVersion": "0.4.0",
   "playbookUniqueId": "8550805b-2928-46a0-8daf-2e1732b55421",
   "destination": "Executables/",
   "instruction": "Packaging step: copy every file listed below from the repository root into the playbook Executables/ directory before archiving the .apbx. The copy is FLAT: each file keeps its name and lands directly in Executables/ (including src/nxcore/functions/*.ps1). The generator does NOT copy binaries (ADR-006: hash-pinned artifacts, zero floating downloads at install time). The playbook runs each !powerShell action by dot-sourcing every Nx*.ps1 found in Executables/, so the copy must be flat and complete.",
@@ -17,14 +17,49 @@
       "bytes": 17657
     },
     {
+      "source": "src/nxcore/functions/NX03.ps1",
+      "sha256": "29355a9ae99b39836de1a0afb127e3f8b04d8869051bd7fbd1c63aab1a156f23",
+      "bytes": 87722
+    },
+    {
       "source": "src/nxcore/functions/NX04.ps1",
       "sha256": "1d148c4fdf670123923556daaea838cbac3758237609fea8ae4864eacbfaa3b3",
       "bytes": 58851
     },
     {
+      "source": "src/nxcore/functions/NX05.ps1",
+      "sha256": "fd6db9c28aa875b6acb9fa193d999fe745f012055f9b5316bb533893b7b4d4f0",
+      "bytes": 86626
+    },
+    {
+      "source": "src/nxcore/functions/NX06.ps1",
+      "sha256": "f6a4a74f81960b57ce1067814177e4caa657fb6b533e3fdc10f59756dd573d12",
+      "bytes": 135422
+    },
+    {
+      "source": "src/nxcore/functions/NX07.ps1",
+      "sha256": "8b8ef3235d7a61bd9f79c000a7be0afea26dd65e984cf6ce93693aa209df1e57",
+      "bytes": 171519
+    },
+    {
       "source": "src/nxcore/functions/NX09.ps1",
       "sha256": "0ab0eba7bb53260e3266ab9887d472a817470e16e2a9bc86800e810da890af24",
       "bytes": 105135
+    },
+    {
+      "source": "src/nxcore/functions/NX11.ps1",
+      "sha256": "bc51e2d9043879bca0a0759a9a0bbf7279a39efa0ec751980c8c2fa5782258d2",
+      "bytes": 126071
+    },
+    {
+      "source": "src/nxcore/functions/NX13.ps1",
+      "sha256": "2784b71ae24d2ab587cf5786ad49cc924866fe167645a220eb495a2df37012dc",
+      "bytes": 57068
+    },
+    {
+      "source": "src/nxcore/functions/NX15.ps1",
+      "sha256": "08a82338a9bf60d8538e4e441a4b47e632b4f564a27cdeba16a535ee28fde67b",
+      "bytes": 17674
     },
     {
       "source": "src/nxcore/functions/NX16.ps1",
@@ -79,14 +114,49 @@
       "bytes": 42922
     },
     {
+      "source": "registry/NX03.json",
+      "sha256": "4ca087588ecd2113783218a197a544b66c7f8d2267876c114195d9dab9ba1774",
+      "bytes": 62452
+    },
+    {
       "source": "registry/NX04.json",
       "sha256": "1eb68f6451c2565a01dd3e255bef58b03eb47c1e58b5dedfdeee7102e91b42d2",
       "bytes": 82247
     },
     {
+      "source": "registry/NX05.json",
+      "sha256": "f152f324eac97c6c5882e358a60d3a2daad7fd4576cbca975843a45e7b665b9d",
+      "bytes": 45969
+    },
+    {
+      "source": "registry/NX06.json",
+      "sha256": "d2e73254f55f0f9563f9c87c248b8cc00d83c7f9553424ea104b05c713e4673e",
+      "bytes": 50729
+    },
+    {
+      "source": "registry/NX07.json",
+      "sha256": "a0d336f419c5a24076db4bd97bf45bad9685551c36ede4268bc0b37fdd58b71f",
+      "bytes": 72130
+    },
+    {
       "source": "registry/NX09.json",
-      "sha256": "1f3b10ace02a45cf5f87051711fd7c5239ed2171d088e232c813a98556419fb8",
-      "bytes": 51962
+      "sha256": "84c6a00242ac81a84d2cdd43eff52811a5f8b63fa8fed0678ab4d23decd35659",
+      "bytes": 52183
+    },
+    {
+      "source": "registry/NX11.json",
+      "sha256": "c59df566ba1c39dc9fc0784b14fce18eb46f0aa7ecd878090b3f4f9b4d081f74",
+      "bytes": 62103
+    },
+    {
+      "source": "registry/NX13.json",
+      "sha256": "afac4796b6d07896379e892a69c5a4a15086f4accc53d89e98157ac4e161334e",
+      "bytes": 64616
+    },
+    {
+      "source": "registry/NX15.json",
+      "sha256": "9c650428787227ce7092d5076499fa7478fadb733ae1f5064d9daeccc2ed99e1",
+      "bytes": 54430
     },
     {
       "source": "registry/NX16.json",
@@ -121,6 +191,84 @@
         "journalpath",
         "plan",
         "profiles"
+      ]
+    },
+    {
+      "function": "Clear-Nx07DnsCache",
+      "status": "present",
+      "source": "src/nxcore/functions/NX07.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "journalroot",
+        "profiles",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Clear-NxDeliveryOptimizationCache",
+      "status": "present",
+      "source": "src/nxcore/functions/NX06.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "consent",
+        "includepinnedfiles",
+        "journalroot",
+        "profiles",
+        "tweakid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Clear-NxTemporaryFiles",
+      "status": "present",
+      "source": "src/nxcore/functions/NX06.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "consent",
+        "journalroot",
+        "minimumagedays",
+        "paths",
+        "profiles",
+        "tweakid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Clear-NxWindowsUpdateCache",
+      "status": "present",
+      "source": "src/nxcore/functions/NX06.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "consent",
+        "consenttotemporaryservicestop",
+        "journalroot",
+        "minimumagedays",
+        "profiles",
+        "tweakid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Disable-NxPagefile",
+      "status": "present",
+      "source": "src/nxcore/functions/NX05.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "acknowledgecommitrisk",
+        "approval",
+        "approved",
+        "journalroot",
+        "profiles",
+        "tweakid",
+        "tweakversion"
       ]
     },
     {
@@ -195,6 +343,48 @@
       ]
     },
     {
+      "function": "Get-Nx07AdapterInventory",
+      "status": "present",
+      "source": "src/nxcore/functions/NX07.ps1",
+      "journalRootRequired": false,
+      "parameters": [
+        "adaptername",
+        "interfaceindex",
+        "outputfolder"
+      ]
+    },
+    {
+      "function": "Get-Nx07NetworkDiagnosticReport",
+      "status": "present",
+      "source": "src/nxcore/functions/NX07.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "includepathping",
+        "journalroot",
+        "outputfolder",
+        "pathpingtarget",
+        "profiles",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Get-NxAmdPreferredCoreReport",
+      "status": "present",
+      "source": "src/nxcore/functions/NX03.ps1",
+      "journalRootRequired": false,
+      "parameters": []
+    },
+    {
+      "function": "Get-NxAppPermissionInventory",
+      "status": "present",
+      "source": "src/nxcore/functions/NX11.ps1",
+      "journalRootRequired": false,
+      "parameters": [
+        "maxpackages"
+      ]
+    },
+    {
       "function": "Get-NxAutoHdrReport",
       "status": "present",
       "source": "src/nxcore/functions/NX04.ps1",
@@ -205,6 +395,29 @@
       "function": "Get-NxBuildReport",
       "status": "present",
       "source": "src/nxcore/NxBuild.ps1",
+      "journalRootRequired": false,
+      "parameters": []
+    },
+    {
+      "function": "Get-NxContextMenuState",
+      "status": "present",
+      "source": "src/nxcore/functions/NX15.ps1",
+      "journalRootRequired": false,
+      "parameters": [
+        "buildnumber"
+      ]
+    },
+    {
+      "function": "Get-NxCpuInventoryReport",
+      "status": "present",
+      "source": "src/nxcore/functions/NX03.ps1",
+      "journalRootRequired": false,
+      "parameters": []
+    },
+    {
+      "function": "Get-NxDriveHealthReport",
+      "status": "present",
+      "source": "src/nxcore/functions/NX06.ps1",
       "journalRootRequired": false,
       "parameters": []
     },
@@ -239,11 +452,36 @@
       "parameters": []
     },
     {
+      "function": "Get-NxIntelHybridPolicyReport",
+      "status": "present",
+      "source": "src/nxcore/functions/NX03.ps1",
+      "journalRootRequired": false,
+      "parameters": []
+    },
+    {
       "function": "Get-NxLauncherDetectionReport",
       "status": "present",
       "source": "src/nxcore/functions/NX02.ps1",
       "journalRootRequired": false,
       "parameters": []
+    },
+    {
+      "function": "Get-NxMemoryDiagnosticsReport",
+      "status": "present",
+      "source": "src/nxcore/functions/NX05.ps1",
+      "journalRootRequired": false,
+      "parameters": [
+        "tweakid"
+      ]
+    },
+    {
+      "function": "Get-NxMemoryPressureReport",
+      "status": "present",
+      "source": "src/nxcore/functions/NX05.ps1",
+      "journalRootRequired": false,
+      "parameters": [
+        "tweakid"
+      ]
     },
     {
       "function": "Get-NxOemBatteryConservationState",
@@ -265,6 +503,100 @@
       "source": "src/nxcore/functions/NX01.ps1",
       "journalRootRequired": false,
       "parameters": []
+    },
+    {
+      "function": "Get-NxPrintSpoolerReport",
+      "status": "present",
+      "source": "src/nxcore/functions/NX11.ps1",
+      "journalRootRequired": false,
+      "parameters": []
+    },
+    {
+      "function": "Get-NxPrivacyAuditReport",
+      "status": "present",
+      "source": "src/nxcore/functions/NX13.ps1",
+      "journalRootRequired": false,
+      "parameters": [
+        "maxappspercapability"
+      ]
+    },
+    {
+      "function": "Get-NxResourceHeavyProcessReport",
+      "status": "present",
+      "source": "src/nxcore/functions/NX11.ps1",
+      "journalRootRequired": false,
+      "parameters": [
+        "sampleseconds",
+        "top"
+      ]
+    },
+    {
+      "function": "Get-NxScheduledTaskCandidates",
+      "status": "present",
+      "source": "src/nxcore/functions/NX11.ps1",
+      "journalRootRequired": false,
+      "parameters": []
+    },
+    {
+      "function": "Get-NxScheduledTaskInventory",
+      "status": "present",
+      "source": "src/nxcore/functions/NX11.ps1",
+      "journalRootRequired": false,
+      "parameters": [
+        "destinationpath",
+        "exportxml",
+        "includeinfo"
+      ]
+    },
+    {
+      "function": "Get-NxServiceDependencyReport",
+      "status": "present",
+      "source": "src/nxcore/functions/NX11.ps1",
+      "journalRootRequired": false,
+      "parameters": [
+        "servicename"
+      ]
+    },
+    {
+      "function": "Get-NxSmtTopologyReport",
+      "status": "present",
+      "source": "src/nxcore/functions/NX03.ps1",
+      "journalRootRequired": false,
+      "parameters": []
+    },
+    {
+      "function": "Get-NxStandbyMemoryReport",
+      "status": "present",
+      "source": "src/nxcore/functions/NX05.ps1",
+      "journalRootRequired": false,
+      "parameters": [
+        "tweakid"
+      ]
+    },
+    {
+      "function": "Get-NxStartupInventory",
+      "status": "present",
+      "source": "src/nxcore/functions/NX11.ps1",
+      "journalRootRequired": false,
+      "parameters": [
+        "includewmi"
+      ]
+    },
+    {
+      "function": "Get-NxStorageInventory",
+      "status": "present",
+      "source": "src/nxcore/functions/NX06.ps1",
+      "journalRootRequired": false,
+      "parameters": []
+    },
+    {
+      "function": "Get-NxThirdPartyServiceInventory",
+      "status": "present",
+      "source": "src/nxcore/functions/NX11.ps1",
+      "journalRootRequired": false,
+      "parameters": [
+        "maxitems"
+      ]
     },
     {
       "function": "Get-NxVendorGraphicsGuide",
@@ -297,6 +629,20 @@
         "journalroot",
         "profiles",
         "targetguid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Invoke-Nx07NetworkStackReset",
+      "status": "present",
+      "source": "src/nxcore/functions/NX07.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "acknowledgeconsequences",
+        "approval",
+        "approved",
+        "journalroot",
+        "profiles",
         "tweakversion"
       ]
     },
@@ -467,6 +813,321 @@
       ]
     },
     {
+      "function": "Set-Nx07AdapterBufferSize",
+      "status": "present",
+      "source": "src/nxcore/functions/NX07.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "adaptername",
+        "approval",
+        "approved",
+        "interfaceindex",
+        "journalroot",
+        "profiles",
+        "receivebuffers",
+        "restartadapter",
+        "transmitbuffers",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-Nx07AdapterPowerManagement",
+      "status": "present",
+      "source": "src/nxcore/functions/NX07.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "adaptername",
+        "approval",
+        "approved",
+        "arpoffload",
+        "d0packetcoalescing",
+        "devicesleepondisconnect",
+        "interfaceindex",
+        "journalroot",
+        "nsoffload",
+        "profiles",
+        "selectivesuspend",
+        "tweakversion",
+        "wakeonmagicpacket",
+        "wakeonpattern"
+      ]
+    },
+    {
+      "function": "Set-Nx07ChecksumOffload",
+      "status": "present",
+      "source": "src/nxcore/functions/NX07.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "adaptername",
+        "approval",
+        "approved",
+        "interfaceindex",
+        "journalroot",
+        "mode",
+        "profiles",
+        "restartadapter",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-Nx07DnsConfiguration",
+      "status": "present",
+      "source": "src/nxcore/functions/NX07.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "adaptername",
+        "approval",
+        "approved",
+        "doh",
+        "dohtemplate",
+        "interfaceindex",
+        "ipv6serveraddresses",
+        "journalroot",
+        "probename",
+        "profiles",
+        "serveraddresses",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-Nx07EnergyEfficientEthernet",
+      "status": "present",
+      "source": "src/nxcore/functions/NX07.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "adaptername",
+        "approval",
+        "approved",
+        "enabled",
+        "interfaceindex",
+        "journalroot",
+        "profiles",
+        "restartadapter",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-Nx07FlowControl",
+      "status": "present",
+      "source": "src/nxcore/functions/NX07.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "adaptername",
+        "approval",
+        "approved",
+        "interfaceindex",
+        "journalroot",
+        "mode",
+        "profiles",
+        "restartadapter",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-Nx07GameQosProfile",
+      "status": "present",
+      "source": "src/nxcore/functions/NX07.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "apppath",
+        "approval",
+        "approved",
+        "dscp",
+        "journalroot",
+        "policyname",
+        "precedence",
+        "profiles",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-Nx07InterfaceMtu",
+      "status": "present",
+      "source": "src/nxcore/functions/NX07.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "adaptername",
+        "addressfamily",
+        "approval",
+        "approved",
+        "interfaceindex",
+        "journalroot",
+        "mtu",
+        "profiles",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-Nx07InterruptModeration",
+      "status": "present",
+      "source": "src/nxcore/functions/NX07.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "adaptername",
+        "approval",
+        "approved",
+        "enabled",
+        "interfaceindex",
+        "journalroot",
+        "profiles",
+        "restartadapter",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-Nx07JumboFrame",
+      "status": "present",
+      "source": "src/nxcore/functions/NX07.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "adaptername",
+        "approval",
+        "approved",
+        "interfaceindex",
+        "journalroot",
+        "mtu",
+        "profiles",
+        "restartadapter",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-Nx07LargeSendOffload",
+      "status": "present",
+      "source": "src/nxcore/functions/NX07.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "adaptername",
+        "approval",
+        "approved",
+        "enabled",
+        "interfaceindex",
+        "journalroot",
+        "profiles",
+        "restartadapter",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-Nx07ReceiveSegmentCoalescing",
+      "status": "present",
+      "source": "src/nxcore/functions/NX07.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "adaptername",
+        "approval",
+        "approved",
+        "enabled",
+        "interfaceindex",
+        "journalroot",
+        "profiles",
+        "restartadapter",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-Nx07ReceiveSideScaling",
+      "status": "present",
+      "source": "src/nxcore/functions/NX07.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "adaptername",
+        "approval",
+        "approved",
+        "enabled",
+        "interfaceindex",
+        "journalroot",
+        "maxprocessors",
+        "profiles",
+        "restartadapter",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-Nx07TcpGlobalSetting",
+      "status": "present",
+      "source": "src/nxcore/functions/NX07.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "autotuninglevel",
+        "ecn",
+        "journalroot",
+        "profiles",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-Nx07WifiChannelWidth",
+      "status": "present",
+      "source": "src/nxcore/functions/NX07.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "adaptername",
+        "approval",
+        "approved",
+        "band",
+        "interfaceindex",
+        "journalroot",
+        "profiles",
+        "restartadapter",
+        "tweakversion",
+        "width"
+      ]
+    },
+    {
+      "function": "Set-Nx07WifiPreferredBand",
+      "status": "present",
+      "source": "src/nxcore/functions/NX07.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "adaptername",
+        "approval",
+        "approved",
+        "band",
+        "interfaceindex",
+        "journalroot",
+        "profiles",
+        "restartadapter",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-Nx07WifiRoamingAggressiveness",
+      "status": "present",
+      "source": "src/nxcore/functions/NX07.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "adaptername",
+        "aggressiveness",
+        "approval",
+        "approved",
+        "interfaceindex",
+        "journalroot",
+        "profiles",
+        "restartadapter",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-Nx07WifiTransmitPower",
+      "status": "present",
+      "source": "src/nxcore/functions/NX07.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "adaptername",
+        "approval",
+        "approved",
+        "interfaceindex",
+        "journalroot",
+        "profiles",
+        "restartadapter",
+        "strength",
+        "tweakversion"
+      ]
+    },
+    {
       "function": "Set-NxActivePowerPlan",
       "status": "present",
       "source": "src/nxcore/functions/NX09.ps1",
@@ -477,6 +1138,22 @@
         "journalroot",
         "profiles",
         "targetplan",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxAppPermissionDefaults",
+      "status": "present",
+      "source": "src/nxcore/functions/NX13.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "journalroot",
+        "mode",
+        "permissions",
+        "profiles",
+        "tweakid",
         "tweakversion"
       ]
     },
@@ -492,6 +1169,108 @@
         "mode",
         "profiles",
         "tweakid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxBluetoothServiceConfig",
+      "status": "present",
+      "source": "src/nxcore/functions/NX11.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "acknowledgedependents",
+        "acknowledgeperipherals",
+        "approval",
+        "approved",
+        "journalroot",
+        "plan",
+        "profiles",
+        "startuptype",
+        "stopservice",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxCoreParkingPolicy",
+      "status": "present",
+      "source": "src/nxcore/functions/NX03.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "acmaxcores",
+        "acmincores",
+        "approval",
+        "approved",
+        "dcmaxcores",
+        "dcmincores",
+        "journalroot",
+        "profiles",
+        "schemeguid",
+        "tweakversion",
+        "unhidesettings"
+      ]
+    },
+    {
+      "function": "Set-NxCrashDumpConfiguration",
+      "status": "present",
+      "source": "src/nxcore/functions/NX05.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "dumptype",
+        "journalroot",
+        "profiles",
+        "tweakid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxCustomPagefile",
+      "status": "present",
+      "source": "src/nxcore/functions/NX05.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "drive",
+        "initialsizemb",
+        "journalroot",
+        "maximumsizemb",
+        "profiles",
+        "tweakid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxDiagnosticDataLevel",
+      "status": "present",
+      "source": "src/nxcore/functions/NX13.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "editionid",
+        "journalroot",
+        "level",
+        "profiles",
+        "tweakid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxDiagTrackConfig",
+      "status": "present",
+      "source": "src/nxcore/functions/NX11.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "acknowledgedependents",
+        "approval",
+        "approved",
+        "journalroot",
+        "plan",
+        "profiles",
+        "startuptype",
+        "stopservice",
         "tweakversion"
       ]
     },
@@ -527,6 +1306,38 @@
       ]
     },
     {
+      "function": "Set-NxEdgeBackgroundMode",
+      "status": "present",
+      "source": "src/nxcore/functions/NX11.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "journalroot",
+        "mode",
+        "plan",
+        "profiles",
+        "scope",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxEdgeStartupBoost",
+      "status": "present",
+      "source": "src/nxcore/functions/NX11.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "journalroot",
+        "mode",
+        "plan",
+        "profiles",
+        "scope",
+        "tweakversion"
+      ]
+    },
+    {
       "function": "Set-NxFastStartup",
       "status": "present",
       "source": "src/nxcore/functions/NX09.ps1",
@@ -537,6 +1348,24 @@
         "enabled",
         "journalroot",
         "profiles",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxFaxServiceConfig",
+      "status": "present",
+      "source": "src/nxcore/functions/NX11.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "acknowledgedependents",
+        "acknowledgefaxhardware",
+        "approval",
+        "approved",
+        "journalroot",
+        "plan",
+        "profiles",
+        "startuptype",
+        "stopservice",
         "tweakversion"
       ]
     },
@@ -586,6 +1415,119 @@
       ]
     },
     {
+      "function": "Set-NxMapsServiceConfig",
+      "status": "present",
+      "source": "src/nxcore/functions/NX11.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "acknowledgedependents",
+        "acknowledgeofflinemaps",
+        "approval",
+        "approved",
+        "journalroot",
+        "plan",
+        "profiles",
+        "startuptype",
+        "stopservice",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxMemoryCompression",
+      "status": "present",
+      "source": "src/nxcore/functions/NX05.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "allowbelowthreshold",
+        "approval",
+        "approved",
+        "enabled",
+        "journalroot",
+        "minimumramgb",
+        "profiles",
+        "tweakid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxMmcssConfiguration",
+      "status": "present",
+      "source": "src/nxcore/functions/NX03.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "journalroot",
+        "profiles",
+        "schedulingcategory",
+        "systemresponsiveness",
+        "taskname",
+        "taskpriority",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxNtfs8dot3Policy",
+      "status": "present",
+      "source": "src/nxcore/functions/NX06.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "journalroot",
+        "mode",
+        "profiles",
+        "tweakid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxNtfsLastAccessPolicy",
+      "status": "present",
+      "source": "src/nxcore/functions/NX06.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "journalroot",
+        "mode",
+        "profiles",
+        "tweakid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxNtfsMemoryUsage",
+      "status": "present",
+      "source": "src/nxcore/functions/NX06.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "journalroot",
+        "mode",
+        "profiles",
+        "tweakid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxOptimizeDrivesSchedule",
+      "status": "present",
+      "source": "src/nxcore/functions/NX06.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "cadence",
+        "enabletask",
+        "journalroot",
+        "profiles",
+        "tweakid",
+        "tweakversion"
+      ]
+    },
+    {
       "function": "Set-NxOptionalFeatureState",
       "status": "present",
       "source": "src/nxcore/functions/NX01.ps1",
@@ -616,11 +1558,170 @@
       ]
     },
     {
+      "function": "Set-NxPoolLimitConfiguration",
+      "status": "present",
+      "source": "src/nxcore/functions/NX05.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "acknowledgesymptom",
+        "approval",
+        "approved",
+        "journalroot",
+        "nonpagedpoolsizebytes",
+        "pagedpoolsizebytes",
+        "poolusagemaximum",
+        "profiles",
+        "symptomnote",
+        "tweakid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxPowerThrottlingPolicy",
+      "status": "present",
+      "source": "src/nxcore/functions/NX03.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "journalroot",
+        "mode",
+        "profiles",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxProcessorBoostMode",
+      "status": "present",
+      "source": "src/nxcore/functions/NX03.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "acmode",
+        "approval",
+        "approved",
+        "dcmode",
+        "journalroot",
+        "profiles",
+        "schemeguid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxProcessorEnergyPreference",
+      "status": "present",
+      "source": "src/nxcore/functions/NX03.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "acepp",
+        "approval",
+        "approved",
+        "dcepp",
+        "journalroot",
+        "profiles",
+        "schemeguid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxProcessorMaxState",
+      "status": "present",
+      "source": "src/nxcore/functions/NX03.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "acpercent",
+        "approval",
+        "approved",
+        "dcpercent",
+        "journalroot",
+        "profiles",
+        "schemeguid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxProcessorMinState",
+      "status": "present",
+      "source": "src/nxcore/functions/NX03.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "acpercent",
+        "approval",
+        "approved",
+        "dcpercent",
+        "journalroot",
+        "profiles",
+        "schemeguid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxProcessorPerformancePolicy",
+      "status": "present",
+      "source": "src/nxcore/functions/NX03.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "acdecreasepolicy",
+        "acdecreasethreshold",
+        "acdecreasetime",
+        "acincreasepolicy",
+        "acincreasethreshold",
+        "acincreasetime",
+        "approval",
+        "approved",
+        "dcdecreasepolicy",
+        "dcdecreasethreshold",
+        "dcdecreasetime",
+        "dcincreasepolicy",
+        "dcincreasethreshold",
+        "dcincreasetime",
+        "journalroot",
+        "profiles",
+        "schemeguid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxRemoteRegistryConfig",
+      "status": "present",
+      "source": "src/nxcore/functions/NX11.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "acknowledgedependents",
+        "acknowledgesecurityrisk",
+        "approval",
+        "approved",
+        "journalroot",
+        "plan",
+        "profiles",
+        "startuptype",
+        "stopservice",
+        "tweakversion"
+      ]
+    },
+    {
       "function": "Set-NxSearchIndexingScope",
       "status": "absent",
       "source": null,
       "journalRootRequired": false,
       "parameters": []
+    },
+    {
+      "function": "Set-NxSearchServiceConfig",
+      "status": "present",
+      "source": "src/nxcore/functions/NX11.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "acknowledgedependents",
+        "acknowledgemedia",
+        "approval",
+        "approved",
+        "journalroot",
+        "plan",
+        "profiles",
+        "startuptype",
+        "stopservice",
+        "tweakversion"
+      ]
     },
     {
       "function": "Set-NxSleepTimeout",
@@ -638,6 +1739,129 @@
       ]
     },
     {
+      "function": "Set-NxStartRecommendations",
+      "status": "present",
+      "source": "src/nxcore/functions/NX15.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "buildnumber",
+        "journalroot",
+        "profiles",
+        "tweakid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxStorageD3Policy",
+      "status": "present",
+      "source": "src/nxcore/functions/NX06.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "journalroot",
+        "mode",
+        "profiles",
+        "tweakid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxStorageSensePolicy",
+      "status": "present",
+      "source": "src/nxcore/functions/NX06.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "cadence",
+        "journalroot",
+        "mode",
+        "profiles",
+        "tweakid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxSysMainConfig",
+      "status": "present",
+      "source": "src/nxcore/functions/NX11.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "acknowledgedependents",
+        "acknowledgehdd",
+        "acknowledgelowmemory",
+        "approval",
+        "approved",
+        "journalroot",
+        "plan",
+        "profiles",
+        "startuptype",
+        "stopservice",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxSystemManagedPagefile",
+      "status": "present",
+      "source": "src/nxcore/functions/NX05.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "journalroot",
+        "profiles",
+        "tweakid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxTaskbarConfiguration",
+      "status": "present",
+      "source": "src/nxcore/functions/NX15.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "buildnumber",
+        "journalroot",
+        "profiles",
+        "tweakid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxTelemetryTasks",
+      "status": "present",
+      "source": "src/nxcore/functions/NX13.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "includeerrorreportingqueue",
+        "journalroot",
+        "profiles",
+        "tasks",
+        "tweakid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxTrimEnabled",
+      "status": "present",
+      "source": "src/nxcore/functions/NX06.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "journalroot",
+        "mode",
+        "profiles",
+        "tweakid",
+        "tweakversion"
+      ]
+    },
+    {
       "function": "Set-NxUsbSelectiveSuspend",
       "status": "present",
       "source": "src/nxcore/functions/NX09.ps1",
@@ -649,6 +1873,71 @@
         "journalroot",
         "profiles",
         "schemeguid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxWerReportingConfig",
+      "status": "present",
+      "source": "src/nxcore/functions/NX11.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "journalroot",
+        "mode",
+        "plan",
+        "profiles",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxWin32PrioritySeparation",
+      "status": "present",
+      "source": "src/nxcore/functions/NX03.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "journalroot",
+        "profiles",
+        "tweakversion",
+        "value"
+      ]
+    },
+    {
+      "function": "Set-NxWriteCachePolicy",
+      "status": "present",
+      "source": "src/nxcore/functions/NX06.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "approval",
+        "approved",
+        "disknumber",
+        "journalroot",
+        "mode",
+        "profiles",
+        "tweakid",
+        "tweakversion"
+      ]
+    },
+    {
+      "function": "Set-NxXboxServicesConfig",
+      "status": "present",
+      "source": "src/nxcore/functions/NX11.ps1",
+      "journalRootRequired": true,
+      "parameters": [
+        "acknowledgedependents",
+        "acknowledgegamepass",
+        "acknowledgeperipherals",
+        "approval",
+        "approved",
+        "journalroot",
+        "plan",
+        "profiles",
+        "services",
+        "startuptype",
+        "stopservice",
         "tweakversion"
       ]
     }

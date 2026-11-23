@@ -1,0 +1,260 @@
+# NEXTRIX category task file. GENERATED FILE, do not edit by hand.
+# Source: registry/NX11.json (Background Activity & Services). Playbook version 0.4.0.
+# Every action is option-gated (option name = lowercase tweak id): unselected
+# tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
+---
+title: 'NEXTRIX NX11 - Background Activity & Services'
+description: >
+  Generated from registry/NX11.json: 19 selectable tweak option(s)
+  (option names are lowercase tweak ids). Function actions run the journaled
+  NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak
+  pipeline (capture -> journal -> apply -> verify), never a raw engine write.
+actions:
+  - !status: {status: 'NX11 Background Activity & Services: applying selected tweaks'}
+
+  # 'NX11-001 Startup app inventory & selective management'
+  - !status: {status: 'NX11-001 Startup app inventory & selective management', option: 'nx11-001'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxStartupInventory -IncludeWmi
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx11-001'
+    weight: 2
+
+  # 'NX11-002 Per-app background permissions (UWP)'
+  - !status: {status: 'NX11-002 Per-app background permissions (UWP)', option: 'nx11-002'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxAppPermissionInventory -MaxPackages 200
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx11-002'
+    weight: 2
+
+  # 'NX11-003 Edge background mode disable'
+  - !status: {status: 'NX11-003 Edge background mode disable', option: 'nx11-003'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxEdgeBackgroundMode -Mode 'Disable' -Scope 'User' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'SelectionPlusConfirmation'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx11-003'
+    weight: 2
+
+  # 'NX11-004 Edge startup boost disable'
+  - !status: {status: 'NX11-004 Edge startup boost disable', option: 'nx11-004'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxEdgeStartupBoost -Mode 'Disable' -Scope 'User' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'SelectionPlusConfirmation'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx11-004'
+    weight: 2
+
+  # 'NX11-005 Scheduled task inventory report'
+  - !status: {status: 'NX11-005 Scheduled task inventory report', option: 'nx11-005'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxScheduledTaskInventory
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx11-005'
+    weight: 2
+
+  # 'NX11-006 Selective scheduled task management'
+  - !status: {status: 'NX11-006 Selective scheduled task management', option: 'nx11-006'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxScheduledTaskCandidates
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx11-006'
+    weight: 2
+
+  # 'NX11-007 Resource-heavy process identification report'
+  - !status: {status: 'NX11-007 Resource-heavy process identification report', option: 'nx11-007'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxResourceHeavyProcessReport -Top 15 -SampleSeconds 0
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx11-007'
+    weight: 2
+
+  # 'NX11-011 Print Spooler configuration'
+  - !status: {status: 'NX11-011 Print Spooler configuration', option: 'nx11-011'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxPrintSpoolerReport
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx11-011'
+    weight: 2
+
+  # 'NX11-015 Windows Error Reporting configuration'
+  - !status: {status: 'NX11-015 Windows Error Reporting configuration', option: 'nx11-015'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxWerReportingConfig -Mode 'Disable' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'SelectionPlusConfirmation'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx11-015'
+    weight: 2
+
+  # 'NX11-019 Service dependency inspection engine'
+  - !status: {status: 'NX11-019 Service dependency inspection engine', option: 'nx11-019'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxServiceDependencyReport
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx11-019'
+    weight: 2
+
+  # 'NX11-008 Windows Search service configuration'
+  - !status: {status: 'NX11-008 Windows Search service configuration', option: 'nx11-008'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxSearchServiceConfig -StartupType 'Manual' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'SelectionPlusConfirmation'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx11-008'
+    weight: 2
+
+  # 'NX11-009 SysMain service configuration'
+  - !status: {status: 'NX11-009 SysMain service configuration', option: 'nx11-009'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxSysMainConfig -StartupType 'Disabled' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'SelectionPlusConfirmation'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx11-009'
+    weight: 2
+
+  # 'NX11-010 Xbox services configuration'
+  - !status: {status: 'NX11-010 Xbox services configuration', option: 'nx11-010'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxXboxServicesConfig -StartupType 'Manual' -Services 'XboxGipSvc','XboxNetApiSvc' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'SelectionPlusConfirmation'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx11-010'
+    weight: 2
+
+  # 'NX11-012 Bluetooth service configuration'
+  - !status: {status: 'NX11-012 Bluetooth service configuration', option: 'nx11-012'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxBluetoothServiceConfig -StartupType 'Disabled' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'SelectionPlusConfirmation'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx11-012'
+    weight: 2
+
+  # 'NX11-013 Fax service configuration'
+  - !status: {status: 'NX11-013 Fax service configuration', option: 'nx11-013'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxFaxServiceConfig -StartupType 'Disabled' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'SelectionPlusConfirmation'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx11-013'
+    weight: 2
+
+  # 'NX11-014 Remote Registry configuration'
+  - !status: {status: 'NX11-014 Remote Registry configuration', option: 'nx11-014'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxRemoteRegistryConfig -StartupType 'Disabled' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'SelectionPlusConfirmation'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx11-014'
+    weight: 2
+
+  # 'NX11-016 Maps-related services configuration'
+  - !status: {status: 'NX11-016 Maps-related services configuration', option: 'nx11-016'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxMapsServiceConfig -StartupType 'Manual' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'SelectionPlusConfirmation'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx11-016'
+    weight: 2
+
+  # 'NX11-017 DiagTrack (Connected User Experiences) configuration'
+  - !status: {status: 'NX11-017 DiagTrack (Connected User Experiences) configuration', option: 'nx11-017'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxDiagTrackConfig -StartupType 'Disabled' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'SelectionPlusConfirmation'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx11-017'
+    weight: 2
+
+  # 'NX11-018 Third-party service inventory & selective configuration'
+  - !status: {status: 'NX11-018 Third-party service inventory & selective configuration', option: 'nx11-018'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxThirdPartyServiceInventory -MaxItems 400
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx11-018'
+    weight: 2

@@ -1,0 +1,265 @@
+# NEXTRIX category task file. GENERATED FILE, do not edit by hand.
+# Source: registry/NX15.json (Visual & Interface). Playbook version 0.4.0.
+# Every action is option-gated (option name = lowercase tweak id): unselected
+# tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
+---
+title: 'NEXTRIX NX15 - Visual & Interface'
+description: >
+  Generated from registry/NX15.json: 14 selectable tweak option(s)
+  (option names are lowercase tweak ids). Function actions run the journaled
+  NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak
+  pipeline (capture -> journal -> apply -> verify), never a raw engine write.
+actions:
+  - !status: {status: 'NX15 Visual & Interface: applying selected tweaks'}
+
+  # 'NX15-001 Visual effects policy (animations set)'
+  - !status: {status: 'NX15-001 Visual effects policy (animations set)', option: 'nx15-001'}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer' -Name 'TurnOffSPIAnimations' -Kind 'DWord' -Data '1' -TweakId 'NX15-001' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx15-001'
+    weight: 2
+
+  # 'NX15-002 Transparency effects'
+  - !status: {status: 'NX15-002 Transparency effects', option: 'nx15-002'}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize' -Name 'EnableTransparency' -Kind 'DWord' -Data '0' -TweakId 'NX15-002' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx15-002'
+    weight: 2
+
+  # 'NX15-003 Window shadows & menu show delay'
+  - !status: {status: 'NX15-003 Window shadows & menu show delay', option: 'nx15-003'}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\Control Panel\Desktop' -Name 'MenuShowDelay' -Kind 'String' -Data '0' -TweakId 'NX15-003' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx15-003'
+    weight: 2
+
+  # 'NX15-004 Taskbar configuration set'
+  - !status: {status: 'NX15-004 Taskbar configuration set', option: 'nx15-004'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxTaskbarConfiguration -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approval 'SelectionPlusConfirmation'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx15-004'
+    weight: 2
+
+  # 'NX15-005 Start menu recommendations configuration'
+  - !status: {status: 'NX15-005 Start menu recommendations configuration', option: 'nx15-005'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxStartRecommendations -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approval 'SelectionPlusConfirmation'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx15-005'
+    weight: 2
+
+  # 'NX15-006 Explorer configuration set'
+  - !status: {status: 'NX15-006 Explorer configuration set', option: 'nx15-006'}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'LaunchTo' -Kind 'DWord' -Data '1' -TweakId 'NX15-006' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx15-006'
+    weight: 2
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'SeparateProcess' -Kind 'DWord' -Data '1' -TweakId 'NX15-006' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx15-006'
+    weight: 2
+
+  # 'NX15-007 File extension visibility'
+  - !status: {status: 'NX15-007 File extension visibility', option: 'nx15-007'}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'HideFileExt' -Kind 'DWord' -Data '0' -TweakId 'NX15-007' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx15-007'
+    weight: 2
+
+  # 'NX15-008 Hidden files visibility'
+  - !status: {status: 'NX15-008 Hidden files visibility', option: 'nx15-008'}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'Hidden' -Kind 'DWord' -Data '1' -TweakId 'NX15-008' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx15-008'
+    weight: 2
+
+  # 'NX15-009 Context menu configuration (classic / new)'
+  - !status: {status: 'NX15-009 Context menu configuration (classic / new)', option: 'nx15-009'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxContextMenuState
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx15-009'
+    weight: 2
+
+  # 'NX15-010 Explorer compact view'
+  - !status: {status: 'NX15-010 Explorer compact view', option: 'nx15-010'}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'UseCompactMode' -Kind 'DWord' -Data '1' -TweakId 'NX15-010' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx15-010'
+    weight: 2
+
+  # 'NX15-011 Notification Center configuration'
+  - !status: {status: 'NX15-011 Notification Center configuration', option: 'nx15-011'}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\Software\Policies\Microsoft\Windows\Explorer' -Name 'DisableNotificationCenter' -Kind 'DWord' -Data '1' -TweakId 'NX15-011' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx15-011'
+    weight: 2
+
+  # 'NX15-012 Lock screen configuration (image vs Spotlight)'
+  - !status: {status: 'NX15-012 Lock screen configuration (image vs Spotlight)', option: 'nx15-012'}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager' -Name 'RotatingLockScreenEnabled' -Kind 'DWord' -Data '0' -TweakId 'NX15-012' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx15-012'
+    weight: 2
+
+  # 'NX15-013 Desktop icon configuration'
+  - !status: {status: 'NX15-013 Desktop icon configuration', option: 'nx15-013'}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'HideIcons' -Kind 'DWord' -Data '0' -TweakId 'NX15-013' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx15-013'
+    weight: 2
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel' -Name '{20D04FE0-3AEA-1069-A2D8-08002B30309D}' -Kind 'DWord' -Data '0' -TweakId 'NX15-013' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx15-013'
+    weight: 2
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel' -Name '{645FF040-5081-101B-9F08-00AA002F954E}' -Kind 'DWord' -Data '0' -TweakId 'NX15-013' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx15-013'
+    weight: 2
+
+  # 'NX15-014 Font smoothing configuration'
+  - !status: {status: 'NX15-014 Font smoothing configuration', option: 'nx15-014'}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\Control Panel\Desktop' -Name 'FontSmoothing' -Kind 'String' -Data '2' -TweakId 'NX15-014' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx15-014'
+    weight: 2
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\Control Panel\Desktop' -Name 'FontSmoothingType' -Kind 'DWord' -Data '2' -TweakId 'NX15-014' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx15-014'
+    weight: 2

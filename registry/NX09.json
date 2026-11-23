@@ -27,7 +27,7 @@
       "sideEffects": ["The switch is immediate and applies to both AC and DC planes of the newly active plan (planes stay independent inside the plan)."],
       "approval": "Selection",
       "documentationSource": [
-        "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/powercfg (setactive/getactivescheme/list; fetched 2026-11-23)",
+        "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (setactive/getactivescheme/list; fetched 2026-11-23)",
         "research/sources/r1-fsosx-xos.md (ApplyPowerPlan.bat: switch-away-first lifecycle, per-value results log)"
       ],
       "status": "Implemented", "presetExcluded": false, "version": 1
@@ -55,7 +55,7 @@
       "sideEffects": ["One additional power scheme appears in the picker; provisioning alone changes no active behavior (plan activation is NX09-001)."],
       "approval": "Selection",
       "documentationSource": [
-        "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/powercfg (duplicatescheme/changename; fetched 2026-11-23)",
+        "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (duplicatescheme/changename; fetched 2026-11-23)",
         "research/sources/r5-winutil-sophia.md (Invoke-WPFUltimatePerformance duplicates e9a42b02-d5df-448d-aa00-03f14749eb61; category labeled NOT FOR LAPTOPS)",
         "research/sources/r1-fsosx-xos.md (template-derived creation into a fixed GUID; delete never while active)"
       ],
@@ -84,7 +84,7 @@
       "sideEffects": ["One additional power scheme appears; a failing override aborts cleanly by deleting the just-created plan (nothing left behind)."],
       "approval": "Selection",
       "documentationSource": [
-        "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/powercfg (duplicatescheme/setacvalueindex/setdcvalueindex; fetched 2026-11-23)",
+        "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (duplicatescheme/setacvalueindex/setdcvalueindex; fetched 2026-11-23)",
         "research/sources/r1-fsosx-xos.md (ApplyPowerPlan.bat: template-derived plan, ~45 AC/DC overrides, hidden-setting unhide NOT adopted here - NX09 configures only visible settings; per-value results log)"
       ],
       "status": "Implemented", "presetExcluded": false, "version": 1
@@ -112,7 +112,7 @@
       "sideEffects": ["ASPM changes apply to all PCIe devices honoring the plan policy; a mismatched device/driver may reject the mode (honest limitation - verification is plan-level, not device-level)."],
       "approval": "Selection",
       "documentationSource": [
-        "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/powercfg (setacvalueindex/setdcvalueindex/query; fetched 2026-11-23)",
+        "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (setacvalueindex/setdcvalueindex/query; fetched 2026-11-23)",
         "https://learn.microsoft.com/en-us/windows/win32/power/pci-express-aspm-settings (ASPM link state policy documentation)"
       ],
       "status": "Implemented", "presetExcluded": false, "version": 1
@@ -140,7 +140,7 @@
       "sideEffects": ["Disabling suspend keeps USB controllers active (power draw); enabling it may re-suspend idle devices (the documented disconnect symptom class is the honest trade-off)."],
       "approval": "Selection",
       "documentationSource": [
-        "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/powercfg (setacvalueindex/setdcvalueindex/query; fetched 2026-11-23)",
+        "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (setacvalueindex/setdcvalueindex/query; fetched 2026-11-23)",
         "TWEAK_CATALOGUE.md NX08-007 (USB controller & HID inspection feeds this decision; XREF)"
       ],
       "status": "Implemented", "presetExcluded": false, "version": 1
@@ -168,7 +168,7 @@
       "sideEffects": ["A zero display timeout (never off) increases idle power draw, especially on battery - stated plainly as a user preference, not an optimization."],
       "approval": "Selection",
       "documentationSource": [
-        "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/powercfg (setacvalueindex/setdcvalueindex/query; fetched 2026-11-23)"
+        "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (setacvalueindex/setdcvalueindex/query; fetched 2026-11-23)"
       ],
       "status": "Implemented", "presetExcluded": false, "version": 1
     },
@@ -195,7 +195,7 @@
       "sideEffects": ["Zero standby timeout keeps the machine from sleeping on that plane (power draw trade-off, user preference); wake-armed devices are reported but never modified."],
       "approval": "Selection",
       "documentationSource": [
-        "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/powercfg (setacvalueindex/setdcvalueindex/query/lastwake/devicequery; fetched 2026-11-23)"
+        "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (setacvalueindex/setdcvalueindex/query/lastwake/devicequery; fetched 2026-11-23)"
       ],
       "status": "Implemented", "presetExcluded": false, "version": 1
     },
@@ -222,7 +222,7 @@
       "sideEffects": ["Toggling /h creates or deletes hiberfil.sys (disk space in the size class of RAM or the configured percent); dual-boot NTFS dirty-mount interplay documented above."],
       "approval": "Selection",
       "documentationSource": [
-        "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/powercfg (/h; fetched 2026-11-23)",
+        "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (/h; fetched 2026-11-23)",
         "research/sources/r5-winutil-sophia.md (WPFTweaksHiber pairs /hibernate off with HibernateEnabled - NEXTRIX uses /h only, registry as anchor)"
       ],
       "status": "Implemented", "presetExcluded": false, "version": 1
@@ -251,7 +251,7 @@
       "approval": "Selection",
       "documentationSource": [
         "https://learn.microsoft.com/en-us/windows/win32/power/distinguishing-fast-startup-from-wake-from-hibernate (HiberbootEnabled documented as the Fast Startup toggle)",
-        "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/powercfg (hibernate interplay; fetched 2026-11-23)"
+        "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (hibernate interplay; fetched 2026-11-23)"
       ],
       "status": "Implemented", "presetExcluded": false, "version": 1
     },
@@ -278,7 +278,7 @@
       "sideEffects": ["'Do nothing' on AC keeps the machine running hot in a closed lid while docked - stated as a user preference with a thermal note (NX10 monitoring is read-only)."],
       "approval": "Selection",
       "documentationSource": [
-        "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/powercfg (setacvalueindex/setdcvalueindex/query; fetched 2026-11-23)"
+        "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (setacvalueindex/setdcvalueindex/query; fetched 2026-11-23)"
       ],
       "status": "Implemented", "presetExcluded": false, "version": 1
     },
@@ -364,7 +364,7 @@
       "sideEffects": ["Files land only at user-chosen paths; import adds one plan to the picker."],
       "approval": "Selection",
       "documentationSource": [
-        "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/powercfg (export/import; fetched 2026-11-23)",
+        "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (export/import; fetched 2026-11-23)",
         "docs/RESEARCH_RECONCILIATION.md adopt register #14 (lifecycle guards; rejected-inverse context)"
       ],
       "status": "Implemented", "presetExcluded": false, "version": 1
@@ -392,7 +392,7 @@
       "sideEffects": ["Takes at least the configured duration to observe; brief tracing activity during that window."],
       "approval": "Selection",
       "documentationSource": [
-        "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/powercfg (/energy; fetched 2026-11-23)"
+        "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (/energy; fetched 2026-11-23)"
       ],
       "status": "Implemented", "presetExcluded": false, "version": 1
     },
@@ -419,7 +419,7 @@
       "sideEffects": ["Writes one report file to the user-chosen folder."],
       "approval": "Selection",
       "documentationSource": [
-        "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/powercfg (/batteryreport; fetched 2026-11-23)"
+        "https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options (/batteryreport; fetched 2026-11-23)"
       ],
       "status": "Implemented", "presetExcluded": false, "version": 1
     }

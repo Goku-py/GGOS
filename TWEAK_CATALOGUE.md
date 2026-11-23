@@ -136,7 +136,7 @@ SysMain service config is owned by NX11-009; indexing scope by NX01-009.
 | NX06-009 | NTFS 8.3 name creation policy | CONDITIONAL | E1 | Legacy-installer compatibility caution |
 | NX06-010 | NTFS memory usage configuration | ADVANCED | E1 | Mostly diagnostic; preset-excluded |
 | NX06-011 | Write caching policy (per-device) | CONDITIONAL | E0 | Power-loss trade-off mandatory in explanation |
-| NX06-012 | Disk device power management (HDD spin-down) | CONDITIONAL | E1 | Latency-vs-power trade-off stated |
+| NX06-012 | Disk device power management (storage D3 / idle boundary) | CONDITIONAL | E1 | Latency-vs-power trade-off stated; plan-level spin-down stays NX09 (W2-C naming correction) |
 | NX06-013 | Drive health (SMART) report | CORE | E1 | Read-only health status |
 
 ## NX07 — Network Optimization
@@ -227,8 +227,8 @@ Monitoring/diagnostic-only category. **No universal fan-control registry tweaks,
 |---|---|---|---|---|
 | NX11-001 | Startup app inventory & selective management | CORE | E1 | Approved-run-keys inventory; per-item selection & journal |
 | NX11-002 | Per-app background permissions (UWP) | CONDITIONAL | E0 | Global policy owned by NX01-008 |
-| NX11-003 | Edge background mode disable | CONDITIONAL | E0 | Per-user; Edge-usage conditional |
-| NX11-004 | Edge startup boost disable | CONDITIONAL | E0 | Per-user; trade-off stated |
+| NX11-003 | Edge background mode disable | CONDITIONAL | E1 | Microsoft Edge background-mode policy page verified 2026-11-23 (W2-E); Edge-usage conditional |
+| NX11-004 | Edge startup boost disable | CONDITIONAL | E1 | Microsoft Edge startup-boost policy page verified 2026-11-23 (W2-E); trade-off stated |
 | NX11-005 | Scheduled task inventory report | CORE | E1 | Read-only full export |
 | NX11-006 | Selective scheduled task management | CONDITIONAL | E0 | Allow-listed candidates only; per-task journal; XREF NX13-013 |
 | NX11-007 | Resource-heavy process identification report | CORE | E1 | Read-only; evidence for user decisions |
@@ -277,10 +277,10 @@ Privacy changes are never described as performance improvements (directive).
 | NX13-003 | Tailored experiences disable | CONDITIONAL | E1 | Documented |
 | NX13-004 | Diagnostic data level (Required vs Optional) | CONDITIONAL | E1 | Documented policy; enterprise interplay noted |
 | NX13-005 | Permission defaults (location/camera/mic/contacts/calendar) | CONDITIONAL | E1 | Report + selective policy; per-item consent |
-| NX13-006 | App launch tracking policy | CONDITIONAL | E0 | Per-user settings family |
-| NX13-007 | General consent/ad-personalization toggles | CONDITIONAL | E0 | Settings > Privacy > General set |
+| NX13-006 | App launch tracking policy | CONDITIONAL | E1 | Documented NoInstrumentation policy verified 2026-11-23 (W2-F); per-user layers stay E0 |
+| NX13-007 | General consent/ad-personalization toggles | CONDITIONAL | E1 | Documented policy layer verified 2026-11-23 (W2-F); community value layer labeled E0 in-entry |
 | NX13-008 | Feedback frequency configuration | CONDITIONAL | E1 | Documented setting |
-| NX13-009 | Inking & typing personalization policy | CONDITIONAL | E0 | Per-user; dictation interplay noted |
+| NX13-009 | Inking & typing personalization policy | CONDITIONAL | E1 | Documented RestrictImplicitText/InkCollection policies verified 2026-11-23 (W2-F); dictation interplay noted |
 | NX13-010 | Cloud content search preferences | CONDITIONAL | E1 | Documented; search-quality trade-off stated |
 | NX13-011 | Clipboard history configuration | CONDITIONAL | E1 | Documented; user preference |
 | NX13-012 | Cross-device experiences configuration | CONDITIONAL | E1 | Conflict-aware with NX12-004 |
@@ -316,7 +316,7 @@ Cosmetic changes are never counted or described as performance modifications.
 | ID | Tweak | Class | Ev | Notes |
 |---|---|---|---|---|
 | NX15-001 | Visual effects policy (animations set) | CONDITIONAL | E1 | Per-user; documented sets |
-| NX15-002 | Transparency effects | CONDITIONAL | E1 | Per-user |
+| NX15-002 | Transparency effects | CONDITIONAL | E0 | Corrected from E1: Microsoft documents the setting but not the applied value encoding (verified 2026-11-23, W2-G); per-user |
 | NX15-003 | Window shadows & menu show delay | CONDITIONAL | E0 | Per-user visual family |
 | NX15-004 | Taskbar configuration set | CONDITIONAL | E0 | Alignment/widgets/search/taskview per-item toggles; build-conditional |
 | NX15-005 | Start menu recommendations configuration | CONDITIONAL | E0 | Build-conditional; XREF NX01-004 family |
@@ -327,8 +327,8 @@ Cosmetic changes are never counted or described as performance modifications.
 | NX15-010 | Explorer compact view | CONDITIONAL | E1 | Per-user |
 | NX15-011 | Notification Center configuration | CONDITIONAL | E0 | Per-user |
 | NX15-012 | Lock screen configuration | CONDITIONAL | E0 | Image/spotlight choice; promo owned by NX01-006 |
-| NX15-013 | Desktop icon configuration | CONDITIONAL | E1 | Per-user |
-| NX15-014 | Font smoothing configuration | CONDITIONAL | E1 | Per-user |
+| NX15-013 | Desktop icon configuration | CONDITIONAL | E0 | Corrected from E1: value encoding undocumented (verified 2026-11-23, W2-G); per-user |
+| NX15-014 | Font smoothing configuration | CONDITIONAL | E0 | Corrected from E1: value encoding undocumented (verified 2026-11-23, W2-G); per-user |
 
 ## NX16 — Maintenance & Recovery (foundational)
 

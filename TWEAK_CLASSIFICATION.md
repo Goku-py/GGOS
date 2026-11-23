@@ -64,3 +64,9 @@ Never emitted into Recommended/Competitive presets; individually selectable only
 unrestricted Defender/Firewall removal · automatic UAC disable · automatic Windows Update disable · Secure Boot/TPM disable · unrestricted VBS/HVCI disable · unrestricted CPU-mitigation disable · automatic pagefile disable · blanket service disabling · global MSI configuration · arbitrary HPET forcing · arbitrary platform-clock forcing · unsupported BCD modifications · unrestricted kernel configuration · registry modifications without documented purpose.
 
 Some of these have legitimate TROUBLESHOOTING/ADVANCED use with a documented reason; they stay isolated, explained, consent-gated and reversible. None ever appear in a preset.
+
+## 6. Edition-applicability house rule (2026-11-23)
+
+- **Include Home** where the applied layer is an ADMX-backed local policy (HKCU/HKLM policy path) that Windows evaluates on client SKUs — flag enforcement as documentation-limited where Microsoft's CSP editions table excludes Home.
+- **Exclude Home** only where the mechanism is CSP/MDM-only with no local policy-engine path (no local enforcement exists).
+- Entries must state which layer applies where; review evidence may never be inflated across editions. This rule resolves the NX01-003 (excluded) vs NX13 (included, flagged) divergence consistently.

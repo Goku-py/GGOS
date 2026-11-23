@@ -1,0 +1,182 @@
+# NEXTRIX category task file. GENERATED FILE, do not edit by hand.
+# Source: registry/NX06.json (Storage & Filesystem). Playbook version 0.4.0.
+# Every action is option-gated (option name = lowercase tweak id): unselected
+# tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
+---
+title: 'NEXTRIX NX06 - Storage & Filesystem'
+description: >
+  Generated from registry/NX06.json: 13 selectable tweak option(s)
+  (option names are lowercase tweak ids). Function actions run the journaled
+  NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak
+  pipeline (capture -> journal -> apply -> verify), never a raw engine write.
+actions:
+  - !status: {status: 'NX06 Storage & Filesystem: applying selected tweaks'}
+
+  # 'NX06-001 Storage inventory & SSD/HDD/NVMe classification'
+  - !status: {status: 'NX06-001 Storage inventory & SSD/HDD/NVMe classification', option: 'nx06-001'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxStorageInventory
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx06-001'
+    weight: 2
+
+  # 'NX06-002 TRIM enable & verification'
+  - !status: {status: 'NX06-002 TRIM enable & verification', option: 'nx06-002'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxTrimEnabled -Mode 'Enable' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'Selection'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx06-002'
+    weight: 2
+
+  # 'NX06-003 Optimize Drives schedule configuration'
+  - !status: {status: 'NX06-003 Optimize Drives schedule configuration', option: 'nx06-003'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxOptimizeDrivesSchedule -Cadence 'Weekly' -EnableTask -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'SelectionPlusConfirmation'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx06-003'
+    weight: 2
+
+  # 'NX06-004 Storage Sense policy configuration'
+  - !status: {status: 'NX06-004 Storage Sense policy configuration', option: 'nx06-004'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxStorageSensePolicy -Mode 'Enable' -Cadence 'Keep' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'Selection'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx06-004'
+    weight: 2
+
+  # 'NX06-005 Temporary files cleanup (on-demand)'
+  - !status: {status: 'NX06-005 Temporary files cleanup (on-demand)', option: 'nx06-005'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Clear-NxTemporaryFiles -Consent -MinimumAgeDays 7 -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx06-005'
+    weight: 2
+
+  # 'NX06-006 Windows Update cache cleanup (on-demand)'
+  - !status: {status: 'NX06-006 Windows Update cache cleanup (on-demand)', option: 'nx06-006'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Clear-NxWindowsUpdateCache -Consent -MinimumAgeDays 0 -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx06-006'
+    weight: 2
+
+  # 'NX06-007 Delivery Optimization cache cleanup (on-demand)'
+  - !status: {status: 'NX06-007 Delivery Optimization cache cleanup (on-demand)', option: 'nx06-007'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Clear-NxDeliveryOptimizationCache -Consent -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx06-007'
+    weight: 2
+
+  # 'NX06-008 NTFS last-access update policy'
+  - !status: {status: 'NX06-008 NTFS last-access update policy', option: 'nx06-008'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxNtfsLastAccessPolicy -Mode 'Disable' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'SelectionPlusConfirmation'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx06-008'
+    weight: 2
+
+  # 'NX06-009 NTFS 8.3 short-name creation policy'
+  - !status: {status: 'NX06-009 NTFS 8.3 short-name creation policy', option: 'nx06-009'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxNtfs8dot3Policy -Mode 'Disable' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'SelectionPlusConfirmation'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx06-009'
+    weight: 2
+
+  # 'NX06-010 NTFS memory usage configuration' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX06-010 NTFS memory usage configuration', option: 'nx06-010'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxNtfsMemoryUsage -Mode 'Report' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx06-010'
+    weight: 2
+
+  # 'NX06-011 Write caching policy (per-device)'
+  - !status: {status: 'NX06-011 Write caching policy (per-device)', option: 'nx06-011'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxWriteCachePolicy -Mode 'Report' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx06-011'
+    weight: 2
+
+  # 'NX06-012 Disk device power management (storage D3 in Modern Standby)'
+  - !status: {status: 'NX06-012 Disk device power management (storage D3 in Modern Standby)', option: 'nx06-012'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxStorageD3Policy -Mode 'PreventD3' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'SelectionPlusConfirmation'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx06-012'
+    weight: 2
+
+  # 'NX06-013 Drive health (SMART) report'
+  - !status: {status: 'NX06-013 Drive health (SMART) report', option: 'nx06-013'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxDriveHealthReport
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx06-013'
+    weight: 2

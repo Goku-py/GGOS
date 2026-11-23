@@ -27,17 +27,19 @@
 
 Gate 1 result (2026-11-23): **PASSED** — validator 0 errors/0 warnings (83 tweaks); self-tests 63/63 (NX16), 62/62 (NX09), 11/11 (journal, incl. a 40-iteration integrity regression loop); generator 0 errors, 34 journaled registry writes, 0 raw writes; parser clean on PowerShell 5.1 + 7. Released as **v0.3.0**. Wave 2 launching immediately after.
 
-### Wave 2 — PENDING (launch after Gate 1)
+### Wave 2 — COMPLETE (all seven delivered 2026-11-23; gate: release v0.4.0)
 
 | # | Task | Files owned |
 |---|---|---|
-| 2.1 | NX03 CPU & Processor (13) | `registry/NX03.json`, `functions/NX03.ps1` |
-| 2.2 | NX05 Memory Management (11) | `registry/NX05.json`, `functions/NX05.ps1` |
+| 2.1 | NX03 CPU & Processor (13) — **DONE** | `registry/NX03.json`, `functions/NX03.ps1` |
+| 2.2 | NX05 Memory Management (11) — **DONE** | `registry/NX05.json`, `functions/NX05.ps1` |
 | 2.3 | NX06 Storage & Filesystem (13) | `registry/NX06.json`, `functions/NX06.ps1` |
-| 2.4 | NX07 Network (22; adapter-parameterized, only-if-present writes) | `registry/NX07.json`, `functions/NX07.ps1` |
-| 2.5 | NX11 Background & Services (19; detection-gated, never blanket) | `registry/NX11.json`, `functions/NX11.ps1` |
-| 2.6 | NX13 Privacy & Telemetry (14; edition-aware floors) | `registry/NX13.json`, `functions/NX13.ps1` |
-| 2.7 | NX15 Visual & Interface (14; cosmetic-only framing) | `registry/NX15.json`, `functions/NX15.ps1` |
+| 2.4 | NX07 Network (22; adapter-parameterized, only-if-present writes) — **DONE** | `registry/NX07.json`, `functions/NX07.ps1` |
+| 2.5 | NX11 Background & Services (19; detection-gated, never blanket) — **DONE** | `registry/NX11.json`, `functions/NX11.ps1` |
+| 2.6 | NX13 Privacy & Telemetry (14; edition-aware floors) — **DONE** | `registry/NX13.json`, `functions/NX13.ps1` |
+| 2.7 | NX15 Visual & Interface (14; cosmetic-only framing) — **DONE** | `registry/NX15.json`, `functions/NX15.ps1` |
+
+Gate 2 result (2026-11-23): **PASSED** — validator 0 errors/0 warnings (189 tweaks / 12 files, both PowerShell hosts); 10 self-test suites = 561 assertions, 0 failures; parser sweep 31 files clean; generator dry-runs 0 errors. Released as **v0.4.0**. Wave 3 launching immediately after.
 
 ### Wave 3 — PENDING (launch after Gate 2)
 
@@ -73,7 +75,7 @@ Gate 1 result (2026-11-23): **PASSED** — validator 0 errors/0 warnings (83 twe
 | Wave | Version | Trigger |
 |---|---|---|
 | 1 | v0.3.0 | **RELEASED 2026-11-23** — Gate 1 passed |
-| 2 | v0.4.0 | Gate 2 passed |
+| 2 | v0.4.0 | **RELEASED 2026-11-23** — Gate 2 passed |
 | 3 | v0.5.0 | Gate 3 passed |
 | 4 | v0.6.0 | NX18 self-tested |
 | 5 | v0.7.0-rc | Full doc set + handover report; `ReleaseApproved` remains owner-only |
