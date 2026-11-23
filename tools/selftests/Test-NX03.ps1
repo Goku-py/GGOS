@@ -254,11 +254,11 @@ try {
         ($reg.tweaks | Where-Object { $_.id -eq 'NX03-010' }).presetExcluded)
     Assert-Nx 'registry: 011/012 requiredHardware does NOT gate on gpuVendor' (
         @($reg.tweaks | Where-Object { $_.id -in @('NX03-011', 'NX03-012') } | Where-Object { $_.requiredHardware.PSObject.Properties['gpuVendor'] }).Count -eq 0)
-    Assert-Nx 'registry: honest statuses (010/011/012 Defined, rest Implemented)' (
+    Assert-Nx 'registry: honest statuses (010/011/012 Defined, rest Implemented/SyntaxValidated)' (
         ($reg.tweaks | Where-Object { $_.id -eq 'NX03-010' }).status -eq 'Defined' -and
         ($reg.tweaks | Where-Object { $_.id -eq 'NX03-011' }).status -eq 'Defined' -and
         ($reg.tweaks | Where-Object { $_.id -eq 'NX03-012' }).status -eq 'Defined' -and
-        @($reg.tweaks | Where-Object { $_.id -notin @('NX03-010', 'NX03-011', 'NX03-012') -and $_.status -ne 'Implemented' }).Count -eq 0)
+        @($reg.tweaks | Where-Object { $_.id -notin @('NX03-010', 'NX03-011', 'NX03-012') -and $_.status -notin @('Implemented','SyntaxValidated') }).Count -eq 0)
 
     $e1WithoutDoc = @()
     foreach ($t in @($reg.tweaks)) {

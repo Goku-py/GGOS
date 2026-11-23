@@ -266,7 +266,7 @@ try {
         })
     })
     Assert-Nx 'conflict declarations are symmetric' ($asym.Count -eq 0) ($asym -join '; ')
-    Assert-Nx 'all entries are Implemented with actions' (@($tweaks | Where-Object { $_.status -ne 'Implemented' -or @($_.apply.actions).Count -eq 0 }).Count -eq 0)
+    Assert-Nx 'all entries are Implemented/SyntaxValidated with actions' (@($tweaks | Where-Object { $_.status -notin @('Implemented','SyntaxValidated') -or @($_.apply.actions).Count -eq 0 }).Count -eq 0)
 
     # ------------------------------------------------------------------------
     # 2. Read-only live topology probe (the only live API use)

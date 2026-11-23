@@ -1,0 +1,169 @@
+# NEXTRIX category task file. GENERATED FILE, do not edit by hand.
+# Source: registry/NX18.json (Game Session Manager). Playbook version 0.6.0.
+# Every action is option-gated (option name = lowercase tweak id): unselected
+# tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
+---
+title: 'NEXTRIX NX18 - Game Session Manager'
+description: >
+  Generated from registry/NX18.json: 12 selectable tweak option(s)
+  (option names are lowercase tweak ids). Function actions run the journaled
+  NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak
+  pipeline (capture -> journal -> apply -> verify), never a raw engine write.
+actions:
+  - !status: {status: 'NX18 Game Session Manager: applying selected tweaks'}
+
+  # 'NX18-001 Running game detection engine' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX18-001 Running game detection engine', option: 'nx18-001'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-Nx18Capability -Capability 'NX18-001'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx18-001'
+    weight: 2
+
+  # 'NX18-002 Launcher & child-process relationship mapping' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX18-002 Launcher & child-process relationship mapping', option: 'nx18-002'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-Nx18Capability -Capability 'NX18-002'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx18-002'
+    weight: 2
+
+  # 'NX18-003 Game-specific session profiles' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX18-003 Game-specific session profiles', option: 'nx18-003'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-Nx18Capability -Capability 'NX18-003'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx18-003'
+    weight: 2
+
+  # 'NX18-004 Session CPU Sets application' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX18-004 Session CPU Sets application', option: 'nx18-004'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-Nx18Capability -Capability 'NX18-004'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx18-004'
+    weight: 2
+
+  # 'NX18-005 Session power plan switching' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX18-005 Session power plan switching', option: 'nx18-005'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-Nx18Capability -Capability 'NX18-005'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx18-005'
+    weight: 2
+
+  # 'NX18-006 Session background app management' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX18-006 Session background app management', option: 'nx18-006'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-Nx18Capability -Capability 'NX18-006'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx18-006'
+    weight: 2
+
+  # 'NX18-007 Session service suspension (allowlisted)' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX18-007 Session service suspension (allowlisted)', option: 'nx18-007'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-Nx18Capability -Capability 'NX18-007'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx18-007'
+    weight: 2
+
+  # 'NX18-008 Session graphics configuration' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX18-008 Session graphics configuration', option: 'nx18-008'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-Nx18Capability -Capability 'NX18-008'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx18-008'
+    weight: 2
+
+  # 'NX18-009 Session process priority configuration' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX18-009 Session process priority configuration', option: 'nx18-009'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-Nx18Capability -Capability 'NX18-009'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx18-009'
+    weight: 2
+
+  # 'NX18-010 Session journal & crash/interruption recovery' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX18-010 Session journal & crash/interruption recovery', option: 'nx18-010'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-Nx18Capability -Capability 'NX18-010'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx18-010'
+    weight: 2
+
+  # 'NX18-011 Manual session control' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX18-011 Manual session control', option: 'nx18-011'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-Nx18Capability -Capability 'NX18-011'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx18-011'
+    weight: 2
+
+  # 'NX18-012 Protected-process policy guard' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX18-012 Protected-process policy guard', option: 'nx18-012'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-Nx18Capability -Capability 'NX18-012'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx18-012'
+    weight: 2

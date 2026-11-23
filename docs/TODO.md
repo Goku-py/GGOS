@@ -55,12 +55,14 @@ Gate 2 result (2026-11-23): **PASSED** — validator 0 errors/0 warnings (189 tw
 
 Gate 3 result (2026-11-23): **PASSED** — 17/17 self-test suites, **1,216 assertions, 0 failures** (bounded runner `tools/Test-NxAll.ps1` under Windows PowerShell 5.1; per-suite timeouts added after a PS7 DISM hang); parser 46 files clean; validator 0/0 (270 tweaks / 19 files) after status promotion (231 entries → SyntaxValidated); playbook v0.5.0 regenerated (24 files, 71 journaled writes, 0 raw). Released as **v0.5.0**. Phase 5 launching.
 
-## PHASE 5 — Game Session Manager (Wave 4, PENDING)
+## PHASE 5 — Game Session Manager (Wave 4, COMPLETE 2026-11-23)
 
 | # | Task | Notes |
 |---|---|---|
-| 4.1 | NX18 session engine | `src/nxsession/` + `registry/NX18.json`. Session lifecycle per PROJECT_ARCHITECTURE §7: detect → profile match → approval → journal-armed temporary changes → monitor → verified-step restore on any exit path. Protected-process guard (anti-cheat/security/launcher/OBS/recording/audio/peripherals) is non-negotiable. Boot-time interrupted-session recovery. Session journal separate from main journal, same schema. |
-| 4.2 | NX18 self-tests | crash/kill simulation in temp; recovery ritual proof |
+| 4.1 | NX18 session engine — **DONE** | `src/nxsession/` + `registry/NX18.json`. Session lifecycle: detect → profile match → approval → journal-armed temporary changes → monitor → verified-step restore on any exit path. Protected-process guard (anti-cheat/security/launcher/OBS/recording/audio/peripherals) non-negotiable. Crash recovery via `Invoke-NxSessionRecovery`; no background service (PD-4). 11 Implemented / 1 Defined (007 plan-only). |
+| 4.2 | NX18 self-tests — **DONE** | 77 assertions in 5.3s (state machine, guard table, cooldown, recovery reverse-order + tamper refusal, WhatIf). |
+
+Gate 4 result (2026-11-23): **PASSED** — 18/18 suites, **1,293 assertions, 0 failures**; validator 0/0 (282 tweaks / 20 files); parser clean; playbook v0.6.0 (25 files, 0 errors); 11 NX18 entries promoted to SyntaxValidated. Released as **v0.6.0**. Phase 6 (Wave 5) launching.
 
 ## PHASE 6 — Documentation & handover (Wave 5, PENDING)
 
@@ -79,5 +81,5 @@ Gate 3 result (2026-11-23): **PASSED** — 17/17 self-test suites, **1,216 asser
 | 1 | v0.3.0 | **RELEASED 2026-11-23** — Gate 1 passed |
 | 2 | v0.4.0 | **RELEASED 2026-11-23** — Gate 2 passed |
 | 3 | v0.5.0 | **RELEASED 2026-11-23** — Gate 3 passed |
-| 4 | v0.6.0 | NX18 self-tested |
+| 4 | v0.6.0 | **RELEASED 2026-11-23** — Gate 4 passed |
 | 5 | v0.7.0-rc | Full doc set + handover report; `ReleaseApproved` remains owner-only |

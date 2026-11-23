@@ -265,7 +265,7 @@ try {
     Assert-Nx 'NX14-008 documents the never-disable direction' ([string](@($tweaks | Where-Object { $_.id -eq 'NX14-008' })[0].technicalExplanation) -match '(?i)never disables|never an automated disable|does not implement the disable')
     Assert-Nx 'NX14-010 documents that CFA off is not implemented' ([string](@($tweaks | Where-Object { $_.id -eq 'NX14-010' })[0].technicalExplanation) -match '(?i)not implemented|never turns|catalogue')
     Assert-Nx 'NX14-014 carries mandatory WSL2/Docker warnings' ([string](@($tweaks | Where-Object { $_.id -eq 'NX14-014' })[0].technicalExplanation) -match '(?i)WSL2' -and [string](@($tweaks | Where-Object { $_.id -eq 'NX14-014' })[0].technicalExplanation) -match '(?i)Docker')
-    Assert-Nx 'status of every entry is Implemented' (@($tweaks | Where-Object { $_.status -ne 'Implemented' }).Count -eq 0)
+    Assert-Nx 'status of every entry is Implemented/SyntaxValidated' (@($tweaks | Where-Object { $_.status -notin @('Implemented','SyntaxValidated') }).Count -eq 0)
 
 } finally {
     if (Test-Path $temp) { Remove-Item -Path $temp -Recurse -Force -ErrorAction SilentlyContinue }

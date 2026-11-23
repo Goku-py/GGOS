@@ -18,7 +18,9 @@ NEXTRIX prioritizes hardware-aware configuration, workload-aware recommendations
 | Phase 1 — Research | **COMPLETE** | All 6 streams returned + read in full (`research/sources/r1–r6`); 6 synthesis deliverables at root; reconciliation in `docs/RESEARCH_RECONCILIATION.md`. Zero VERIFIED performance evidence exists anywhere in the references — none cited |
 | Phase 2 — Architecture & catalogue proposal | **DELIVERED, RECONCILED (v0.2)** | ADR-002/003/006 recorded; 26H2 = 26300 resolved; 272-candidate catalogue research-confirmed; architecture compensated per ADR-006 |
 | Phase 3 — Foundation | **IN PROGRESS — core delivered (v0.2.0)** | Rollback journal + engine (self-test 11/11 PASS), hardware/build detection, eligibility/verify/apply pipeline, registry schema + validator (17 NX16 entries, 0 errors). Remaining: playbook generator, NX16 category functions |
-| Phases 4–6 | NOT STARTED | Tweak categories (NX16 functions, then NX01/NX02/NX09/NX04…), Game Session Manager, full documentation & handover |
+| Phase 4 — Tweak implementation | **COMPLETE (v0.5.0)** | All 20 categories, 270 tweaks; 17 suites / 1,216 assertions; 231 entries SyntaxValidated |
+| Phase 5 — Game Session Manager | **COMPLETE (v0.6.0)** | NX18: verified-step restore, protected guard, crash recovery; 18 suites / 1,293 assertions |
+| Phase 6 — Documentation & handover | **IN PROGRESS (Wave 5)** | MANUAL_TESTING_GUIDE, matrices, compatibility docs, packaging tool, owner handover |
 
 **No NEXTRIX modification has been implemented or applied anywhere yet.** The full tweak inventory in `TWEAK_CATALOGUE.md` is a *proposal* awaiting owner review and research reconciliation.
 

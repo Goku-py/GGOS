@@ -1,7 +1,7 @@
 {
   "manifestVersion": 1,
   "generatedBy": "tools/Invoke-NxBuild.ps1",
-  "nextrixVersion": "0.5.0",
+  "nextrixVersion": "0.6.0",
   "playbookUniqueId": "8550805b-2928-46a0-8daf-2e1732b55421",
   "destination": "Executables/",
   "instruction": "Packaging step: copy every file listed below from the repository root into the playbook Executables/ directory before archiving the .apbx. The copy is FLAT: each file keeps its name and lands directly in Executables/ (including src/nxcore/functions/*.ps1). The generator does NOT copy binaries (ADR-006: hash-pinned artifacts, zero floating downloads at install time). The playbook runs each !powerShell action by dot-sourcing every Nx*.ps1 found in Executables/, so the copy must be flat and complete.",
@@ -227,6 +227,11 @@
       "source": "registry/NX17.json",
       "sha256": "65bd9cc90fbbfc9ec20ee60782d4886393d84867654f49c41d2e250042770ac9",
       "bytes": 61461
+    },
+    {
+      "source": "registry/NX18.json",
+      "sha256": "281d85f67abcba840cfbd110b104a3d816c3d3492a71a469a4bf0a85d685c190",
+      "bytes": 47220
     },
     {
       "source": "registry/NX19.json",
@@ -618,6 +623,13 @@
       "function": "Get-Nx17TimerResolutionReport",
       "status": "present",
       "source": "src/nxcore/functions/NX17.ps1",
+      "journalRootRequired": false,
+      "parameters": []
+    },
+    {
+      "function": "Get-Nx18Capability",
+      "status": "absent",
+      "source": null,
       "journalRootRequired": false,
       "parameters": []
     },

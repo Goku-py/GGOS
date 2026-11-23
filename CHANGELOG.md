@@ -2,6 +2,14 @@
 
 All notable changes to the NEXTRIX repository. Dates are ISO. Statuses follow the verification ladder in `TWEAK_CLASSIFICATION.md`.
 
+## 2026-11-23 - Phase 5 NX18 Game Session Manager (v0.6.0)
+
+- **NX18 subsystem delivered** (`src/nxsession/NX18.ps1`, 12 registry entries): game/launcher detection (read-only, never launches), user-authored profile store, plan-first start with `-Approved`, journaled apply, 2 s monitor with heartbeat, **verified-step restore** (failed steps are never restored - FSOS-X R11 lesson), cooldown against rapid re-sessions, manual stop, integrity-gated crash recovery (`Invoke-NxSessionRecovery`) with journal-root restriction (session records treated as untrusted data), and the hard-coded **protected-process guard** across anti-cheat/security/recording/audio/peripherals/launchers with no override parameter.
+- **11 Implemented / 1 Defined**: NX18-007 service suspension is plan-only by design (no journaled service-state engine exists yet); it classifies never-touch services and touches none.
+- **Playbook actions for NX18 are read-only capability probes** - the playbook never starts a session. Runtime packaging of `src/nxsession/NX18.ps1` belongs to the Phase 6 packaging step (KNOWN_ISSUES 16).
+- **Gate 4:** 18/18 suites, **1,293 assertions, 0 failures**; validator 0/0 (282 tweaks / 20 files); parser clean; playbook v0.6.0 (25 files, 0 errors); 11 NX18 entries promoted to SyntaxValidated; four suite status assertions updated to accept the CI tier.
+- **No NEXTRIX modification applied to any machine.**
+
 ## 2026-11-23 - Phase 4 Wave 3 (v0.5.0)
 
 - **NX08 Input & Peripherals** (8) - incl. researched **NX08-008 DataQueueSize** (mouclass/kbdclass queue depth; default 100; community floor 16 enforced in code; placebo contradiction and click-loss-at-1 recorded; no performance claim). 53 assertions.

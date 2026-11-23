@@ -133,8 +133,8 @@ try {
     $xrefViolations = @($tweaks | Where-Object { $xrefIds -contains $_.id } | Where-Object { @($_.apply.actions | Where-Object { $_.type -eq 'registry' }).Count -gt 0 } | ForEach-Object { $_.id })
     Assert-Nx 'XREF entries declare no duplicate write' ($xrefViolations.Count -eq 0) ($xrefViolations -join ',')
 
-    $implemented = @($tweaks | Where-Object { $_.status -eq 'Implemented' } | ForEach-Object { $_.id })
-    Assert-Nx 'only NX17-004 and NX17-011 are Implemented (rest are Defined by design)' ($implemented.Count -eq 2 -and $implemented -contains 'NX17-004' -and $implemented -contains 'NX17-011') ($implemented -join ',')
+    $implemented = @($tweaks | Where-Object { $_.status -in @('Implemented','SyntaxValidated') } | ForEach-Object { $_.id })
+    Assert-Nx 'only NX17-004 and NX17-011 are Implemented/SyntaxValidated (rest are Defined by design)' ($implemented.Count -eq 2 -and $implemented -contains 'NX17-004' -and $implemented -contains 'NX17-011') ($implemented -join ',')
 
     $bcdDefined = @($tweaks | Where-Object { $_.id -in @('NX17-002','NX17-003','NX17-005') } | Where-Object { $_.status -eq 'Defined' -and @($_.apply.actions | Where-Object { $_.type -eq 'registry' }).Count -eq 0 -and @($_.documentationSource) -join ' ' -match 'bcdedit' })
     Assert-Nx 'BCD entries are Defined with documented bcdedit sources and no write' (@($bcdDefined).Count -eq 3) (@($bcdDefined | ForEach-Object { $_.id }) -join ',')
