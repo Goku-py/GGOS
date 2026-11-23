@@ -1,0 +1,81 @@
+# NEXTRIX
+
+**Adaptive System Engineering Framework — Engineered for precision.**
+
+NEXTRIX is a Windows optimization and configuration playbook built as an **AME Wizard playbook**. It is not another generic debloating script. Its philosophy:
+
+> "Every system has different hardware, workloads, requirements and limitations. Windows optimization should respect those differences."
+
+NEXTRIX prioritizes hardware-aware configuration, workload-aware recommendations, individual tweak selection, Windows build compatibility, exact original-state preservation, and independent rollback for every modification.
+
+---
+
+## Current status (2026-11-23)
+
+| Phase | State | Evidence |
+|---|---|---|
+| Phase 0 — Repository discovery | COMPLETE | Repo was empty (greenfield); nothing to preserve. `docs/DECISIONS.md` ADR-001 |
+| Phase 1 — Research | **COMPLETE** | All 6 streams returned + read in full (`research/sources/r1–r6`); 6 synthesis deliverables at root; reconciliation in `docs/RESEARCH_RECONCILIATION.md`. Zero VERIFIED performance evidence exists anywhere in the references — none cited |
+| Phase 2 — Architecture & catalogue proposal | **DELIVERED, RECONCILED (v0.2)** | ADR-002/003/006 recorded; 26H2 = 26300 resolved; 272-candidate catalogue research-confirmed; architecture compensated per ADR-006 |
+| Phases 3–6 | NOT STARTED | Gated on owner approval of the catalogue + ADR-006 compensations are binding |
+
+**No NEXTRIX modification has been implemented or applied anywhere yet.** The full tweak inventory in `TWEAK_CATALOGUE.md` is a *proposal* awaiting owner review and research reconciliation.
+
+## Critical operating rules
+
+1. **The project owner performs all physical testing.** Nothing in this repository may claim FPS, latency, DPC-latency or frame-pacing improvements without owner-supplied benchmark evidence.
+2. **No development-machine modifications.** Nothing in this repo, during engineering, changes the host registry, services, power settings, security or applications.
+3. **Original state is never assumed.** Every modification records the *actual* pre-change state (value, type, existence) in a state journal before applying, and rollback restores that exact state.
+4. **Security stays on by default.** Defender, Firewall, UAC, Secure Boot, TPM and mitigations are never disabled by presets; reductions are consent-gated, isolated and explained.
+5. **No tweak inflation.** Every entry must represent one distinct, understood configuration change with a purpose, compatibility rules, dependencies and conflicts.
+
+## Document index
+
+| Document | Status |
+|---|---|
+| `README.md` | This file |
+| `PROJECT_ARCHITECTURE.md` | v0.2 — reconciled architecture (AME Wizard playbook engine; ADR-006 compensations binding) |
+| `TWEAK_CATALOGUE.md` | v0.2 — 272 candidates, all 20 categories, research-confirmed rejected list, all CANDIDATE status |
+| `TWEAK_CLASSIFICATION.md` | v0.1 — risk classes, evidence ladder, verification-status ladder, preset exclusions |
+| `PROFILE_MATRIX.md` | v0.1 — composable user profiles and eligibility rules |
+| `PROJECT_RESEARCH.md` | Phase 1 — per-project findings, all 14 references + AME platform + Hone |
+| `PLAYBOOK_COMPARISON.md` | Phase 1 — architecture/safety/quality matrices + NEXTRIX positioning |
+| `TWEAK_RESEARCH.md` | Phase 1 — per-family decisions, 16-entry negative-results ledger, owner-testing methodology |
+| `COMPATIBILITY_RESEARCH.md` | Phase 1 — build-guard matrix, capability patterns, incident catalog |
+| `LICENSING_REVIEW.md` | Phase 1 — all license texts verified; reuse rules; platform terms; PD-6 open |
+| `KNOWN_ISSUES.md` | Phase 1 — honest phase limitations, ecosystem issue knowledge, risk register |
+| `docs/DECISIONS.md` | ADR-001…006 + pending decisions (PD-1, PD-2 residual, PD-4, PD-5, PD-6) |
+| `docs/RESEARCH_RECONCILIATION.md` | Six-stream reconciliation: adopt/reject registers, change queue, engine escalation record |
+| `research/README.md` + `research/sources/r1–r6` | Methodology + full evidence base (all read by the coordinator) |
+| `CHANGELOG.md` | Current |
+
+Documents planned for later phases (per the master directive, Section 17): `HARDWARE_COMPATIBILITY.md`, `WINDOWS_COMPATIBILITY.md`, `DEPENDENCY_MATRIX.md`, `CONFLICT_MATRIX.md`, `SECURITY_POLICY.md`, `ROLLBACK_DESIGN.md`, `STATE_JOURNAL.md`, `MANUAL_TESTING_GUIDE.md`.
+
+## Repository layout (planned)
+
+```
+NEXTRIX/
+├── README.md, PROJECT_ARCHITECTURE.md, TWEAK_CATALOGUE.md, ...   (deliverable docs)
+├── docs/          (internal engineering: decisions, working notes)
+├── research/     (Phase 1 sources r1–r6 + synthesized research outputs)
+├── registry/     (single-source-of-truth tweak definitions, NX01–NX20)   [Phase 3]
+├── playbook/     (generated AME Wizard playbook source)                  [Phase 3]
+├── src/nxcore/   (bundled PowerShell helpers: journal, detection, verify) [Phase 3]
+├── tools/        (registry validation / playbook build / dry-run tools)  [Phase 3]
+└── testing/      (manual validation checklists, per-tweak test sheets)   [Phase 4+]
+```
+
+## Releases
+
+NEXTRIX publishes version releases on GitHub (`Goku-py/NEXTRIX`, currently private). Each release carries a **short, easy-to-read changelog** specific to that version; the full detailed engineering history lives in [`CHANGELOG.md`](CHANGELOG.md). Release notes follow the same evidence discipline as everything else — no unverified performance claims.
+
+Current release: **v0.1.0 — Foundation** (Phase 0–2: research, architecture, catalogue).
+
+## Owner review checklist (what to review now)
+
+1. `TWEAK_CATALOGUE.md` (v0.2) — approve, amend or reject the 272-candidate inventory, classifications, and the research-confirmed rejected list. **This is the Phase 3/4 gate.**
+2. `PROJECT_ARCHITECTURE.md` (v0.2) — confirm the reconciled architecture and the binding ADR-006 compensations.
+3. `docs/DECISIONS.md` — confirm ADR-006 as recorded; decide PD-6 (repository license) and PD-1 (selection interface model); act on PD-5 (git init).
+4. `PLAYBOOK_COMPARISON.md` §C — sanity-check the adopt/invert/exceed positioning against your own priorities.
+
+**NEXTRIX — ENGINEERED FOR PRECISION.**

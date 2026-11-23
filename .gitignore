@@ -1,0 +1,30 @@
+# --- NEXTRIX .gitignore ---
+
+# Local indexes / IDE state
+.codegraph/
+.vscode/
+.idea/
+
+# Secrets & credentials — never commit
+.env
+.env.*
+*.key
+*.pem
+*.pfx
+*.token
+service.json
+
+# Logs & temp
+*.log
+tmp/
+*.tmp
+
+# OS artifacts
+Thumbs.db
+desktop.ini
+
+# Build outputs — release artifacts go to GitHub Releases, not into git
+dist/
+build/
+*.apbx
+*.zip
