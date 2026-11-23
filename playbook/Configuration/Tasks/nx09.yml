@@ -1,0 +1,218 @@
+# NEXTRIX category task file. GENERATED FILE, do not edit by hand.
+# Source: registry/NX09.json (Power Management). Playbook version 0.3.0.
+# Every action is option-gated (option name = lowercase tweak id): unselected
+# tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
+---
+title: 'NEXTRIX NX09 - Power Management'
+description: >
+  Generated from registry/NX09.json: 15 selectable tweak option(s)
+  (option names are lowercase tweak ids). Function actions run the journaled
+  NxCore engine; registry actions are raw !registryValue writes (see the note
+  at each such action).
+actions:
+  - !status: {status: 'NX09 Power Management: applying selected tweaks'}
+
+  # 'NX09-001 Active power plan selection'
+  - !status: {status: 'NX09-001 Active power plan selection', option: 'nx09-001'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxActivePowerPlan -TargetPlan 'HighPerformance' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'Selection'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx09-001'
+    weight: 2
+
+  # 'NX09-002 Ultimate Performance provisioning'
+  - !status: {status: 'NX09-002 Ultimate Performance provisioning', option: 'nx09-002'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Add-NxUltimatePerformancePlan -DestinationGuid '6e657472-6978-4e58-5452-4958504c414e' -PlanName 'NEXTRIX Ultimate Performance' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'Selection'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx09-002'
+    weight: 2
+
+  # 'NX09-003 Custom NEXTRIX plan generation'
+  - !status: {status: 'NX09-003 Custom NEXTRIX plan generation', option: 'nx09-003'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      New-NxCustomPowerPlan -TemplatePlan 'SCHEME_CURRENT' -PlanName 'NEXTRIX Custom Plan' -DestinationGuid '6e657472-6978-4e58-5452-49584353544d' -Overrides '' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'Selection'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx09-003'
+    weight: 2
+
+  # 'NX09-004 PCIe ASPM link policy'
+  - !status: {status: 'NX09-004 PCIe ASPM link policy', option: 'nx09-004'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxPcieAspm -AcValue 0 -DcValue 0 -SchemeGuid 'SCHEME_CURRENT' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx09-004'
+    weight: 2
+
+  # 'NX09-005 USB selective suspend policy'
+  - !status: {status: 'NX09-005 USB selective suspend policy', option: 'nx09-005'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxUsbSelectiveSuspend -AcValue 0 -DcValue 1 -SchemeGuid 'SCHEME_CURRENT' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx09-005'
+    weight: 2
+
+  # 'NX09-006 Display timeout configuration'
+  - !status: {status: 'NX09-006 Display timeout configuration', option: 'nx09-006'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxDisplayTimeout -AcSeconds 0 -DcSeconds 300 -SchemeGuid 'SCHEME_CURRENT' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx09-006'
+    weight: 2
+
+  # 'NX09-007 Sleep configuration'
+  - !status: {status: 'NX09-007 Sleep configuration', option: 'nx09-007'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxSleepTimeout -AcSeconds 0 -DcSeconds 900 -SchemeGuid 'SCHEME_CURRENT' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx09-007'
+    weight: 2
+
+  # 'NX09-008 Hibernate configuration'
+  - !status: {status: 'NX09-008 Hibernate configuration', option: 'nx09-008'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxHibernate -Enabled:$false -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'Selection'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx09-008'
+    weight: 2
+
+  # 'NX09-009 Fast Startup configuration'
+  - !status: {status: 'NX09-009 Fast Startup configuration', option: 'nx09-009'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxFastStartup -Enabled:$false -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'Selection'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx09-009'
+    weight: 2
+
+  # 'NX09-010 Lid close behavior (laptops)'
+  - !status: {status: 'NX09-010 Lid close behavior (laptops)', option: 'nx09-010'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxLidCloseAction -AcValue 0 -DcValue 1 -SchemeGuid 'SCHEME_CURRENT' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx09-010'
+    weight: 2
+
+  # 'NX09-011 OEM battery conservation reporting'
+  - !status: {status: 'NX09-011 OEM battery conservation reporting', option: 'nx09-011'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxOemBatteryConservationState
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx09-011'
+    weight: 2
+
+  # 'NX09-012 OEM performance mode detection'
+  - !status: {status: 'NX09-012 OEM performance mode detection', option: 'nx09-012'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxOemPerformanceMode
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx09-012'
+    weight: 2
+
+  # 'NX09-013 Power plan export/import/restore tooling'
+  - !status: {status: 'NX09-013 Power plan export/import/restore tooling', option: 'nx09-013'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Export-NxPowerPlan -SchemeGuid 'SCHEME_CURRENT' -OutputPath '<user-chosen folder or .pow path>' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approval 'Selection'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx09-013'
+    weight: 2
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Import-NxPowerPlan -FilePath '<user-chosen .pow>' -TargetGuid '<non-stock, non-active GUID>' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'Selection'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx09-013'
+    weight: 2
+
+  # 'NX09-014 Energy report (powercfg /energy)'
+  - !status: {status: 'NX09-014 Energy report (powercfg /energy)', option: 'nx09-014'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxEnergyReport -OutputFolder '<user-chosen folder>' -DurationSeconds 60 -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal')
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx09-014'
+    weight: 2
+
+  # 'NX09-015 Battery report (powercfg /batteryreport)'
+  - !status: {status: 'NX09-015 Battery report (powercfg /batteryreport)', option: 'nx09-015'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxBatteryReport -OutputFolder '<user-chosen folder>' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal')
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx09-015'
+    weight: 2

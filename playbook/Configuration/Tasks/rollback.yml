@@ -1,0 +1,67 @@
+# NEXTRIX rollback (undo surface). GENERATED FILE, do not edit by hand.
+# Registry sources: NX16-013, NX16-014, NX16-015, NX16-016.
+# The playbook platform provides NO uninstall (ADR-006); NxJournal/NxRollback
+# is the sole rollback authority. All four scope options are default-UNCHECKED:
+# rollback runs ONLY when a scope is explicitly selected.
+# HONEST LIMITATION: the wizard option surface cannot collect free-text
+# parameters. The three parameterized scopes carry the registry placeholders
+# ('<tweak>', '<NXcc>', '<Pn>'). Replace the placeholder in the
+# command below with a concrete journal target (tweak id / category prefix /
+# profile tag), or invoke Invoke-NxRollback directly from the bundled NxCore.
+# The -All scope needs no parameter and runs as-is.
+---
+title: 'NEXTRIX rollback (undo surface)'
+description: >
+  Four journal-based rollback scopes, option-gated, default off. Requires an
+  initialized NEXTRIX journal (%ProgramData%\NEXTRIX\Journal). Every step is
+  verified; divergence from the journaled state is reported, never clobbered.
+actions:
+  - !status: {status: 'Rollback undo surface (runs only when a scope is selected)'}
+
+  - !status: {status: 'NX16-013 Individual tweak rollback', option: 'nx-rollback-tweakid'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRollback -TweakId '<tweak>' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal')
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx-rollback-tweakid'
+    weight: 4
+
+  - !status: {status: 'NX16-014 Category rollback', option: 'nx-rollback-category'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRollback -Category '<NXcc>' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal')
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx-rollback-category'
+    weight: 4
+
+  - !status: {status: 'NX16-015 Profile rollback', option: 'nx-rollback-profile'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRollback -Profile '<Pn>' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal')
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx-rollback-profile'
+    weight: 4
+
+  - !status: {status: 'NX16-016 Full NEXTRIX rollback', option: 'nx-rollback-all'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRollback -All -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal')
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx-rollback-all'
+    weight: 4

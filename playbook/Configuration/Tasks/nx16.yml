@@ -1,0 +1,172 @@
+# NEXTRIX category task file. GENERATED FILE, do not edit by hand.
+# Source: registry/NX16.json (Maintenance & Recovery). Playbook version 0.3.0.
+# Every action is option-gated (option name = lowercase tweak id): unselected
+# tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
+# Routed out of this file: NX16-004 -> Tasks/nxcore.yml (unconditional pre-flight); NX16-013 -> Tasks/rollback.yml (undo surface), NX16-014 -> Tasks/rollback.yml (undo surface), NX16-015 -> Tasks/rollback.yml (undo surface), NX16-016 -> Tasks/rollback.yml (undo surface)
+---
+title: 'NEXTRIX NX16 - Maintenance & Recovery'
+description: >
+  Generated from registry/NX16.json: 12 selectable tweak option(s)
+  and 1 tweak(s) routed to the mandatory pre-flight
+  and 4 tweak(s) routed to the rollback undo surface
+  (option names are lowercase tweak ids). Function actions run the journaled
+  NxCore engine; registry actions are raw !registryValue writes (see the note
+  at each such action).
+actions:
+  - !status: {status: 'NX16 Maintenance & Recovery: applying selected tweaks'}
+
+  # 'NX16-001 System Restore enablement & configuration'
+  - !status: {status: 'NX16-001 System Restore enablement & configuration', option: 'nx16-001'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Enable-NxSystemRestore -JournalPath (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approval 'Selection'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx16-001'
+    weight: 2
+
+  # 'NX16-002 Pre-change restore point creation ritual'
+  - !status: {status: 'NX16-002 Pre-change restore point creation ritual', option: 'nx16-002'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Checkpoint-NxSystem -JournalPath (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approval 'Selection'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx16-002'
+    weight: 2
+
+  # 'NX16-003 Targeted registry backup'
+  - !status: {status: 'NX16-003 Targeted registry backup', option: 'nx16-003'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Export-NxRegistryTargets
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx16-003'
+    weight: 2
+
+  # 'NX16-005 Service configuration backup'
+  - !status: {status: 'NX16-005 Service configuration backup', option: 'nx16-005'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Export-NxServiceState
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx16-005'
+    weight: 2
+
+  # 'NX16-006 Scheduled task backup'
+  - !status: {status: 'NX16-006 Scheduled task backup', option: 'nx16-006'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Export-NxTaskState
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx16-006'
+    weight: 2
+
+  # 'NX16-007 DISM health check & repair tooling'
+  - !status: {status: 'NX16-007 DISM health check & repair tooling', option: 'nx16-007'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxDismHealth -Mode 'Scan'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx16-007'
+    weight: 2
+
+  # 'NX16-008 SFC verification tooling'
+  - !status: {status: 'NX16-008 SFC verification tooling', option: 'nx16-008'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxSfcVerify
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx16-008'
+    weight: 2
+
+  # 'NX16-009 Component store cleanup (on-demand)'
+  - !status: {status: 'NX16-009 Component store cleanup (on-demand)', option: 'nx16-009'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxComponentCleanup
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx16-009'
+    weight: 2
+
+  # 'NX16-010 Driver inventory & history report'
+  - !status: {status: 'NX16-010 Driver inventory & history report', option: 'nx16-010'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxDriverInventory
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx16-010'
+    weight: 2
+
+  # 'NX16-011 Driver Store selective cleanup' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX16-011 Driver Store selective cleanup', option: 'nx16-011'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxDriverStoreClean -PerPackageConsent:$true -JournalPath (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approval 'ExplicitConsent'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx16-011'
+    weight: 2
+
+  # 'NX16-012 Windows build & UBR verification report'
+  - !status: {status: 'NX16-012 Windows build & UBR verification report', option: 'nx16-012'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxBuildReport
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx16-012'
+    weight: 2
+
+  # 'NX16-017 Owner support-bundle export'
+  - !status: {status: 'NX16-017 Owner support-bundle export', option: 'nx16-017'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Export-NxSupportBundle -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal')
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx16-017'
+    weight: 2

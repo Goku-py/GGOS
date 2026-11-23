@@ -1,0 +1,154 @@
+# NEXTRIX category task file. GENERATED FILE, do not edit by hand.
+# Source: registry/NX02.json (Gaming & Esports). Playbook version 0.3.0.
+# Every action is option-gated (option name = lowercase tweak id): unselected
+# tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
+---
+title: 'NEXTRIX NX02 - Gaming & Esports'
+description: >
+  Generated from registry/NX02.json: 12 selectable tweak option(s)
+  (option names are lowercase tweak ids). Function actions run the journaled
+  NxCore engine; registry actions are raw !registryValue writes (see the note
+  at each such action).
+actions:
+  - !status: {status: 'NX02 Gaming & Esports: applying selected tweaks'}
+
+  # 'NX02-001 Windows Game Mode configuration'
+  - !status: {status: 'NX02-001 Windows Game Mode configuration', option: 'nx02-001'}
+  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
+  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
+  # through journaled NxCore functions; this build reports every such action.
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\GameBar', value: 'AutoGameModeEnabled', type: REG_DWORD, data: '1', errorAction: Notify, option: 'nx02-001', weight: 1}
+  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
+  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
+  # through journaled NxCore functions; this build reports every such action.
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\GameBar', value: 'AllowAutoGameMode', type: REG_DWORD, data: '1', errorAction: Notify, option: 'nx02-001', weight: 1}
+
+  # 'NX02-002 Xbox Game Bar configuration'
+  - !status: {status: 'NX02-002 Xbox Game Bar configuration', option: 'nx02-002'}
+  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
+  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
+  # through journaled NxCore functions; this build reports every such action.
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\GameBar', value: 'UseNexusForGameBarEnabled', type: REG_DWORD, data: '0', errorAction: Notify, option: 'nx02-002', weight: 1}
+
+  # 'NX02-003 Disable Game DVR'
+  - !status: {status: 'NX02-003 Disable Game DVR', option: 'nx02-003'}
+  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
+  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
+  # through journaled NxCore functions; this build reports every such action.
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR', value: 'AppCaptureEnabled', type: REG_DWORD, data: '0', errorAction: Notify, option: 'nx02-003', weight: 1}
+  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
+  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
+  # through journaled NxCore functions; this build reports every such action.
+  - !registryValue: {path: 'HKCU\SYSTEM\GameConfigStore', value: 'GameDVR_Enabled', type: REG_DWORD, data: '0', errorAction: Notify, option: 'nx02-003', weight: 1}
+  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
+  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
+  # through journaled NxCore functions; this build reports every such action.
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR', value: 'AllowGameDVR', type: REG_DWORD, data: '0', errorAction: Notify, option: 'nx02-003', weight: 1}
+
+  # 'NX02-004 Disable background game recording'
+  - !status: {status: 'NX02-004 Disable background game recording', option: 'nx02-004'}
+  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
+  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
+  # through journaled NxCore functions; this build reports every such action.
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR', value: 'HistoricalCaptureEnabled', type: REG_DWORD, data: '0', errorAction: Notify, option: 'nx02-004', weight: 1}
+
+  # 'NX02-005 Optimizations for windowed games'
+  - !status: {status: 'NX02-005 Optimizations for windowed games', option: 'nx02-005'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxDirectXGlobalSetting -Component 'SwapEffectUpgradeEnable' -Value 1 -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'Selection'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    builds: ['>=26100']
+    option: 'nx02-005'
+    weight: 2
+
+  # 'NX02-006 Game Mode notification suppression'
+  - !status: {status: 'NX02-006 Game Mode notification suppression', option: 'nx02-006'}
+  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
+  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
+  # through journaled NxCore functions; this build reports every such action.
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\GameBar', value: 'ShowStartupPanel', type: REG_DWORD, data: '0', errorAction: Notify, option: 'nx02-006', weight: 1}
+
+  # 'NX02-007 Game capture configuration'
+  - !status: {status: 'NX02-007 Game capture configuration', option: 'nx02-007'}
+  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
+  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
+  # through journaled NxCore functions; this build reports every such action.
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR', value: 'VKMToggleRecording', type: REG_DWORD, data: '0', errorAction: Notify, option: 'nx02-007', weight: 1}
+  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
+  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
+  # through journaled NxCore functions; this build reports every such action.
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR', value: 'VKMToggleBroadcast', type: REG_DWORD, data: '0', errorAction: Notify, option: 'nx02-007', weight: 1}
+  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
+  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
+  # through journaled NxCore functions; this build reports every such action.
+  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR', value: 'VKMSaveHistoricalVideo', type: REG_DWORD, data: '0', errorAction: Notify, option: 'nx02-007', weight: 1}
+
+  # 'NX02-008 Xbox Gaming Services management'
+  - !status: {status: 'NX02-008 Xbox Gaming Services management', option: 'nx02-008'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxXboxServicesDependencyReport
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx02-008'
+    weight: 2
+
+  # 'NX02-009 Per-game driver graphics application'
+  - !status: {status: 'NX02-009 Per-game driver graphics application', option: 'nx02-009'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxPerGameDriverGraphics -GameId '<user-selected>' -DriverProfile '<from NX04-009..NX04-023>'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx02-009'
+    weight: 2
+
+  # 'NX02-012 Game launcher detection registry'
+  - !status: {status: 'NX02-012 Game launcher detection registry', option: 'nx02-012'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxLauncherDetectionReport
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx02-012'
+    weight: 2
+
+  # 'NX02-010 Game-specific launch configuration'
+  - !status: {status: 'NX02-010 Game-specific launch configuration', option: 'nx02-010'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxGameLaunchConfiguration -GameId '<user-selected>' -AffinityPolicy 'NX19-004' -PriorityPolicy 'NX19-005'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx02-010'
+    weight: 2
+
+  # 'NX02-011 Game-specific background app handling'
+  - !status: {status: 'NX02-011 Game-specific background app handling', option: 'nx02-011'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxGameBackgroundHandling -GameId '<user-selected>' -Allowlist '<user-defined>' -Rules 'NX18-006'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx02-011'
+    weight: 2

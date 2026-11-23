@@ -1,0 +1,26 @@
+# NEXTRIX pre-flight task file. GENERATED FILE, do not edit by hand.
+# Registry source: NX16-004 (declared in the registry).
+# The capture ritual is MANDATORY (no mutation without verified prior state):
+# journal initialization, hardware/build reports, restore point and targeted
+# backups. It runs unconditionally BEFORE every category task file and is NOT
+# a user option. Failure policy: Halt (capture-completeness gate, ADR-006).
+# Bundled NxCore modules (src/nxcore/*.ps1, see ../Executables/nxcore-manifest.json)
+# must be present in the playbook Executables/ directory at packaging time; the
+# generator does not copy binaries. Each !powerShell action is a fresh process,
+# so the invocation loads NxCore from its working directory first.
+---
+title: 'NEXTRIX NxCore pre-flight (mandatory capture ritual)'
+description: >
+  Journal initialization, hardware and build reports, System Restore point and
+  targeted backups, executed before any mutation. A failure halts the playbook.
+actions:
+  - !status: {status: 'NxCore pre-flight: journal, reports, backups'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxPreFlight -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal')
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Halt
+    weight: 5

@@ -1,0 +1,300 @@
+# NEXTRIX category task file. GENERATED FILE, do not edit by hand.
+# Source: registry/NX04.json (GPU & Graphics). Playbook version 0.3.0.
+# Every action is option-gated (option name = lowercase tweak id): unselected
+# tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
+---
+title: 'NEXTRIX NX04 - GPU & Graphics'
+description: >
+  Generated from registry/NX04.json: 23 selectable tweak option(s)
+  (option names are lowercase tweak ids). Function actions run the journaled
+  NxCore engine; registry actions are raw !registryValue writes (see the note
+  at each such action).
+actions:
+  - !status: {status: 'NX04 GPU & Graphics: applying selected tweaks'}
+
+  # 'NX04-001 Hardware-Accelerated GPU Scheduling' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX04-001 Hardware-Accelerated GPU Scheduling', option: 'nx04-001'}
+  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
+  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
+  # through journaled NxCore functions; this build reports every such action.
+  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers', value: 'HwSchMode', type: REG_DWORD, data: '2', errorAction: Notify, option: 'nx04-001', weight: 1}
+
+  # 'NX04-003 Variable Refresh Rate (windowed)'
+  - !status: {status: 'NX04-003 Variable Refresh Rate (windowed)', option: 'nx04-003'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxDirectXGlobalSetting -Component 'VRROptimizeEnable' -Value 1 -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'Selection'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx04-003'
+    weight: 2
+
+  # 'NX04-004 Auto HDR'
+  - !status: {status: 'NX04-004 Auto HDR', option: 'nx04-004'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxAutoHdrReport
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx04-004'
+    weight: 2
+
+  # 'NX04-005 Fullscreen Optimizations per-game override' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX04-005 Fullscreen Optimizations per-game override', option: 'nx04-005'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxGameFsoOverrideGuide -AppPath '<full path to the target game''s .exe>'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx04-005'
+    weight: 2
+
+  # 'NX04-006 MPO troubleshooting configuration' [presetExcluded: default UNCHECKED]
+  - !status: {status: 'NX04-006 MPO troubleshooting configuration', option: 'nx04-006'}
+  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
+  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
+  # through journaled NxCore functions; this build reports every such action.
+  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\Dwm', value: 'OverlayTestMode', type: REG_DWORD, data: '5', errorAction: Notify, option: 'nx04-006', weight: 1}
+
+  # 'NX04-007 Display presentation configuration'
+  - !status: {status: 'NX04-007 Display presentation configuration', option: 'nx04-007'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxGamePresentationPolicyReport
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx04-007'
+    weight: 2
+
+  # 'NX04-008 Hybrid graphics reporting & app routing'
+  - !status: {status: 'NX04-008 Hybrid graphics reporting & app routing', option: 'nx04-008'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxHybridGraphicsReport
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx04-008'
+    weight: 2
+
+  # 'NX04-002 Per-application GPU preference'
+  - !status: {status: 'NX04-002 Per-application GPU preference', option: 'nx04-002'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Set-NxGpuPreference -AppPath '<full path to the target application''s .exe>' -Preference 'HighPerformance' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'Selection'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx04-002'
+    weight: 2
+
+  # 'NX04-009 NVIDIA power management mode (per-profile)'
+  - !status: {status: 'NX04-009 NVIDIA power management mode (per-profile)', option: 'nx04-009'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxVendorGraphicsGuide -Vendor 'NVIDIA' -SettingKey 'powerManagementMode' -PerGame
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx04-009'
+    weight: 2
+
+  # 'NX04-010 NVIDIA Low Latency Mode (per-profile)'
+  - !status: {status: 'NX04-010 NVIDIA Low Latency Mode (per-profile)', option: 'nx04-010'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxVendorGraphicsGuide -Vendor 'NVIDIA' -SettingKey 'lowLatencyMode' -PerGame
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx04-010'
+    weight: 2
+
+  # 'NX04-011 NVIDIA vertical sync mode (per-profile)'
+  - !status: {status: 'NX04-011 NVIDIA vertical sync mode (per-profile)', option: 'nx04-011'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxVendorGraphicsGuide -Vendor 'NVIDIA' -SettingKey 'verticalSyncMode' -PerGame
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx04-011'
+    weight: 2
+
+  # 'NX04-012 NVIDIA Maximum Frame Rate (per-profile)'
+  - !status: {status: 'NX04-012 NVIDIA Maximum Frame Rate (per-profile)', option: 'nx04-012'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxVendorGraphicsGuide -Vendor 'NVIDIA' -SettingKey 'maxFrameRate' -PerGame
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx04-012'
+    weight: 2
+
+  # 'NX04-013 NVIDIA Threaded Optimization (per-profile)'
+  - !status: {status: 'NX04-013 NVIDIA Threaded Optimization (per-profile)', option: 'nx04-013'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxVendorGraphicsGuide -Vendor 'NVIDIA' -SettingKey 'threadedOptimization' -PerGame
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx04-013'
+    weight: 2
+
+  # 'NX04-014 NVIDIA texture filtering quality (per-profile)'
+  - !status: {status: 'NX04-014 NVIDIA texture filtering quality (per-profile)', option: 'nx04-014'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxVendorGraphicsGuide -Vendor 'NVIDIA' -SettingKey 'textureFilteringQuality' -PerGame
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx04-014'
+    weight: 2
+
+  # 'NX04-015 NVIDIA shader cache policy'
+  - !status: {status: 'NX04-015 NVIDIA shader cache policy', option: 'nx04-015'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxVendorGraphicsGuide -Vendor 'NVIDIA' -SettingKey 'shaderCachePolicy'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx04-015'
+    weight: 2
+
+  # 'NX04-016 NVIDIA per-game profile framework'
+  - !status: {status: 'NX04-016 NVIDIA per-game profile framework', option: 'nx04-016'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxVendorGraphicsGuide -Vendor 'NVIDIA' -SettingKey 'perGameProfileFramework' -PerGame
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx04-016'
+    weight: 2
+
+  # 'NX04-017 AMD Radeon Anti-Lag (per-profile)'
+  - !status: {status: 'NX04-017 AMD Radeon Anti-Lag (per-profile)', option: 'nx04-017'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxVendorGraphicsGuide -Vendor 'AMD' -SettingKey 'antiLag' -PerGame
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx04-017'
+    weight: 2
+
+  # 'NX04-018 AMD Radeon Chill (per-profile)'
+  - !status: {status: 'NX04-018 AMD Radeon Chill (per-profile)', option: 'nx04-018'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxVendorGraphicsGuide -Vendor 'AMD' -SettingKey 'radeonChill' -PerGame
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx04-018'
+    weight: 2
+
+  # 'NX04-019 AMD Enhanced Sync (per-profile)'
+  - !status: {status: 'NX04-019 AMD Enhanced Sync (per-profile)', option: 'nx04-019'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxVendorGraphicsGuide -Vendor 'AMD' -SettingKey 'enhancedSync' -PerGame
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx04-019'
+    weight: 2
+
+  # 'NX04-020 AMD Wait for Vertical Refresh (per-profile)'
+  - !status: {status: 'NX04-020 AMD Wait for Vertical Refresh (per-profile)', option: 'nx04-020'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxVendorGraphicsGuide -Vendor 'AMD' -SettingKey 'waitForVerticalRefresh' -PerGame
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx04-020'
+    weight: 2
+
+  # 'NX04-021 AMD Surface Format Optimization'
+  - !status: {status: 'NX04-021 AMD Surface Format Optimization', option: 'nx04-021'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxVendorGraphicsGuide -Vendor 'AMD' -SettingKey 'surfaceFormatOptimization'
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx04-021'
+    weight: 2
+
+  # 'NX04-022 AMD per-game profile framework + shader cache'
+  - !status: {status: 'NX04-022 AMD per-game profile framework + shader cache', option: 'nx04-022'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxVendorGraphicsGuide -Vendor 'AMD' -SettingKey 'perGameProfileFramework' -PerGame
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx04-022'
+    weight: 2
+
+  # 'NX04-023 Intel graphics / Arc settings framework'
+  - !status: {status: 'NX04-023 Intel graphics / Arc settings framework', option: 'nx04-023'}
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Get-NxVendorGraphicsGuide -Vendor 'Intel' -SettingKey 'intelGraphicsFramework' -PerGame
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx04-023'
+    weight: 2
