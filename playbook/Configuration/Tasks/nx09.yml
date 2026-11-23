@@ -7,8 +7,8 @@ title: 'NEXTRIX NX09 - Power Management'
 description: >
   Generated from registry/NX09.json: 15 selectable tweak option(s)
   (option names are lowercase tweak ids). Function actions run the journaled
-  NxCore engine; registry actions are raw !registryValue writes (see the note
-  at each such action).
+  NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak
+  pipeline (capture -> journal -> apply -> verify), never a raw engine write.
 actions:
   - !status: {status: 'NX09 Power Management: applying selected tweaks'}
 
@@ -43,7 +43,7 @@ actions:
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      New-NxCustomPowerPlan -TemplatePlan 'SCHEME_CURRENT' -PlanName 'NEXTRIX Custom Plan' -DestinationGuid '6e657472-6978-4e58-5452-49584353544d' -Overrides '' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'Selection'
+      New-NxCustomPowerPlan -TemplatePlan 'SCHEME_CURRENT' -PlanName 'NEXTRIX Custom Plan' -DestinationGuid '6e657472-6978-4e58-5452-49584353544d' -Overrides '@{subgroupGuid=501a4d13-42af-4429-9fd1-a8218c268e20; settingGuid=ee12f906-d277-404b-b6da-e5fa1a576df5; acIndex=0; dcIndex=0}' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'Selection'
     exeDir: true
     wait: true
     runas: currentUserElevated

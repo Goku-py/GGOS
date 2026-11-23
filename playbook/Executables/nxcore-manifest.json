@@ -33,8 +33,8 @@
                   },
                   {
                       "source":  "src/nxcore/NxApply.ps1",
-                      "sha256":  "8c7dbb893cbea454af689e980fded5cc7679a58bd5aa3331671b3e928b77ac12",
-                      "bytes":  11024
+                      "sha256":  "797896e28f68fa2f0ab92ee39cd2cb1d763e833bbc3f0a6d2e6371d269827b37",
+                      "bytes":  16332
                   },
                   {
                       "source":  "src/nxcore/NxBuild.ps1",
@@ -53,8 +53,8 @@
                   },
                   {
                       "source":  "src/nxcore/NxJournal.ps1",
-                      "sha256":  "bd5c8e264d256fb6b2a9063d7e67f1f31ca22163e036cecac435012cd2b8161f",
-                      "bytes":  9182
+                      "sha256":  "52057aa8bfbeeb7c2c8268df92dcee4a67d7588e0f90d5318f331f5cd08e7f03",
+                      "bytes":  10175
                   },
                   {
                       "source":  "src/nxcore/NxRollback.ps1",
@@ -90,8 +90,8 @@
                            },
                            {
                                "source":  "registry/NX16.json",
-                               "sha256":  "31bd41ee8a3003112cb3930d27c47f8f32655cc0a2fcf7f8224f699184965b07",
-                               "bytes":  34833
+                               "sha256":  "a29d34cf748277f9120b0ffc6053a10624f19378b94cd486c3d154e798050ac6",
+                               "bytes":  34806
                            }
                        ],
     "expectedFunctions":  [
@@ -433,6 +433,25 @@
                                                      "registrypaths",
                                                      "servicenames",
                                                      "tasks"
+                                                 ]
+                              },
+                              {
+                                  "function":  "Invoke-NxRegistryTweak",
+                                  "status":  "present",
+                                  "source":  "src/nxcore/NxApply.ps1",
+                                  "journalRootRequired":  true,
+                                  "parameters":  [
+                                                     "approval",
+                                                     "approved",
+                                                     "data",
+                                                     "journalroot",
+                                                     "kind",
+                                                     "name",
+                                                     "path",
+                                                     "plan",
+                                                     "profiles",
+                                                     "tweakid",
+                                                     "tweakversion"
                                                  ]
                               },
                               {

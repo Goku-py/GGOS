@@ -7,50 +7,106 @@ title: 'NEXTRIX NX02 - Gaming & Esports'
 description: >
   Generated from registry/NX02.json: 12 selectable tweak option(s)
   (option names are lowercase tweak ids). Function actions run the journaled
-  NxCore engine; registry actions are raw !registryValue writes (see the note
-  at each such action).
+  NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak
+  pipeline (capture -> journal -> apply -> verify), never a raw engine write.
 actions:
   - !status: {status: 'NX02 Gaming & Esports: applying selected tweaks'}
 
   # 'NX02-001 Windows Game Mode configuration'
   - !status: {status: 'NX02-001 Windows Game Mode configuration', option: 'nx02-001'}
-  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
-  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
-  # through journaled NxCore functions; this build reports every such action.
-  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\GameBar', value: 'AutoGameModeEnabled', type: REG_DWORD, data: '1', errorAction: Notify, option: 'nx02-001', weight: 1}
-  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
-  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
-  # through journaled NxCore functions; this build reports every such action.
-  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\GameBar', value: 'AllowAutoGameMode', type: REG_DWORD, data: '1', errorAction: Notify, option: 'nx02-001', weight: 1}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\SOFTWARE\Microsoft\GameBar' -Name 'AutoGameModeEnabled' -Kind 'DWord' -Data '1' -TweakId 'NX02-001' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx02-001'
+    weight: 2
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\SOFTWARE\Microsoft\GameBar' -Name 'AllowAutoGameMode' -Kind 'DWord' -Data '1' -TweakId 'NX02-001' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx02-001'
+    weight: 2
 
   # 'NX02-002 Xbox Game Bar configuration'
   - !status: {status: 'NX02-002 Xbox Game Bar configuration', option: 'nx02-002'}
-  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
-  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
-  # through journaled NxCore functions; this build reports every such action.
-  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\GameBar', value: 'UseNexusForGameBarEnabled', type: REG_DWORD, data: '0', errorAction: Notify, option: 'nx02-002', weight: 1}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\SOFTWARE\Microsoft\GameBar' -Name 'UseNexusForGameBarEnabled' -Kind 'DWord' -Data '0' -TweakId 'NX02-002' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx02-002'
+    weight: 2
 
   # 'NX02-003 Disable Game DVR'
   - !status: {status: 'NX02-003 Disable Game DVR', option: 'nx02-003'}
-  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
-  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
-  # through journaled NxCore functions; this build reports every such action.
-  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR', value: 'AppCaptureEnabled', type: REG_DWORD, data: '0', errorAction: Notify, option: 'nx02-003', weight: 1}
-  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
-  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
-  # through journaled NxCore functions; this build reports every such action.
-  - !registryValue: {path: 'HKCU\SYSTEM\GameConfigStore', value: 'GameDVR_Enabled', type: REG_DWORD, data: '0', errorAction: Notify, option: 'nx02-003', weight: 1}
-  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
-  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
-  # through journaled NxCore functions; this build reports every such action.
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR', value: 'AllowGameDVR', type: REG_DWORD, data: '0', errorAction: Notify, option: 'nx02-003', weight: 1}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR' -Name 'AppCaptureEnabled' -Kind 'DWord' -Data '0' -TweakId 'NX02-003' -TweakVersion '1' -Approval 'SelectionPlusConfirmation' -Profiles 'P1','P2','P3','P5','P6','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx02-003'
+    weight: 2
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\SYSTEM\GameConfigStore' -Name 'GameDVR_Enabled' -Kind 'DWord' -Data '0' -TweakId 'NX02-003' -TweakVersion '1' -Approval 'SelectionPlusConfirmation' -Profiles 'P1','P2','P3','P5','P6','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx02-003'
+    weight: 2
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR' -Name 'AllowGameDVR' -Kind 'DWord' -Data '0' -TweakId 'NX02-003' -TweakVersion '1' -Approval 'SelectionPlusConfirmation' -Profiles 'P1','P2','P3','P5','P6','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx02-003'
+    weight: 2
 
   # 'NX02-004 Disable background game recording'
   - !status: {status: 'NX02-004 Disable background game recording', option: 'nx02-004'}
-  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
-  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
-  # through journaled NxCore functions; this build reports every such action.
-  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR', value: 'HistoricalCaptureEnabled', type: REG_DWORD, data: '0', errorAction: Notify, option: 'nx02-004', weight: 1}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR' -Name 'HistoricalCaptureEnabled' -Kind 'DWord' -Data '0' -TweakId 'NX02-004' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P5','P6','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx02-004'
+    weight: 2
 
   # 'NX02-005 Optimizations for windowed games'
   - !status: {status: 'NX02-005 Optimizations for windowed games', option: 'nx02-005'}
@@ -68,25 +124,57 @@ actions:
 
   # 'NX02-006 Game Mode notification suppression'
   - !status: {status: 'NX02-006 Game Mode notification suppression', option: 'nx02-006'}
-  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
-  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
-  # through journaled NxCore functions; this build reports every such action.
-  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\GameBar', value: 'ShowStartupPanel', type: REG_DWORD, data: '0', errorAction: Notify, option: 'nx02-006', weight: 1}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\SOFTWARE\Microsoft\GameBar' -Name 'ShowStartupPanel' -Kind 'DWord' -Data '0' -TweakId 'NX02-006' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P4','P5','P6','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx02-006'
+    weight: 2
 
   # 'NX02-007 Game capture configuration'
   - !status: {status: 'NX02-007 Game capture configuration', option: 'nx02-007'}
-  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
-  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
-  # through journaled NxCore functions; this build reports every such action.
-  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR', value: 'VKMToggleRecording', type: REG_DWORD, data: '0', errorAction: Notify, option: 'nx02-007', weight: 1}
-  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
-  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
-  # through journaled NxCore functions; this build reports every such action.
-  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR', value: 'VKMToggleBroadcast', type: REG_DWORD, data: '0', errorAction: Notify, option: 'nx02-007', weight: 1}
-  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
-  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
-  # through journaled NxCore functions; this build reports every such action.
-  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR', value: 'VKMSaveHistoricalVideo', type: REG_DWORD, data: '0', errorAction: Notify, option: 'nx02-007', weight: 1}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR' -Name 'VKMToggleRecording' -Kind 'DWord' -Data '0' -TweakId 'NX02-007' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P5','P6','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx02-007'
+    weight: 2
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR' -Name 'VKMToggleBroadcast' -Kind 'DWord' -Data '0' -TweakId 'NX02-007' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P5','P6','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx02-007'
+    weight: 2
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR' -Name 'VKMSaveHistoricalVideo' -Kind 'DWord' -Data '0' -TweakId 'NX02-007' -TweakVersion '1' -Approval 'Selection' -Profiles 'P1','P2','P3','P5','P6','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx02-007'
+    weight: 2
 
   # 'NX02-008 Xbox Gaming Services management'
   - !status: {status: 'NX02-008 Xbox Gaming Services management', option: 'nx02-008'}

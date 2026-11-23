@@ -7,17 +7,25 @@ title: 'NEXTRIX NX04 - GPU & Graphics'
 description: >
   Generated from registry/NX04.json: 23 selectable tweak option(s)
   (option names are lowercase tweak ids). Function actions run the journaled
-  NxCore engine; registry actions are raw !registryValue writes (see the note
-  at each such action).
+  NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak
+  pipeline (capture -> journal -> apply -> verify), never a raw engine write.
 actions:
   - !status: {status: 'NX04 GPU & Graphics: applying selected tweaks'}
 
   # 'NX04-001 Hardware-Accelerated GPU Scheduling' [presetExcluded: default UNCHECKED]
   - !status: {status: 'NX04-001 Hardware-Accelerated GPU Scheduling', option: 'nx04-001'}
-  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
-  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
-  # through journaled NxCore functions; this build reports every such action.
-  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers', value: 'HwSchMode', type: REG_DWORD, data: '2', errorAction: Notify, option: 'nx04-001', weight: 1}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers' -Name 'HwSchMode' -Kind 'DWord' -Data '2' -TweakId 'NX04-001' -TweakVersion '1' -Approval 'ExplicitConsent' -Profiles 'P1','P2','P3','P4','P5','P6','P7','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx04-001'
+    weight: 2
 
   # 'NX04-003 Variable Refresh Rate (windowed)'
   - !status: {status: 'NX04-003 Variable Refresh Rate (windowed)', option: 'nx04-003'}
@@ -60,10 +68,18 @@ actions:
 
   # 'NX04-006 MPO troubleshooting configuration' [presetExcluded: default UNCHECKED]
   - !status: {status: 'NX04-006 MPO troubleshooting configuration', option: 'nx04-006'}
-  # NOTE: raw !registryValue - written by the AME engine, NOT captured by
-  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes
-  # through journaled NxCore functions; this build reports every such action.
-  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\Dwm', value: 'OverlayTestMode', type: REG_DWORD, data: '5', errorAction: Notify, option: 'nx04-006', weight: 1}
+  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
+  # journals BEFORE mutating, verifies, and restores the original on failure.
+  - !powerShell:
+    command: |
+      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
+      Invoke-NxRegistryTweak -Path 'HKLM:\SOFTWARE\Microsoft\Windows\Dwm' -Name 'OverlayTestMode' -Kind 'DWord' -Data '5' -TweakId 'NX04-006' -TweakVersion '1' -Approval 'SelectionPlusConfirmation' -Profiles 'P1','P2','P3','P4','P5','P6','P7','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
+    exeDir: true
+    wait: true
+    runas: currentUserElevated
+    errorAction: Notify
+    option: 'nx04-006'
+    weight: 2
 
   # 'NX04-007 Display presentation configuration'
   - !status: {status: 'NX04-007 Display presentation configuration', option: 'nx04-007'}

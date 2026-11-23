@@ -10,8 +10,8 @@ description: >
   and 1 tweak(s) routed to the mandatory pre-flight
   and 4 tweak(s) routed to the rollback undo surface
   (option names are lowercase tweak ids). Function actions run the journaled
-  NxCore engine; registry actions are raw !registryValue writes (see the note
-  at each such action).
+  NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak
+  pipeline (capture -> journal -> apply -> verify), never a raw engine write.
 actions:
   - !status: {status: 'NX16 Maintenance & Recovery: applying selected tweaks'}
 
@@ -137,7 +137,7 @@ actions:
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Invoke-NxDriverStoreClean -PerPackageConsent:$true -JournalPath (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approval 'ExplicitConsent'
+      Invoke-NxDriverStoreClean -JournalPath (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approval 'ExplicitConsent'
     exeDir: true
     wait: true
     runas: currentUserElevated

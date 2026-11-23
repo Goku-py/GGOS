@@ -29,7 +29,9 @@
                                          entries default UNCHECKED - mechanical).
                                          Function actions -> !powerShell of the
                                          engine function (errorAction Notify);
-                                         registry actions -> !registryValue.
+                                         registry actions -> journaled !powerShell
+                                         (Invoke-NxRegistryTweak: capture ->
+                                         journal -> apply -> verify -> journal).
       Configuration/Tasks/rollback.yml   the four rollback scopes (Invoke-NxRollback
                                          -TweakId/-Category/-Profile/-All), option
                                          gated, default off. The playbook platform
@@ -94,11 +96,12 @@ $NxRollbackScopes   = @(
     @{ key = 'profile';  option = 'nx-rollback-profile';  param = 'profile';  fallback = '<Pn>';    label = 'Undo ONE profile' },
     @{ key = 'all';      option = 'nx-rollback-all';      param = 'all';      fallback = $true;      label = 'Undo ALL journaled NEXTRIX changes' }
 )
-# .NET RegistryValueKind (used by registry actions, per src/nxcore Set-NxRegistryValue)
-# -> AME !registryValue type names.
-$NxKindToAmeType    = @{
-    DWord = 'REG_DWORD'; QWord = 'REG_QWORD'; String = 'REG_SZ'; ExpandString = 'REG_EXPAND_SZ'
-    MultiString = 'REG_MULTI_SZ'; Binary = 'REG_BINARY'
+# Registry action kinds that can be routed through Invoke-NxRegistryTweak
+# (src/nxcore/NxApply.ps1). Binary/MultiString have no lossless command-line
+# encoding and are refused by design: such entries must ship as dedicated
+# functions. Key = lowercase, value = canonical RegistryValueKind name.
+$NxJournaledKinds    = @{
+    dword = 'DWord'; qword = 'QWord'; string = 'String'; expandstring = 'ExpandString'
 }
 
 $errors   = New-Object System.Collections.Generic.List[string]
@@ -125,35 +128,6 @@ function ConvertTo-NxYq([string]$Text) {
     # single-quoted YAML scalar with '' escaping; safe for any content.
     if ($null -eq $Text) { return "''" }
     return "'" + $Text.Replace("'", "''") + "'"
-}
-
-function ConvertTo-NxAmeRegPath([string]$Path) {
-    # 'HKLM:\SOFTWARE\...' (PowerShell style) -> 'HKLM\SOFTWARE\...' (AME style).
-    # Only the colon is removed; the hive name must be preserved.
-    foreach ($hive in @('HKEY_LOCAL_MACHINE', 'HKEY_CURRENT_USER', 'HKEY_CLASSES_ROOT', 'HKEY_USERS', 'HKLM', 'HKCU', 'HKCR', 'HKU')) {
-        if ($Path.StartsWith($hive + ':', [System.StringComparison]::OrdinalIgnoreCase)) {
-            return $hive + $Path.Substring($hive.Length + 1)
-        }
-    }
-    return $Path
-}
-
-function ConvertTo-NxAmeRegData([string]$Kind, $Data) {
-    switch ($Kind) {
-        'String'      { return [string]$Data }
-        'ExpandString' { return [string]$Data }
-        'DWord'       { return [string]$Data }     # unsigned accepted by the engine
-        'QWord'       { return [string]$Data }
-        'MultiString' {
-            if ($Data -is [array]) { return (($Data | ForEach-Object { [string]$_ }) -join '\0') }
-            return [string]$Data
-        }
-        'Binary' {
-            if ($Data -is [array]) { return (($Data | ForEach-Object { '{0:x2}' -f [int]$_ }) -join '') }
-            return [string]$Data
-        }
-    }
-    return [string]$Data
 }
 
 function Get-NxAmeBuildsGate($Builds) {
@@ -229,6 +203,16 @@ function Format-NxArgument([string]$PsName, $Value) {
         # colon-attached form is valid for switch AND typed bool parameters
         if ($Value) { return ("-$PsName" + ':$true') }
         return ("-$PsName" + ':$false')
+    }
+    if ($Value -is [array]) {
+        # PowerShell array argument: -Profiles 'P1','P2','P3'
+        $parts = @()
+        foreach ($v in $Value) {
+            if ($v -is [bool]) { if ($v) { $parts += '$true' } else { $parts += '$false' } }
+            elseif ($v -is [int] -or $v -is [long] -or $v -is [double]) { $parts += [string]$v }
+            else { $parts += (ConvertTo-NxYq ([string]$v)) }
+        }
+        return ("-$PsName " + ($parts -join ','))
     }
     if ($Value -is [int] -or $Value -is [long] -or $Value -is [double]) { return ("-$PsName " + [string]$Value) }
     return ("-$PsName " + (ConvertTo-NxYq ([string]$Value)))
@@ -486,8 +470,14 @@ foreach ($c in $categories) {
                     if (-not (Test-NxProp $a $req)) { $errors.Add("${tid}: registry action missing '$req'") }
                 }
                 if (-not (Test-NxProp $a 'kind')) { continue }
-                if (-not $NxKindToAmeType.ContainsKey([string]$a.kind)) {
-                    $errors.Add("${tid}: registry action kind '$($a.kind)' is not a supported RegistryValueKind (DWord/QWord/String/ExpandString/MultiString/Binary)")
+                $kindKey = ([string]$a.kind).ToLowerInvariant()
+                if (-not $NxJournaledKinds.ContainsKey($kindKey)) {
+                    $errors.Add("${tid}: registry action kind '$($a.kind)' is REFUSED - Invoke-NxRegistryTweak routes only String/ExpandString/DWord/QWord; Binary/MultiString entries must ship as dedicated functions (no lossless command-line encoding)")
+                }
+                foreach ($field in @('path', 'name', 'data')) {
+                    if ((Test-NxProp $a $field) -and ([string]$a.$field -match "[\r\n]")) {
+                        $errors.Add("${tid}: registry action ${field} contains line breaks - the command-line routing cannot encode it; ship a dedicated function")
+                    }
                 }
                 if ((Test-NxProp $a 'path') -and ([string]$a.path -match 'ControlSet00[12]')) {
                     $errors.Add("${tid}: direct ControlSet001/002 write forbidden (use CurrentControlSet)")
@@ -581,8 +571,6 @@ $model = @{
     rollback    = @()
 }
 
-$rawRegistryValueCount = 0
-
 foreach ($c in $categories) {
     $ordered = Get-NxStableDependencyOrder $c.tweaks
     $preflightTweaks = @()
@@ -627,15 +615,34 @@ foreach ($c in $categories) {
                 continue
             }
             if ([string]$a.type -eq 'registry') {
-                $amePath = ConvertTo-NxAmeRegPath ([string]$a.path)
-                $regType = $NxKindToAmeType[[string]$a.kind]
-                $ameData = ConvertTo-NxAmeRegData ([string]$a.kind) $a.data
+                # Journal-first routing (ADR-006 remediation): every registry-type
+                # action becomes a journaled NxCore write - capture -> journal ->
+                # apply -> verify -> journal with safe-stop + exact-original restore.
+                # Binary/MultiString were refused during validation.
+                $kindCanon = $NxJournaledKinds[([string]$a.kind).ToLowerInvariant()]
+                $regParams = [pscustomobject]@{
+                    Path         = [string]$a.path
+                    Name         = [string]$a.name
+                    Kind         = $kindCanon
+                    Data         = [string]$a.data
+                    TweakId      = [string]$t.id
+                    TweakVersion = [string]$t.version
+                    Approval     = [string]$t.approval
+                }
+                if ($null -ne $t.profiles -and @($t.profiles).Count -gt 0) {
+                    $regParams | Add-Member -NotePropertyName Profiles -NotePropertyValue @($t.profiles)
+                }
+                $args = Get-NxParameterArguments 'Invoke-NxRegistryTweak' $regParams $inventory ([string]$t.approval)
+                $call = 'Invoke-NxRegistryTweak'
+                if (-not [string]::IsNullOrWhiteSpace($args)) { $call = "$call $args" }
+                $expectedFunctions['Invoke-NxRegistryTweak'] = $true
                 $items += @{
-                    kind = 'registryValue'; path = $amePath; value = [string]$a.name
-                    regType = $regType; data = [string]$ameData
+                    kind = 'powerShell'; command = $call
                     builds = (Get-NxAmeBuildsGate $t.builds)
                 }
-                $script:rawRegistryValueCount++
+                if (-not $inventory.ContainsKey('Invoke-NxRegistryTweak')) {
+                    $warnings.Add("${tid}: function 'Invoke-NxRegistryTweak' not found in src/nxcore at generate time - journaled registry writes were emitted by name; manifest lists it as expected")
+                }
                 continue
             }
             # unreachable: validation refused untranslatable shapes already
@@ -660,19 +667,6 @@ foreach ($c in $categories) {
         preflightRouted = $preflightTweaks
         rollbackRouted = $rollbackTweaks
         selectable = $selectable
-    }
-}
-
-# journal-first tension (ADR-006): raw !registryValue writes bypass NxJournal
-$regByCategory = @{}
-foreach ($cat in $model.categories) {
-    $catRegCount = 0
-    foreach ($e in $cat.selectable) {
-        foreach ($i in $e.items) { if ($i.kind -eq 'registryValue') { $catRegCount++ } }
-    }
-    if ($catRegCount -gt 0) {
-        $regByCategory[$cat.name] = $catRegCount
-        $warnings.Add("$($cat.name): $catRegCount registry action(s) emitted as raw !registryValue - the AME engine writes these directly and NxJournal does NOT capture them (journal-first tension, ADR-006); prefer routing registry changes through journaled NxCore functions, otherwise only the file-level pre-flight backups cover them")
     }
 }
 
@@ -997,8 +991,8 @@ function New-NxCategoryYml($Model, $Cat) {
     if ($nPf -gt 0) { $L.Add("  and $nPf tweak(s) routed to the mandatory pre-flight") }
     if ($nRb -gt 0) { $L.Add("  and $nRb tweak(s) routed to the rollback undo surface") }
     $L.Add('  (option names are lowercase tweak ids). Function actions run the journaled')
-    $L.Add('  NxCore engine; registry actions are raw !registryValue writes (see the note')
-    $L.Add('  at each such action).')
+    $L.Add('  NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak')
+    $L.Add('  pipeline (capture -> journal -> apply -> verify), never a raw engine write.')
     $L.Add('actions:')
     $L.Add('  - !status: {status: ' + (ConvertTo-NxYq ("$($Cat.name) $($Cat.categoryName): applying selected tweaks")) + '}')
     foreach ($entry in $Cat.selectable) {
@@ -1011,6 +1005,10 @@ function New-NxCategoryYml($Model, $Cat) {
         $L.Add('  - !status: {status: ' + (ConvertTo-NxYq ("$($t.id) $($t.name)")) + ', option: ' + (ConvertTo-NxYq $option) + '}')
         foreach ($item in $entry.items) {
             if ($item.kind -eq 'powerShell') {
+                if ($item.command -like 'Invoke-NxRegistryTweak*') {
+                    $L.Add('  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,')
+                    $L.Add('  # journals BEFORE mutating, verifies, and restores the original on failure.')
+                }
                 $L.Add('  - !powerShell:')
                 $L.Add('    command: |')
                 $L.Add("      $NxLoaderLine")
@@ -1022,14 +1020,6 @@ function New-NxCategoryYml($Model, $Cat) {
                 if (@($item.builds).Count -gt 0) { $L.Add('    builds: ' + (ConvertTo-NxYamlFlowStrings $item.builds)) }
                 $L.Add('    option: ' + (ConvertTo-NxYq $option))
                 $L.Add('    weight: 2')
-            } elseif ($item.kind -eq 'registryValue') {
-                $L.Add('  # NOTE: raw !registryValue - written by the AME engine, NOT captured by')
-                $L.Add('  # NxJournal (journal-first tension, ADR-006). Prefer routing registry changes')
-                $L.Add('  # through journaled NxCore functions; this build reports every such action.')
-                $inline = '  - !registryValue: {path: ' + (ConvertTo-NxYq $item.path) + ', value: ' + (ConvertTo-NxYq $item.value) + ', type: ' + $item.regType + ', data: ' + (ConvertTo-NxYq $item.data)
-                if (@($item.builds).Count -gt 0) { $inline = $inline + ', builds: ' + (ConvertTo-NxYamlFlowStrings $item.builds) }
-                $inline = $inline + ', errorAction: Notify, option: ' + (ConvertTo-NxYq $option) + ', weight: 1}'
-                $L.Add($inline)
             }
         }
     }
@@ -1178,10 +1168,10 @@ if ($DryRun) {
         foreach ($entry in $cat.selectable) {
             foreach ($item in $entry.items) {
                 if ($item.kind -eq 'powerShell') { $psCount++ }
-                if ($item.kind -eq 'registryValue') { $regCount++ }
+                if ($item.command -like 'Invoke-NxRegistryTweak*') { $regCount++ }
             }
         }
-        Write-Output "  actions: $psCount !powerShell, $regCount !registryValue, $(1 + $nSel) !status"
+        Write-Output "  actions: $psCount !powerShell ($regCount journaled registry writes via Invoke-NxRegistryTweak), 0 !registryValue, $(1 + $nSel) !status"
         $optParts = @()
         foreach ($entry in $cat.selectable) {
             $mark = 'preset'
@@ -1192,11 +1182,7 @@ if ($DryRun) {
         Write-Output '  action graph:'
         foreach ($entry in $cat.selectable) {
             foreach ($item in $entry.items) {
-                if ($item.kind -eq 'powerShell') {
-                    Write-Output "    $($entry.option) -> !powerShell $($item.command)"
-                } else {
-                    Write-Output "    $($entry.option) -> !registryValue $($item.path) :: $($item.value) = $($item.regType):$($item.data)"
-                }
+                Write-Output "    $($entry.option) -> !powerShell $($item.command)"
             }
         }
         Write-Output ''
@@ -1246,9 +1232,9 @@ foreach ($rf in $renderedFiles) {
 Write-Output ''
 Write-Output "Playbook '$NxName' v$Version generated from $($regFiles.Count) registry file(s), $($allTweaks.Count) tweak(s)."
 Write-Output ("Options: " + (@($model.categories | ForEach-Object { "$($_.name)=$(@($_.selectable).Count)" }) -join ', ') + "; rollback scopes: $(@($model.rollback).Count) (all default off).")
-if ($rawRegistryValueCount -gt 0) {
-    Write-Output "NOTE: $rawRegistryValueCount raw !registryValue action(s) emitted WITHOUT NxJournal capture (journal-first tension, ADR-006) - see warnings and per-action notes."
-}
+$journaledWrites = 0
+foreach ($cat in $model.categories) { foreach ($e in $cat.selectable) { foreach ($i in $e.items) { if ($i.command -like 'Invoke-NxRegistryTweak*') { $journaledWrites++ } } } }
+Write-Output "Journaled registry writes: $journaledWrites (Invoke-NxRegistryTweak; no raw !registryValue actions)."
 if ($warnings.Count -gt 0) {
     Write-Output "Warnings ($($warnings.Count)):"
     foreach ($w in $warnings) { Write-Output "  - $w" }
