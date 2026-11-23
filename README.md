@@ -38,7 +38,7 @@ NEXTRIX prioritizes hardware-aware configuration, workload-aware recommendations
 |---|---|
 | `README.md` | This file |
 | `PROJECT_ARCHITECTURE.md` | v0.2 — reconciled architecture (AME Wizard playbook engine; ADR-006 compensations binding) |
-| `TWEAK_CATALOGUE.md` | v0.3 — 273 candidates, all 20 categories, research-confirmed rejected list, all CANDIDATE status |
+| `TWEAK_CATALOGUE.md` | v0.5 — 282 registry entries across 20 categories (242 SyntaxValidated / 40 Defined); research-confirmed rejected list |
 | `TWEAK_CLASSIFICATION.md` | v0.1 — risk classes, evidence ladder, verification-status ladder, preset exclusions |
 | `PROFILE_MATRIX.md` | v0.1 — composable user profiles and eligibility rules |
 | `PROJECT_RESEARCH.md` | Phase 1 — per-project findings, all 14 references + AME platform + Hone |

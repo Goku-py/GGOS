@@ -460,5 +460,5 @@ Phase 1 research-confirmed additions (each with source evidence in `research/sou
 
 ## Catalogue statistics (v0.1)
 
-273 candidate entries across 20 categories · risk mix: CORE ≈ 26%, CONDITIONAL ≈ 45%, ADVANCED ≈ 22%, EXPERIMENTAL ≈ 3%, TROUBLESHOOTING ≈ 5% · evidence: E1 ≈ 60%, E0 ≈ 40%, E2+ = 0 (none claimed; E2+ only via owner-supplied results).
+282 registry entries across 20 categories (NX08-008 added 2026-11-23; NX18 category included) · risk mix: CORE ≈ 26%, CONDITIONAL ≈ 45%, ADVANCED ≈ 22%, EXPERIMENTAL ≈ 3%, TROUBLESHOOTING ≈ 5% · evidence: E1 ≈ 60%, E0 ≈ 40%, E2+ = 0 (none claimed; E2+ only via owner-supplied results).
 Implementation status per entry lives in `registry/*.json` (source of truth). Wave 1 (2026-11-23) implemented NX01/NX02/NX04/NX09/NX16 at the levels recorded there; evidence corrections applied to the rows above (NX01-010, NX02-002/-003/-007 → E1; NX02-005 → E0).

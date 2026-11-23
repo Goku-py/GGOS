@@ -221,7 +221,7 @@
       "excludedHardware": {},
       "editions": ["Home","Pro","Enterprise","Education"],
       "builds": { "min": 22631, "max": 26300, "excluded": [] },
-      "dependencies": ["NX18-003","NX19-005"],
+      "dependencies": ["NX18-003","NX19-002","NX19-005"],
       "conflicts": [],
       "privileges": "User",
       "restart": "None",

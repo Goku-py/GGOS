@@ -69,8 +69,8 @@ Gate 4 result (2026-11-23): **PASSED** — 18/18 suites, **1,293 assertions, 0 f
 | # | Task | Notes |
 |---|---|---|
 | 5.1 | MANUAL_TESTING_GUIDE.md | per-tweak manual test sheets generated from the registry (owner is the only promoter past ConfigurationValidated) |
-| 5.2 | Matrix tooling + docs | `tools/Export-NxMatrices.ps1` generating `DEPENDENCY_MATRIX.md` + `CONFLICT_MATRIX.md` mechanically from the registry |
-| 5.3 | HARDWARE_COMPATIBILITY.md + WINDOWS_COMPATIBILITY.md | from `COMPATIBILITY_RESEARCH.md` + implemented capability gates |
+| 5.2 | Matrix tooling + docs — **DONE** | `tools/Export-NxMatrices.ps1` → `DEPENDENCY_MATRIX.md` (109 edges, 4 topo layers, cycle PASS) + `CONFLICT_MATRIX.md` (12 symmetric pairs, 5 groups, 9 XREF overlaps, 5 curated hazards); deterministic 5.1/7 parity |
+| 5.3 | HARDWARE_COMPATIBILITY.md + WINDOWS_COMPATIBILITY.md — **DONE** | generated from registry + engine sources (168 hardware rows, 95 Windows rows); resolver gates for excludedHardware/builds.excluded/edition/arch added and live-verified |
 | 5.4 | Catalogue status sync | `TWEAK_CATALOGUE.md` statuses aligned with registry truth (coordinator-owned) |
 | 5.5 | Owner handover report | implemented / not implemented / unresolved research / risks / testing instructions / future priorities (directive §18F) |
 

@@ -28,8 +28,36 @@ function Get-NxTweakEligibility {
         if ($Tweak.builds.max) { $maxB = [int]$Tweak.builds.max }
         if ($BuildReport.build -lt $minB) { $supported = $false; $reasons += "build $($BuildReport.build) below tweak minimum $minB" }
         if ($BuildReport.build -gt $maxB) { $supported = $false; $reasons += "build $($BuildReport.build) above tweak maximum $maxB" }
+        if ($Tweak.builds.excluded) {
+            if (@($Tweak.builds.excluded) -contains $BuildReport.build) { $supported = $false; $reasons += "build $($BuildReport.build) is explicitly excluded for this tweak" }
+        }
         if ($BuildReport.insiderChannel) { $warnings += 'Insider channel: experimental per directive Section 10' }
         if ($BuildReport.build -eq 26100) { $warnings += '24H2 (26100) is the reference-divergent build: extra capability checks apply (COMPATIBILITY_RESEARCH)' }
+    }
+
+    # 1b. Architecture gate (x64 only; ARM64 is out of scope until separately validated - ADR-003).
+    $arch = [string]$BuildReport.architecture
+    if ($arch) {
+        if (@('AMD64','X64','x86_64','Amd64') -notcontains $arch) { $supported = $false; $reasons += "architecture '$arch' is outside NEXTRIX x64 support" }
+    } else { $warnings += 'architecture unavailable - x64 support not confirmed' }
+
+    # 1c. Edition gate (house rule TWEAK_CLASSIFICATION Section 6): metadata editions
+    # are enforced only when the edition is known; unknown edition is a warning, never a guess.
+    $editions = @($Tweak.editions)
+    if ($editions.Count -gt 0) {
+        $ed = [string]$BuildReport.editionId
+        if (-not $ed) { $warnings += 'edition unavailable - edition applicability not enforced' }
+        else {
+            $edClass = 'Other'
+            if ($ed -match '(?i)^(Core|CoreN|CoreSingleLanguage|CoreCountrySpecific)') { $edClass = 'Home' }
+            elseif ($ed -match '(?i)^Professional') { $edClass = 'Pro' }
+            elseif ($ed -match '(?i)^(Enterprise|EnterpriseS|EnterpriseG|IoTEnterprise)') { $edClass = 'Enterprise' }
+            elseif ($ed -match '(?i)^Education') { $edClass = 'Education' }
+            if (-not ($editions -contains $edClass)) {
+                $supported = $false
+                $reasons += "edition '$ed' ('$edClass') is not in the tweak's supported editions ($($editions -join ', '))"
+            }
+        }
     }
 
     # 2. Hardware gates - vendor-specific tweaks can never apply to other vendors.
@@ -62,6 +90,14 @@ function Get-NxTweakEligibility {
     }
     if ($req -and $req.requiresSsd -and -not $HardwareReport.storage.hasSsd) {
         $supported = $false; $reasons += 'requires an SSD, none detected (or storage class unreadable)'
+    }
+
+    # 2b. Excluded hardware (mirror of the required gates; honoured for future entries).
+    $excl = $Tweak.excludedHardware
+    if ($excl) {
+        if ($excl.gpuVendor) { foreach ($v in @($excl.gpuVendor)) { if (@($HardwareReport.gpu.vendorsPresent) -contains $v) { $supported = $false; $reasons += "excluded GPU vendor '$v' is present" } } }
+        if ($excl.chassis) { if ([string]$excl.chassis -eq [string]$HardwareReport.chassis.chassisClass) { $supported = $false; $reasons += "excluded chassis '$($excl.chassis)' detected" } }
+        if ($excl.ramBelowGB) { if ($HardwareReport.memory.totalGb -and [double]$HardwareReport.memory.totalGb -lt [double]$excl.ramBelowGB) { $supported = $false; $reasons += "excluded below $($excl.ramBelowGB) GB RAM" } }
     }
 
     # 3. Capability gates for declared actions (existence probes, read-only).
