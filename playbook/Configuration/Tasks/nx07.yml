@@ -1,19 +1,19 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX07.json (Network Optimization). Playbook version 0.7.0.
+# Source: registry/NX07.json (Network Optimization). Playbook version 0.8.0.
 # Every action is option-gated (option name = lowercase tweak id): unselected
 # tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
 ---
 title: 'NEXTRIX NX07 - Network Optimization'
 description: >
   Generated from registry/NX07.json: 22 selectable tweak option(s)
-  (option names are lowercase tweak ids). Function actions run the journaled
+  (option names are curated UI group ids). Function actions run the journaled
   NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak
   pipeline (capture -> journal -> apply -> verify), never a raw engine write.
 actions:
   - !status: {status: 'NX07 Network Optimization: applying selected tweaks'}
 
   # 'NX07-001 Adapter inventory & capability report'
-  - !status: {status: 'NX07-001 Adapter inventory & capability report', option: 'nx07-001'}
+  - !status: {status: 'NX07-001 Adapter inventory & capability report', option: 'g-netdiag'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -22,11 +22,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx07-001'
+    option: 'g-netdiag'
     weight: 2
 
   # 'NX07-002 Adapter power management'
-  - !status: {status: 'NX07-002 Adapter power management', option: 'nx07-002'}
+  - !status: {status: 'NX07-002 Adapter power management', option: 'g-eth'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -35,128 +35,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx07-002'
-    weight: 2
-
-  # 'NX07-003 Energy Efficient Ethernet' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX07-003 Energy Efficient Ethernet', option: 'nx07-003'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Set-Nx07EnergyEfficientEthernet -Enabled:$false -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx07-003'
-    weight: 2
-
-  # 'NX07-004 Interrupt moderation' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX07-004 Interrupt moderation', option: 'nx07-004'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Set-Nx07InterruptModeration -Enabled:$false -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx07-004'
-    weight: 2
-
-  # 'NX07-005 Receive Side Scaling configuration' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX07-005 Receive Side Scaling configuration', option: 'nx07-005'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Set-Nx07ReceiveSideScaling -Enabled:$true -MaxProcessors 0 -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx07-005'
-    weight: 2
-
-  # 'NX07-006 Receive Segment Coalescing' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX07-006 Receive Segment Coalescing', option: 'nx07-006'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Set-Nx07ReceiveSegmentCoalescing -Enabled:$false -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx07-006'
-    weight: 2
-
-  # 'NX07-007 Large Send Offload' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX07-007 Large Send Offload', option: 'nx07-007'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Set-Nx07LargeSendOffload -Enabled:$false -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx07-007'
-    weight: 2
-
-  # 'NX07-008 Checksum offloads (TCP/UDP)' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX07-008 Checksum offloads (TCP/UDP)', option: 'nx07-008'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Set-Nx07ChecksumOffload -Mode 'TxRxEnabled' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx07-008'
-    weight: 2
-
-  # 'NX07-009 Flow Control' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX07-009 Flow Control', option: 'nx07-009'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Set-Nx07FlowControl -Mode 'TxRxEnabled' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx07-009'
-    weight: 2
-
-  # 'NX07-010 Jumbo Frames' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX07-010 Jumbo Frames', option: 'nx07-010'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Set-Nx07JumboFrame -Mtu 9014 -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx07-010'
-    weight: 2
-
-  # 'NX07-011 Receive/Transmit buffer sizing' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX07-011 Receive/Transmit buffer sizing', option: 'nx07-011'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Set-Nx07AdapterBufferSize -ReceiveBuffers 2048 -TransmitBuffers 2048 -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx07-011'
+    option: 'g-eth'
     weight: 2
 
   # 'NX07-012 Wi-Fi roaming aggressiveness'
-  - !status: {status: 'NX07-012 Wi-Fi roaming aggressiveness', option: 'nx07-012'}
+  - !status: {status: 'NX07-012 Wi-Fi roaming aggressiveness', option: 'g-wifi'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -165,11 +48,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx07-012'
+    option: 'g-wifi'
     weight: 2
 
   # 'NX07-013 Wi-Fi preferred band'
-  - !status: {status: 'NX07-013 Wi-Fi preferred band', option: 'nx07-013'}
+  - !status: {status: 'NX07-013 Wi-Fi preferred band', option: 'g-wifi'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -178,24 +61,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx07-013'
-    weight: 2
-
-  # 'NX07-014 Wi-Fi channel width' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX07-014 Wi-Fi channel width', option: 'nx07-014'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Set-Nx07WifiChannelWidth -Band '5' -Width '80' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx07-014'
+    option: 'g-wifi'
     weight: 2
 
   # 'NX07-015 Wi-Fi transmit power'
-  - !status: {status: 'NX07-015 Wi-Fi transmit power', option: 'nx07-015'}
+  - !status: {status: 'NX07-015 Wi-Fi transmit power', option: 'g-wifi'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -204,11 +74,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx07-015'
+    option: 'g-wifi'
     weight: 2
 
   # 'NX07-016 DNS configuration'
-  - !status: {status: 'NX07-016 DNS configuration', option: 'nx07-016'}
+  - !status: {status: 'NX07-016 DNS configuration', option: 'g-wifi'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -217,37 +87,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx07-016'
-    weight: 2
-
-  # 'NX07-017 TCP auto-tuning & ECN inspection/config' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX07-017 TCP auto-tuning & ECN inspection/config', option: 'nx07-017'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Set-Nx07TcpGlobalSetting -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx07-017'
-    weight: 2
-
-  # 'NX07-018 MTU inspection & configuration' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX07-018 MTU inspection & configuration', option: 'nx07-018'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Set-Nx07InterfaceMtu -Mtu 1400 -AddressFamily 'IPv4' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx07-018'
+    option: 'g-wifi'
     weight: 2
 
   # 'NX07-019 Network diagnostics report'
-  - !status: {status: 'NX07-019 Network diagnostics report', option: 'nx07-019'}
+  - !status: {status: 'NX07-019 Network diagnostics report', option: 'g-netdiag'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -256,44 +100,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx07-019'
-    weight: 2
-
-  # 'NX07-020 DNS cache management' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX07-020 DNS cache management', option: 'nx07-020'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Clear-Nx07DnsCache -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx07-020'
-    weight: 2
-
-  # 'NX07-021 Network stack reset' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX07-021 Network stack reset', option: 'nx07-021'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Invoke-Nx07NetworkStackReset -AcknowledgeConsequences -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx07-021'
-    weight: 2
-
-  # 'NX07-022 Per-game QoS/DSCP profile' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX07-022 Per-game QoS/DSCP profile', option: 'nx07-022'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Set-Nx07GameQosProfile -AppPath '<full path to the game''s .exe>' -Dscp 46 -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx07-022'
+    option: 'g-netdiag'
     weight: 2

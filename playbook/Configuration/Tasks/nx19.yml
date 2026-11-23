@@ -1,19 +1,19 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX19.json (CPU Topology & Scheduling). Playbook version 0.7.0.
+# Source: registry/NX19.json (CPU Topology & Scheduling). Playbook version 0.8.0.
 # Every action is option-gated (option name = lowercase tweak id): unselected
 # tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
 ---
 title: 'NEXTRIX NX19 - CPU Topology & Scheduling'
 description: >
   Generated from registry/NX19.json: 11 selectable tweak option(s)
-  (option names are lowercase tweak ids). Function actions run the journaled
+  (option names are curated UI group ids). Function actions run the journaled
   NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak
   pipeline (capture -> journal -> apply -> verify), never a raw engine write.
 actions:
   - !status: {status: 'NX19 CPU Topology & Scheduling: applying selected tweaks'}
 
   # 'NX19-001 CPU topology detection & report engine'
-  - !status: {status: 'NX19-001 CPU topology detection & report engine', option: 'nx19-001'}
+  - !status: {status: 'NX19-001 CPU topology detection & report engine', option: 'g-cpu'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -22,11 +22,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx19-001'
+    option: 'g-cpu'
     weight: 2
 
   # 'NX19-002 CPU Set derivation engine'
-  - !status: {status: 'NX19-002 CPU Set derivation engine', option: 'nx19-002'}
+  - !status: {status: 'NX19-002 CPU Set derivation engine', option: 'g-cpu'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -35,37 +35,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx19-002'
-    weight: 2
-
-  # 'NX19-003 Per-process CPU Set application' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX19-003 Per-process CPU Set application', option: 'nx19-003'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Set-NxProcessCpuSets -ProcessName '<game>.exe' -Profile 'Competitive' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approval 'ExplicitConsent'
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx19-003'
-    weight: 2
-
-  # 'NX19-004 Per-process affinity application' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX19-004 Per-process affinity application', option: 'nx19-004'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Set-NxProcessAffinity -ProcessName '<game>.exe' -Profile 'Competitive' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approval 'ExplicitConsent'
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx19-004'
+    option: 'g-cpu'
     weight: 2
 
   # 'NX19-005 Per-process priority policy'
-  - !status: {status: 'NX19-005 Per-process priority policy', option: 'nx19-005'}
+  - !status: {status: 'NX19-005 Per-process priority policy', option: 'g-cpu'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -74,11 +48,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx19-005'
+    option: 'g-cpu'
     weight: 2
 
   # 'NX19-006 Scheduling profile: Competitive'
-  - !status: {status: 'NX19-006 Scheduling profile: Competitive', option: 'nx19-006'}
+  - !status: {status: 'NX19-006 Scheduling profile: Competitive', option: 'g-cpu'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -87,11 +61,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx19-006'
+    option: 'g-cpu'
     weight: 2
 
   # 'NX19-007 Scheduling profile: Balanced gaming'
-  - !status: {status: 'NX19-007 Scheduling profile: Balanced gaming', option: 'nx19-007'}
+  - !status: {status: 'NX19-007 Scheduling profile: Balanced gaming', option: 'g-cpu'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -100,11 +74,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx19-007'
+    option: 'g-cpu'
     weight: 2
 
   # 'NX19-008 Scheduling profile: Streaming'
-  - !status: {status: 'NX19-008 Scheduling profile: Streaming', option: 'nx19-008'}
+  - !status: {status: 'NX19-008 Scheduling profile: Streaming', option: 'g-cpu'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -113,11 +87,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx19-008'
+    option: 'g-cpu'
     weight: 2
 
   # 'NX19-009 Scheduling profile: Productivity'
-  - !status: {status: 'NX19-009 Scheduling profile: Productivity', option: 'nx19-009'}
+  - !status: {status: 'NX19-009 Scheduling profile: Productivity', option: 'g-cpu'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -126,11 +100,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx19-009'
+    option: 'g-cpu'
     weight: 2
 
   # 'NX19-010 Scheduling profile: Custom builder'
-  - !status: {status: 'NX19-010 Scheduling profile: Custom builder', option: 'nx19-010'}
+  - !status: {status: 'NX19-010 Scheduling profile: Custom builder', option: 'g-cpu'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -139,18 +113,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx19-010'
-    weight: 2
-
-  # 'NX19-011 AMD X3D / CCD-aware placement guidance' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX19-011 AMD X3D / CCD-aware placement guidance', option: 'nx19-011'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Get-NxX3dPlacementGuidance
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx19-011'
+    option: 'g-cpu'
     weight: 2

@@ -2,6 +2,16 @@
 
 All notable changes to the NEXTRIX repository. Dates are ISO. Statuses follow the verification ladder in `TWEAK_CLASSIFICATION.md`.
 
+## 2026-11-23 - Wizard UX redesign (v0.8.0)
+
+- **Selection UI rebuilt to match the platform, not the registry:** the AME wizard now exposes **7 pages / 23 curated groups** instead of 76 per-tweak pages. Research basis: AME docs (CheckboxPage Description 50-85 chars, short option text, max 4 options/page) and the established playbooks (ReviOS/XOS/Sapphire/UltraOS: 4-8 pages, 16-25 options; documented in the release notes of this version).
+- **AME UI rules enforced by the generator** (fails the build on violation): Description 50-85 characters; option Text <= 40 chars; <= 4 options per page; <= 8 pages. The previous per-tweak labels (tweak ID + full name, way over the limit) caused the text overflow in the wizard UI.
+- **Groups map to tweak sets** (e.g. `g-suggestions` = tips/promos; `g-vendor` = read-only GPU guidance; `g-cpu` = processor + scheduling reports); per-action YAML gating now uses the group option, so selecting a group applies its journaled members.
+- **presetExcluded entries are no longer wizard options** (advanced/troubleshooting/pending functions): they remain individually selectable through the NXCore CLI with explicit consent (TWEAK_CLASSIFICATION Section 5). NX17 is tooling-only; NX18 session controls are runtime/CLI by design.
+- Defaults: Maintenance & recovery plus Hardware & driver reports checked; all other groups unchecked.
+- Validation: generator throws on any Description/label/page violation; structural check: 7 pages, 27 options (23 groups + 4 rollback scopes), every YAML option name resolves to a page.
+- **No NEXTRIX modification applied to any machine.**
+
 ## 2026-11-23 - Phase 6 Documentation & Handover (v0.7.0-rc)
 
 - **Docs delivered:** `MANUAL_TESTING_GUIDE.md` (282 per-tweak sheets, generation-verified: 0 missing/duplicate IDs, 33 code blocks parsed), `HARDWARE_COMPATIBILITY.md` + `WINDOWS_COMPATIBILITY.md` (registry/engine-traced matrices), `DEPENDENCY_MATRIX.md` + `CONFLICT_MATRIX.md` (generated: 109 edges, 12 symmetric pairs, 5 groups, cycle PASS), `PACKAGING.md`, `OWNER_HANDOVER.md`.

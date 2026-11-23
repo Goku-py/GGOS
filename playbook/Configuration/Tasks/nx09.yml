@@ -1,19 +1,19 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX09.json (Power Management). Playbook version 0.7.0.
+# Source: registry/NX09.json (Power Management). Playbook version 0.8.0.
 # Every action is option-gated (option name = lowercase tweak id): unselected
 # tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
 ---
 title: 'NEXTRIX NX09 - Power Management'
 description: >
   Generated from registry/NX09.json: 15 selectable tweak option(s)
-  (option names are lowercase tweak ids). Function actions run the journaled
+  (option names are curated UI group ids). Function actions run the journaled
   NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak
   pipeline (capture -> journal -> apply -> verify), never a raw engine write.
 actions:
   - !status: {status: 'NX09 Power Management: applying selected tweaks'}
 
   # 'NX09-001 Active power plan selection'
-  - !status: {status: 'NX09-001 Active power plan selection', option: 'nx09-001'}
+  - !status: {status: 'NX09-001 Active power plan selection', option: 'g-power'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -22,11 +22,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx09-001'
+    option: 'g-power'
     weight: 2
 
   # 'NX09-002 Ultimate Performance provisioning'
-  - !status: {status: 'NX09-002 Ultimate Performance provisioning', option: 'nx09-002'}
+  - !status: {status: 'NX09-002 Ultimate Performance provisioning', option: 'g-power'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -35,11 +35,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx09-002'
+    option: 'g-power'
     weight: 2
 
   # 'NX09-003 Custom NEXTRIX plan generation'
-  - !status: {status: 'NX09-003 Custom NEXTRIX plan generation', option: 'nx09-003'}
+  - !status: {status: 'NX09-003 Custom NEXTRIX plan generation', option: 'g-power'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -48,11 +48,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx09-003'
+    option: 'g-power'
     weight: 2
 
   # 'NX09-004 PCIe ASPM link policy'
-  - !status: {status: 'NX09-004 PCIe ASPM link policy', option: 'nx09-004'}
+  - !status: {status: 'NX09-004 PCIe ASPM link policy', option: 'g-power'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -61,11 +61,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx09-004'
+    option: 'g-power'
     weight: 2
 
   # 'NX09-005 USB selective suspend policy'
-  - !status: {status: 'NX09-005 USB selective suspend policy', option: 'nx09-005'}
+  - !status: {status: 'NX09-005 USB selective suspend policy', option: 'g-power'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -74,11 +74,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx09-005'
+    option: 'g-power'
     weight: 2
 
   # 'NX09-006 Display timeout configuration'
-  - !status: {status: 'NX09-006 Display timeout configuration', option: 'nx09-006'}
+  - !status: {status: 'NX09-006 Display timeout configuration', option: 'g-power'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -87,11 +87,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx09-006'
+    option: 'g-power'
     weight: 2
 
   # 'NX09-007 Sleep configuration'
-  - !status: {status: 'NX09-007 Sleep configuration', option: 'nx09-007'}
+  - !status: {status: 'NX09-007 Sleep configuration', option: 'g-power'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -100,11 +100,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx09-007'
+    option: 'g-power'
     weight: 2
 
   # 'NX09-008 Hibernate configuration'
-  - !status: {status: 'NX09-008 Hibernate configuration', option: 'nx09-008'}
+  - !status: {status: 'NX09-008 Hibernate configuration', option: 'g-power'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -113,11 +113,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx09-008'
+    option: 'g-power'
     weight: 2
 
   # 'NX09-009 Fast Startup configuration'
-  - !status: {status: 'NX09-009 Fast Startup configuration', option: 'nx09-009'}
+  - !status: {status: 'NX09-009 Fast Startup configuration', option: 'g-power'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -126,11 +126,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx09-009'
+    option: 'g-power'
     weight: 2
 
   # 'NX09-010 Lid close behavior (laptops)'
-  - !status: {status: 'NX09-010 Lid close behavior (laptops)', option: 'nx09-010'}
+  - !status: {status: 'NX09-010 Lid close behavior (laptops)', option: 'g-power'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -139,11 +139,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx09-010'
+    option: 'g-power'
     weight: 2
 
   # 'NX09-011 OEM battery conservation reporting'
-  - !status: {status: 'NX09-011 OEM battery conservation reporting', option: 'nx09-011'}
+  - !status: {status: 'NX09-011 OEM battery conservation reporting', option: 'g-power'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -152,11 +152,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx09-011'
+    option: 'g-power'
     weight: 2
 
   # 'NX09-012 OEM performance mode detection'
-  - !status: {status: 'NX09-012 OEM performance mode detection', option: 'nx09-012'}
+  - !status: {status: 'NX09-012 OEM performance mode detection', option: 'g-power'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -165,11 +165,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx09-012'
+    option: 'g-power'
     weight: 2
 
   # 'NX09-013 Power plan export/import/restore tooling'
-  - !status: {status: 'NX09-013 Power plan export/import/restore tooling', option: 'nx09-013'}
+  - !status: {status: 'NX09-013 Power plan export/import/restore tooling', option: 'g-power'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -178,7 +178,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx09-013'
+    option: 'g-power'
     weight: 2
   - !powerShell:
     command: |
@@ -188,11 +188,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx09-013'
+    option: 'g-power'
     weight: 2
 
   # 'NX09-014 Energy report (powercfg /energy)'
-  - !status: {status: 'NX09-014 Energy report (powercfg /energy)', option: 'nx09-014'}
+  - !status: {status: 'NX09-014 Energy report (powercfg /energy)', option: 'g-power'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -201,11 +201,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx09-014'
+    option: 'g-power'
     weight: 2
 
   # 'NX09-015 Battery report (powercfg /batteryreport)'
-  - !status: {status: 'NX09-015 Battery report (powercfg /batteryreport)', option: 'nx09-015'}
+  - !status: {status: 'NX09-015 Battery report (powercfg /batteryreport)', option: 'g-power'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -214,5 +214,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx09-015'
+    option: 'g-power'
     weight: 2

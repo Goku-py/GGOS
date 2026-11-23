@@ -1,19 +1,19 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX08.json (Input & Peripherals). Playbook version 0.7.0.
+# Source: registry/NX08.json (Input & Peripherals). Playbook version 0.8.0.
 # Every action is option-gated (option name = lowercase tweak id): unselected
 # tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
 ---
 title: 'NEXTRIX NX08 - Input & Peripherals'
 description: >
   Generated from registry/NX08.json: 8 selectable tweak option(s)
-  (option names are lowercase tweak ids). Function actions run the journaled
+  (option names are curated UI group ids). Function actions run the journaled
   NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak
   pipeline (capture -> journal -> apply -> verify), never a raw engine write.
 actions:
   - !status: {status: 'NX08 Input & Peripherals: applying selected tweaks'}
 
   # 'NX08-001 Disable Enhance Pointer Precision'
-  - !status: {status: 'NX08-001 Disable Enhance Pointer Precision', option: 'nx08-001'}
+  - !status: {status: 'NX08-001 Disable Enhance Pointer Precision', option: 'g-input'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -22,11 +22,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx08-001'
+    option: 'g-input'
     weight: 2
 
   # 'NX08-002 Mouse pointer speed/sensitivity'
-  - !status: {status: 'NX08-002 Mouse pointer speed/sensitivity', option: 'nx08-002'}
+  - !status: {status: 'NX08-002 Mouse pointer speed/sensitivity', option: 'g-input'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -35,11 +35,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx08-002'
+    option: 'g-input'
     weight: 2
 
   # 'NX08-003 Mouse polling rate inspection'
-  - !status: {status: 'NX08-003 Mouse polling rate inspection', option: 'nx08-003'}
+  - !status: {status: 'NX08-003 Mouse polling rate inspection', option: 'g-input'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -48,11 +48,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx08-003'
+    option: 'g-input'
     weight: 2
 
   # 'NX08-004 Keyboard repeat delay/rate'
-  - !status: {status: 'NX08-004 Keyboard repeat delay/rate', option: 'nx08-004'}
+  - !status: {status: 'NX08-004 Keyboard repeat delay/rate', option: 'g-input'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -61,11 +61,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx08-004'
+    option: 'g-input'
     weight: 2
 
   # 'NX08-005 Game controller inspection & configuration'
-  - !status: {status: 'NX08-005 Game controller inspection & configuration', option: 'nx08-005'}
+  - !status: {status: 'NX08-005 Game controller inspection & configuration', option: 'g-input'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -74,11 +74,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx08-005'
+    option: 'g-input'
     weight: 2
 
   # 'NX08-006 Bluetooth peripheral inspection & power policy'
-  - !status: {status: 'NX08-006 Bluetooth peripheral inspection & power policy', option: 'nx08-006'}
+  - !status: {status: 'NX08-006 Bluetooth peripheral inspection & power policy', option: 'g-input'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -87,11 +87,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx08-006'
+    option: 'g-input'
     weight: 2
 
   # 'NX08-007 USB controller & HID device inspection'
-  - !status: {status: 'NX08-007 USB controller & HID device inspection', option: 'nx08-007'}
+  - !status: {status: 'NX08-007 USB controller & HID device inspection', option: 'g-input'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -100,11 +100,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx08-007'
+    option: 'g-input'
     weight: 2
 
   # 'NX08-008 Mouse/keyboard data-queue size configuration'
-  - !status: {status: 'NX08-008 Mouse/keyboard data-queue size configuration', option: 'nx08-008'}
+  - !status: {status: 'NX08-008 Mouse/keyboard data-queue size configuration', option: 'g-input'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -113,5 +113,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx08-008'
+    option: 'g-input'
     weight: 2

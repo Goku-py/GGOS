@@ -1,7 +1,7 @@
 {
     "manifestVersion":  1,
     "generatedBy":  "tools/Invoke-NxBuild.ps1",
-    "nextrixVersion":  "0.7.0",
+    "nextrixVersion":  "0.8.0",
     "playbookUniqueId":  "8550805b-2928-46a0-8daf-2e1732b55421",
     "destination":  "Executables/NxCore/",
     "instruction":  "Packaging: tools/New-NxPackage.ps1 stages every file listed below (flat, filename preserved) into Executables/NxCore/ and writes Executables/NxCoreBootstrap.ps1 at the Executables root. The generated tasks keep the FLAT loader contract: each !powerShell action dot-sources every Nx*.ps1 in Executables/ (exeDir: true), so the bootstrap is the only file the loader sees; it loads the NxCore/ tree in dependency order, including src/nxsession/NX18.ps1 (the session subsystem, outside src/nxcore). The generator does NOT copy binaries (ADR-006: hash-pinned artifacts, zero floating downloads at install time).",

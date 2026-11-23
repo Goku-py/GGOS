@@ -598,6 +598,69 @@ $model = @{
     rollback    = @()
 }
 
+# ---------------------------------------------------------------- UI model
+# The AME wizard is a selection surface, not a tweak browser: established
+# playbooks expose 4-8 pages with ~16-25 grouped options (ReviOS/XOS/Sapphire/
+# UltraOS). NEXTRIX groups the non-presetExcluded tweaks into curated groups and
+# leaves presetExcluded (advanced/troubleshooting) to the CLI with explicit
+# consent. AME engine rules enforced below: CheckboxPage Description 50-85 chars,
+# short Option Text, max 4 options per page, <= 8 pages.
+$UiGroupText = [ordered]@{
+    'g-suggestions' = 'Reduce suggestions & promotions'
+    'g-search'      = 'Search & indexing settings'
+    'g-updates'     = 'Update & maintenance preferences'
+    'g-visual'      = 'Look and feel'
+    'g-gamemode'    = 'Game Mode & game capture'
+    'g-windowed'    = 'Windowed games & presentation'
+    'g-gpusched'    = 'GPU scheduling & display features'
+    'g-vendor'      = 'GPU vendor guidance (read-only)'
+    'g-cpu'         = 'CPU & scheduler reports'
+    'g-power'       = 'Power plan & sleep behavior'
+    'g-memory'      = 'Memory configuration'
+    'g-storage'     = 'Storage maintenance'
+    'g-eth'         = 'Ethernet adapter tuning'
+    'g-wifi'        = 'Wi-Fi & DNS settings'
+    'g-netdiag'     = 'Network diagnostics & repair'
+    'g-input'       = 'Input & USB devices'
+    'g-startup'     = 'Startup & background apps'
+    'g-services'    = 'Services & scheduled tasks'
+    'g-telemetry'   = 'Privacy & telemetry'
+    'g-permissions' = 'App permissions'
+    'g-debloat'     = 'Optional app removal (plans)'
+    'g-security'    = 'Security status & hardening'
+    'g-hardware'    = 'Hardware & driver reports'
+    'g-maint'       = 'Maintenance & recovery'
+    'g-session'     = 'In-game session manager'
+}
+$UiDefaultChecked = @{ 'g-maint' = $true; 'g-hardware' = $true }
+$UiCategoryDefault = @{
+    'NX01' = 'g-suggestions'; 'NX02' = 'g-gamemode'; 'NX03' = 'g-cpu'; 'NX04' = 'g-gpusched'
+    'NX05' = 'g-memory'; 'NX06' = 'g-storage'; 'NX07' = 'g-eth'; 'NX08' = 'g-input'
+    'NX09' = 'g-power'; 'NX10' = 'g-hardware'; 'NX11' = 'g-services'; 'NX12' = 'g-debloat'
+    'NX13' = 'g-telemetry'; 'NX14' = 'g-security'; 'NX15' = 'g-visual'; 'NX16' = 'g-maint'
+    'NX17' = 'g-security'; 'NX18' = 'g-session'; 'NX19' = 'g-cpu'; 'NX20' = 'g-hardware'
+}
+$UiIdOverrides = @{
+    'NX01-009' = 'g-search'; 'NX01-011' = 'g-updates'; 'NX01-012' = 'g-updates'; 'NX01-013' = 'g-updates'; 'NX01-014' = 'g-updates'
+    'NX01-015' = 'g-maint'; 'NX01-016' = 'g-visual'
+    'NX02-008' = 'g-gamemode'
+    'NX04-003' = 'g-windowed'; 'NX04-005' = 'g-windowed'; 'NX04-007' = 'g-windowed'
+    'NX04-009' = 'g-vendor'; 'NX04-010' = 'g-vendor'; 'NX04-011' = 'g-vendor'; 'NX04-012' = 'g-vendor'; 'NX04-013' = 'g-vendor'; 'NX04-014' = 'g-vendor'; 'NX04-015' = 'g-vendor'; 'NX04-016' = 'g-vendor'
+    'NX04-017' = 'g-vendor'; 'NX04-018' = 'g-vendor'; 'NX04-019' = 'g-vendor'; 'NX04-020' = 'g-vendor'; 'NX04-021' = 'g-vendor'; 'NX04-022' = 'g-vendor'; 'NX04-023' = 'g-vendor'
+    'NX07-001' = 'g-netdiag'; 'NX07-012' = 'g-wifi'; 'NX07-013' = 'g-wifi'; 'NX07-014' = 'g-wifi'; 'NX07-015' = 'g-wifi'; 'NX07-016' = 'g-wifi'
+    'NX07-017' = 'g-netdiag'; 'NX07-018' = 'g-netdiag'; 'NX07-019' = 'g-netdiag'; 'NX07-020' = 'g-netdiag'; 'NX07-022' = 'g-netdiag'
+    'NX11-001' = 'g-startup'; 'NX11-002' = 'g-startup'; 'NX11-003' = 'g-startup'; 'NX11-004' = 'g-startup'
+    'NX13-005' = 'g-permissions'; 'NX13-011' = 'g-permissions'; 'NX13-014' = 'g-permissions'
+}
+$UiPages = @(
+    @{ desc = 'Choose optional Windows experience adjustments. Every change is journaled.'; groups = @('g-suggestions','g-search','g-updates','g-visual') }
+    @{ desc = 'Choose gaming and display options. Changes are reversible via the state journal.'; groups = @('g-gamemode','g-windowed','g-gpusched','g-vendor') }
+    @{ desc = 'Choose performance and power options. Each setting is journaled and can be undone.'; groups = @('g-cpu','g-power','g-memory','g-storage') }
+    @{ desc = 'Choose network and input options. Adapter changes are per-device and reversible.'; groups = @('g-eth','g-wifi','g-netdiag','g-input') }
+    @{ desc = 'Choose background and privacy options. Privacy is never sold as a speed boost.'; groups = @('g-startup','g-services','g-telemetry','g-permissions') }
+    @{ desc = 'Choose cleanup, security and hardware options. Reports first; changes on request.'; groups = @('g-debloat','g-security','g-hardware','g-maint') }
+)
+
 foreach ($c in $categories) {
     $ordered = Get-NxStableDependencyOrder $c.tweaks
     $preflightTweaks = @()
@@ -637,7 +700,7 @@ foreach ($c in $categories) {
                     builds = (Get-NxAmeBuildsGate $t.builds)
                 }
                 if (-not $inventory.ContainsKey($fn)) {
-                    $warnings.Add("$($t.id): function '$fn' not found in src/nxcore at generate time (concurrent authoring) - emitted by name; manifest lists it as expected")
+                    $warnings.Add("$($t.id): function '$fn' not found in src/nxcore at generate time - if the tweak is wizard-included it is emitted by name; otherwise it is tooling-only (manifest lists it as expected)")
                 }
                 continue
             }
@@ -680,10 +743,30 @@ foreach ($c in $categories) {
         if ($items.Count -eq 0 -and $actions.Count -eq 0) {
             $warnings.Add("$($t.id): option emitted with zero actions (status '$($t.status)' - registry authors must add apply.actions before release)")
         }
+        $catCode = [System.IO.Path]::GetFileNameWithoutExtension([string]$c.file)
+        $groupId = 'g-session'
+        if ($UiIdOverrides.ContainsKey([string]$t.id)) { $groupId = [string]$UiIdOverrides[[string]$t.id] }
+        elseif ($UiCategoryDefault.ContainsKey($catCode)) { $groupId = [string]$UiCategoryDefault[$catCode] }
+        $wizardInclude = $true; $excludeReason = ''
+        if ([bool]$t.presetExcluded) {
+            $wizardInclude = $false
+            $excludeReason = 'presetExcluded: tooling-only (individually selectable via the NXCore CLI with explicit consent)'
+        } else {
+            foreach ($it in $items) {
+                if ($it.kind -eq 'powerShell') {
+                    $fnName = ([string]$it.command).Split(' ')[0]
+                    if (-not $inventory.ContainsKey($fnName)) { $wizardInclude = $false; $excludeReason = "pending engine function '$fnName'" }
+                }
+            }
+        }
         $selectable += @{
             tweak = $t
             option = ([string]$t.id).ToLowerInvariant()
-            checked = (-not [bool]$t.presetExcluded)   # mechanical: presetExcluded -> UNCHECKED
+            group = $groupId
+            groupOption = $groupId
+            wizardInclude = $wizardInclude
+            wizardExcludeReason = $excludeReason
+            checked = (-not [bool]$t.presetExcluded)
             items = $items
         }
     }
@@ -869,36 +952,48 @@ function New-NxPlaybookConf($Model) {
     $L.Add("    <Git>$NxGitUrl</Git>")
     $L.Add('    <FeaturePages>')
 
-    # feature-page engine limit: max 4 options per page; with any TopLine/BottomLine
-    # the limit drops (2 with both, 3 with either), so 4-option pages carry no lines.
-    foreach ($cat in $Model.categories) {
-        $opts = @($cat.selectable)
+    # Curated group pages (see $UiPages). AME rules enforced: CheckboxPage
+    # Description 50-85 chars, short option Text, max 4 options/page, <= 8 pages.
+    $includedGroups = @()
+    foreach ($page in $UiPages) {
+        $pageNo++
+        $desc = [string]$page.desc
+        if ($desc.Length -lt 50 -or $desc.Length -gt 85) { throw "UI page description length $($desc.Length) outside AME 50-85: '$desc'" }
+        $opts = @()
+        foreach ($g in @($page.groups)) {
+            $count = 0
+            foreach ($cat in $Model.categories) { $count += @($cat.selectable | Where-Object { $_.wizardInclude -and $_.group -eq $g }).Count }
+            if ($count -eq 0) { continue }
+            $gText = [string]$UiGroupText[[string]$g]
+            if ([string]::IsNullOrWhiteSpace($gText)) { throw "UI group '$g' has no display text" }
+            if ($gText.Length -gt 40) { throw "UI option text over 40 chars: '$gText'" }
+            $opts += @{ name = [string]$g; text = $gText; checked = [bool]$UiDefaultChecked[[string]$g] }
+            $includedGroups += [string]$g
+        }
         if ($opts.Count -eq 0) { continue }
-        $pageCount = [int][Math]::Ceiling($opts.Count / 4.0)
-        for ($p = 0; $p -lt $pageCount; $p++) {
-            $pageNo++
-            $slice = @($opts[($p * 4)..([Math]::Min(($p * 4) + 3, $opts.Count - 1))])
-            $desc = "$($cat.name) $($cat.categoryName)"
-            if ($pageCount -gt 1) { $desc = $desc + " (page $($p + 1) of $pageCount)" }
-            $desc = $desc + ': uncheck anything you do not want applied.'
-            $L.Add('        <CheckboxPage IsRequired="true" Description="' + (ConvertTo-NxXmlAttr $desc) + '">')
-            $L.Add('            <Options>')
-            foreach ($o in $slice) {
-                $checkedAttr = 'true'
-                if (-not $o.checked) { $checkedAttr = 'false' }
-                $text = "$([string]$o.tweak.id) $([string]$o.tweak.name)"
-                $L.Add('                <CheckboxOption IsChecked="' + $checkedAttr + '">')
-                $L.Add('                    <Text>' + (ConvertTo-NxXmlText $text) + '</Text>')
-                $L.Add('                    <Name>' + (ConvertTo-NxXmlText $o.option) + '</Name>')
-                $L.Add('                </CheckboxOption>')
-            }
-            $L.Add('            </Options>')
-            $L.Add('        </CheckboxPage>')
+        if ($opts.Count -gt 4) { throw "UI page exceeds 4 options (AME engine limit): '$desc'" }
+        $L.Add('        <CheckboxPage IsRequired="true" Description="' + (ConvertTo-NxXmlAttr $desc) + '">')
+        $L.Add('            <Options>')
+        foreach ($o in $opts) {
+            $checkedAttr = 'false'
+            if ($o.checked) { $checkedAttr = 'true' }
+            $L.Add('                <CheckboxOption IsChecked="' + $checkedAttr + '">')
+            $L.Add('                    <Text>' + (ConvertTo-NxXmlText $o.text) + '</Text>')
+            $L.Add('                    <Name>' + (ConvertTo-NxXmlText $o.name) + '</Name>')
+            $L.Add('                </CheckboxOption>')
+        }
+        $L.Add('            </Options>')
+        $L.Add('        </CheckboxPage>')
+    }
+    foreach ($cat in $Model.categories) {
+        foreach ($e in @($cat.selectable | Where-Object { $_.wizardInclude })) {
+            if ($includedGroups -notcontains [string]$e.group) { throw "UI: $($e.tweak.id) mapped to group '$($e.group)' which is on no page" }
         }
     }
+    if ($pageNo -gt 8) { throw "UI page count $pageNo exceeds the 8-page budget" }
 
     # rollback page (always last: the undo surface)
-    $L.Add('        <CheckboxPage IsRequired="true" Description="' + (ConvertTo-NxXmlAttr 'Undo surface: check a scope ONLY to undo journaled changes; leave unchecked to apply.') + '">')
+    $L.Add('        <CheckboxPage IsRequired="true" Description="' + (ConvertTo-NxXmlAttr 'Undo only: check a scope to undo journaled changes; leave unchecked.') + '">')
     $L.Add('            <Options>')
     foreach ($scope in $Model.rollback) {
         $text = $scope.label
@@ -1017,16 +1112,16 @@ function New-NxCategoryYml($Model, $Cat) {
     $L.Add("  Generated from registry/$($Cat.file): $nSel selectable tweak option(s)")
     if ($nPf -gt 0) { $L.Add("  and $nPf tweak(s) routed to the mandatory pre-flight") }
     if ($nRb -gt 0) { $L.Add("  and $nRb tweak(s) routed to the rollback undo surface") }
-    $L.Add('  (option names are lowercase tweak ids). Function actions run the journaled')
+    $L.Add('  (option names are curated UI group ids). Function actions run the journaled')
     $L.Add('  NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak')
     $L.Add('  pipeline (capture -> journal -> apply -> verify), never a raw engine write.')
     $L.Add('actions:')
     $L.Add('  - !status: {status: ' + (ConvertTo-NxYq ("$($Cat.name) $($Cat.categoryName): applying selected tweaks")) + '}')
     foreach ($entry in $Cat.selectable) {
         $t = $entry.tweak
-        $option = $entry.option
+        if (-not $entry.wizardInclude) { continue }   # tooling-only: presetExcluded or pending engine function
+        $option = $entry.groupOption
         $presetMark = ''
-        if (-not $entry.checked) { $presetMark = ' [presetExcluded: default UNCHECKED]' }
         $L.Add('')
         $L.Add('  # ' + (ConvertTo-NxYq ("$($t.id) $($t.name)")) + $presetMark)
         $L.Add('  - !status: {status: ' + (ConvertTo-NxYq ("$($t.id) $($t.name)")) + ', option: ' + (ConvertTo-NxYq $option) + '}')

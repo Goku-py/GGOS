@@ -1,19 +1,19 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX01.json (Windows Foundation). Playbook version 0.7.0.
+# Source: registry/NX01.json (Windows Foundation). Playbook version 0.8.0.
 # Every action is option-gated (option name = lowercase tweak id): unselected
 # tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
 ---
 title: 'NEXTRIX NX01 - Windows Foundation'
 description: >
   Generated from registry/NX01.json: 16 selectable tweak option(s)
-  (option names are lowercase tweak ids). Function actions run the journaled
+  (option names are curated UI group ids). Function actions run the journaled
   NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak
   pipeline (capture -> journal -> apply -> verify), never a raw engine write.
 actions:
   - !status: {status: 'NX01 Windows Foundation: applying selected tweaks'}
 
   # 'NX01-001 Disable Windows tips & suggestions'
-  - !status: {status: 'NX01-001 Disable Windows tips & suggestions', option: 'nx01-001'}
+  - !status: {status: 'NX01-001 Disable Windows tips & suggestions', option: 'g-suggestions'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -24,7 +24,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-001'
+    option: 'g-suggestions'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -36,7 +36,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-001'
+    option: 'g-suggestions'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -48,11 +48,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-001'
+    option: 'g-suggestions'
     weight: 2
 
   # 'NX01-002 Disable welcome experience'
-  - !status: {status: 'NX01-002 Disable welcome experience', option: 'nx01-002'}
+  - !status: {status: 'NX01-002 Disable welcome experience', option: 'g-suggestions'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -63,11 +63,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-002'
+    option: 'g-suggestions'
     weight: 2
 
   # 'NX01-003 Disable consumer experience / suggested apps'
-  - !status: {status: 'NX01-003 Disable consumer experience / suggested apps', option: 'nx01-003'}
+  - !status: {status: 'NX01-003 Disable consumer experience / suggested apps', option: 'g-suggestions'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -78,11 +78,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-003'
+    option: 'g-suggestions'
     weight: 2
 
   # 'NX01-004 Disable Start menu suggestions'
-  - !status: {status: 'NX01-004 Disable Start menu suggestions', option: 'nx01-004'}
+  - !status: {status: 'NX01-004 Disable Start menu suggestions', option: 'g-suggestions'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -93,7 +93,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-004'
+    option: 'g-suggestions'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -105,11 +105,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-004'
+    option: 'g-suggestions'
     weight: 2
 
   # 'NX01-005 Disable silent promotional app installs'
-  - !status: {status: 'NX01-005 Disable silent promotional app installs', option: 'nx01-005'}
+  - !status: {status: 'NX01-005 Disable silent promotional app installs', option: 'g-suggestions'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -120,11 +120,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-005'
+    option: 'g-suggestions'
     weight: 2
 
   # 'NX01-006 Disable lock-screen promotional content'
-  - !status: {status: 'NX01-006 Disable lock-screen promotional content', option: 'nx01-006'}
+  - !status: {status: 'NX01-006 Disable lock-screen promotional content', option: 'g-suggestions'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -135,7 +135,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-006'
+    option: 'g-suggestions'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -147,11 +147,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-006'
+    option: 'g-suggestions'
     weight: 2
 
   # 'NX01-007 Notification defaults configuration'
-  - !status: {status: 'NX01-007 Notification defaults configuration', option: 'nx01-007'}
+  - !status: {status: 'NX01-007 Notification defaults configuration', option: 'g-suggestions'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -162,7 +162,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-007'
+    option: 'g-suggestions'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -174,11 +174,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-007'
+    option: 'g-suggestions'
     weight: 2
 
   # 'NX01-008 Global UWP background-app permission policy'
-  - !status: {status: 'NX01-008 Global UWP background-app permission policy', option: 'nx01-008'}
+  - !status: {status: 'NX01-008 Global UWP background-app permission policy', option: 'g-suggestions'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -187,24 +187,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-008'
-    weight: 2
-
-  # 'NX01-009 Windows Search indexing scope configuration'
-  - !status: {status: 'NX01-009 Windows Search indexing scope configuration', option: 'nx01-009'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Set-NxSearchIndexingScope
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx01-009'
+    option: 'g-suggestions'
     weight: 2
 
   # 'NX01-010 Disable search highlights'
-  - !status: {status: 'NX01-010 Disable search highlights', option: 'nx01-010'}
+  - !status: {status: 'NX01-010 Disable search highlights', option: 'g-suggestions'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -215,7 +202,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-010'
+    option: 'g-suggestions'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -227,11 +214,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-010'
+    option: 'g-suggestions'
     weight: 2
 
   # 'NX01-011 Delivery Optimization configuration'
-  - !status: {status: 'NX01-011 Delivery Optimization configuration', option: 'nx01-011'}
+  - !status: {status: 'NX01-011 Delivery Optimization configuration', option: 'g-updates'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -242,11 +229,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-011'
+    option: 'g-updates'
     weight: 2
 
   # 'NX01-012 Automatic maintenance schedule'
-  - !status: {status: 'NX01-012 Automatic maintenance schedule', option: 'nx01-012'}
+  - !status: {status: 'NX01-012 Automatic maintenance schedule', option: 'g-updates'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -257,11 +244,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-012'
+    option: 'g-updates'
     weight: 2
 
   # 'NX01-013 Windows Update active hours configuration'
-  - !status: {status: 'NX01-013 Windows Update active hours configuration', option: 'nx01-013'}
+  - !status: {status: 'NX01-013 Windows Update active hours configuration', option: 'g-updates'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -272,7 +259,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-013'
+    option: 'g-updates'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -284,7 +271,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-013'
+    option: 'g-updates'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -296,11 +283,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-013'
+    option: 'g-updates'
     weight: 2
 
   # 'NX01-014 Restart notification configuration'
-  - !status: {status: 'NX01-014 Restart notification configuration', option: 'nx01-014'}
+  - !status: {status: 'NX01-014 Restart notification configuration', option: 'g-updates'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -311,7 +298,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-014'
+    option: 'g-updates'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -323,11 +310,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-014'
+    option: 'g-updates'
     weight: 2
 
   # 'NX01-015 Optional features & components management'
-  - !status: {status: 'NX01-015 Optional features & components management', option: 'nx01-015'}
+  - !status: {status: 'NX01-015 Optional features & components management', option: 'g-maint'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -336,7 +323,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-015'
+    option: 'g-maint'
     weight: 2
   - !powerShell:
     command: |
@@ -346,11 +333,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-015'
+    option: 'g-maint'
     weight: 2
 
   # 'NX01-016 Default application associations'
-  - !status: {status: 'NX01-016 Default application associations', option: 'nx01-016'}
+  - !status: {status: 'NX01-016 Default application associations', option: 'g-visual'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -359,5 +346,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx01-016'
+    option: 'g-visual'
     weight: 2

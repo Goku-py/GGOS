@@ -1,5 +1,5 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX16.json (Maintenance & Recovery). Playbook version 0.7.0.
+# Source: registry/NX16.json (Maintenance & Recovery). Playbook version 0.8.0.
 # Every action is option-gated (option name = lowercase tweak id): unselected
 # tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
 # Routed out of this file: NX16-004 -> Tasks/nxcore.yml (unconditional pre-flight); NX16-013 -> Tasks/rollback.yml (undo surface), NX16-014 -> Tasks/rollback.yml (undo surface), NX16-015 -> Tasks/rollback.yml (undo surface), NX16-016 -> Tasks/rollback.yml (undo surface)
@@ -9,14 +9,14 @@ description: >
   Generated from registry/NX16.json: 12 selectable tweak option(s)
   and 1 tweak(s) routed to the mandatory pre-flight
   and 4 tweak(s) routed to the rollback undo surface
-  (option names are lowercase tweak ids). Function actions run the journaled
+  (option names are curated UI group ids). Function actions run the journaled
   NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak
   pipeline (capture -> journal -> apply -> verify), never a raw engine write.
 actions:
   - !status: {status: 'NX16 Maintenance & Recovery: applying selected tweaks'}
 
   # 'NX16-001 System Restore enablement & configuration'
-  - !status: {status: 'NX16-001 System Restore enablement & configuration', option: 'nx16-001'}
+  - !status: {status: 'NX16-001 System Restore enablement & configuration', option: 'g-maint'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -25,11 +25,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx16-001'
+    option: 'g-maint'
     weight: 2
 
   # 'NX16-002 Pre-change restore point creation ritual'
-  - !status: {status: 'NX16-002 Pre-change restore point creation ritual', option: 'nx16-002'}
+  - !status: {status: 'NX16-002 Pre-change restore point creation ritual', option: 'g-maint'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -38,11 +38,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx16-002'
+    option: 'g-maint'
     weight: 2
 
   # 'NX16-003 Targeted registry backup'
-  - !status: {status: 'NX16-003 Targeted registry backup', option: 'nx16-003'}
+  - !status: {status: 'NX16-003 Targeted registry backup', option: 'g-maint'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -51,11 +51,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx16-003'
+    option: 'g-maint'
     weight: 2
 
   # 'NX16-005 Service configuration backup'
-  - !status: {status: 'NX16-005 Service configuration backup', option: 'nx16-005'}
+  - !status: {status: 'NX16-005 Service configuration backup', option: 'g-maint'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -64,11 +64,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx16-005'
+    option: 'g-maint'
     weight: 2
 
   # 'NX16-006 Scheduled task backup'
-  - !status: {status: 'NX16-006 Scheduled task backup', option: 'nx16-006'}
+  - !status: {status: 'NX16-006 Scheduled task backup', option: 'g-maint'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -77,11 +77,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx16-006'
+    option: 'g-maint'
     weight: 2
 
   # 'NX16-007 DISM health check & repair tooling'
-  - !status: {status: 'NX16-007 DISM health check & repair tooling', option: 'nx16-007'}
+  - !status: {status: 'NX16-007 DISM health check & repair tooling', option: 'g-maint'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -90,11 +90,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx16-007'
+    option: 'g-maint'
     weight: 2
 
   # 'NX16-008 SFC verification tooling'
-  - !status: {status: 'NX16-008 SFC verification tooling', option: 'nx16-008'}
+  - !status: {status: 'NX16-008 SFC verification tooling', option: 'g-maint'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -103,11 +103,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx16-008'
+    option: 'g-maint'
     weight: 2
 
   # 'NX16-009 Component store cleanup (on-demand)'
-  - !status: {status: 'NX16-009 Component store cleanup (on-demand)', option: 'nx16-009'}
+  - !status: {status: 'NX16-009 Component store cleanup (on-demand)', option: 'g-maint'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -116,11 +116,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx16-009'
+    option: 'g-maint'
     weight: 2
 
   # 'NX16-010 Driver inventory & history report'
-  - !status: {status: 'NX16-010 Driver inventory & history report', option: 'nx16-010'}
+  - !status: {status: 'NX16-010 Driver inventory & history report', option: 'g-maint'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -129,24 +129,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx16-010'
-    weight: 2
-
-  # 'NX16-011 Driver Store selective cleanup' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX16-011 Driver Store selective cleanup', option: 'nx16-011'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Invoke-NxDriverStoreClean -JournalPath (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approval 'ExplicitConsent'
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx16-011'
+    option: 'g-maint'
     weight: 2
 
   # 'NX16-012 Windows build & UBR verification report'
-  - !status: {status: 'NX16-012 Windows build & UBR verification report', option: 'nx16-012'}
+  - !status: {status: 'NX16-012 Windows build & UBR verification report', option: 'g-maint'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -155,11 +142,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx16-012'
+    option: 'g-maint'
     weight: 2
 
   # 'NX16-017 Owner support-bundle export'
-  - !status: {status: 'NX16-017 Owner support-bundle export', option: 'nx16-017'}
+  - !status: {status: 'NX16-017 Owner support-bundle export', option: 'g-maint'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -168,5 +155,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx16-017'
+    option: 'g-maint'
     weight: 2

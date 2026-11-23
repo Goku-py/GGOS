@@ -1,19 +1,19 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX20.json (Hardware & Driver Management). Playbook version 0.7.0.
+# Source: registry/NX20.json (Hardware & Driver Management). Playbook version 0.8.0.
 # Every action is option-gated (option name = lowercase tweak id): unselected
 # tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
 ---
 title: 'NEXTRIX NX20 - Hardware & Driver Management'
 description: >
   Generated from registry/NX20.json: 11 selectable tweak option(s)
-  (option names are lowercase tweak ids). Function actions run the journaled
+  (option names are curated UI group ids). Function actions run the journaled
   NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak
   pipeline (capture -> journal -> apply -> verify), never a raw engine write.
 actions:
   - !status: {status: 'NX20 Hardware & Driver Management: applying selected tweaks'}
 
   # 'NX20-001 Hardware inventory master report'
-  - !status: {status: 'NX20-001 Hardware inventory master report', option: 'nx20-001'}
+  - !status: {status: 'NX20-001 Hardware inventory master report', option: 'g-hardware'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -22,11 +22,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx20-001'
+    option: 'g-hardware'
     weight: 2
 
   # 'NX20-002 GPU vendor & driver capability report'
-  - !status: {status: 'NX20-002 GPU vendor & driver capability report', option: 'nx20-002'}
+  - !status: {status: 'NX20-002 GPU vendor & driver capability report', option: 'g-hardware'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -35,11 +35,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx20-002'
+    option: 'g-hardware'
     weight: 2
 
   # 'NX20-003 NVIDIA driver management (inventory, guidance, profile inspection)'
-  - !status: {status: 'NX20-003 NVIDIA driver management (inventory, guidance, profile inspection)', option: 'nx20-003'}
+  - !status: {status: 'NX20-003 NVIDIA driver management (inventory, guidance, profile inspection)', option: 'g-hardware'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -48,11 +48,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx20-003'
+    option: 'g-hardware'
     weight: 2
 
   # 'NX20-004 AMD driver management (equivalent)'
-  - !status: {status: 'NX20-004 AMD driver management (equivalent)', option: 'nx20-004'}
+  - !status: {status: 'NX20-004 AMD driver management (equivalent)', option: 'g-hardware'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -61,11 +61,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx20-004'
+    option: 'g-hardware'
     weight: 2
 
   # 'NX20-005 Intel driver management (equivalent)'
-  - !status: {status: 'NX20-005 Intel driver management (equivalent)', option: 'nx20-005'}
+  - !status: {status: 'NX20-005 Intel driver management (equivalent)', option: 'g-hardware'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -74,11 +74,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx20-005'
+    option: 'g-hardware'
     weight: 2
 
   # 'NX20-006 Network driver inspection & version report'
-  - !status: {status: 'NX20-006 Network driver inspection & version report', option: 'nx20-006'}
+  - !status: {status: 'NX20-006 Network driver inspection & version report', option: 'g-hardware'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -87,11 +87,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx20-006'
+    option: 'g-hardware'
     weight: 2
 
   # 'NX20-007 USB hardware inventory report'
-  - !status: {status: 'NX20-007 USB hardware inventory report', option: 'nx20-007'}
+  - !status: {status: 'NX20-007 USB hardware inventory report', option: 'g-hardware'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -100,11 +100,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx20-007'
+    option: 'g-hardware'
     weight: 2
 
   # 'NX20-008 Installed driver history report'
-  - !status: {status: 'NX20-008 Installed driver history report', option: 'nx20-008'}
+  - !status: {status: 'NX20-008 Installed driver history report', option: 'g-hardware'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -113,11 +113,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx20-008'
+    option: 'g-hardware'
     weight: 2
 
   # 'NX20-009 Hardware compatibility report generator'
-  - !status: {status: 'NX20-009 Hardware compatibility report generator', option: 'nx20-009'}
+  - !status: {status: 'NX20-009 Hardware compatibility report generator', option: 'g-hardware'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -126,11 +126,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx20-009'
+    option: 'g-hardware'
     weight: 2
 
   # 'NX20-010 Device configuration inspection'
-  - !status: {status: 'NX20-010 Device configuration inspection', option: 'nx20-010'}
+  - !status: {status: 'NX20-010 Device configuration inspection', option: 'g-hardware'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -139,11 +139,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx20-010'
+    option: 'g-hardware'
     weight: 2
 
   # 'NX20-011 BIOS/version currency guidance (report only)'
-  - !status: {status: 'NX20-011 BIOS/version currency guidance (report only)', option: 'nx20-011'}
+  - !status: {status: 'NX20-011 BIOS/version currency guidance (report only)', option: 'g-hardware'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -152,5 +152,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx20-011'
+    option: 'g-hardware'
     weight: 2

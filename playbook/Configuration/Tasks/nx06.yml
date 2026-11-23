@@ -1,19 +1,19 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX06.json (Storage & Filesystem). Playbook version 0.7.0.
+# Source: registry/NX06.json (Storage & Filesystem). Playbook version 0.8.0.
 # Every action is option-gated (option name = lowercase tweak id): unselected
 # tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
 ---
 title: 'NEXTRIX NX06 - Storage & Filesystem'
 description: >
   Generated from registry/NX06.json: 13 selectable tweak option(s)
-  (option names are lowercase tweak ids). Function actions run the journaled
+  (option names are curated UI group ids). Function actions run the journaled
   NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak
   pipeline (capture -> journal -> apply -> verify), never a raw engine write.
 actions:
   - !status: {status: 'NX06 Storage & Filesystem: applying selected tweaks'}
 
   # 'NX06-001 Storage inventory & SSD/HDD/NVMe classification'
-  - !status: {status: 'NX06-001 Storage inventory & SSD/HDD/NVMe classification', option: 'nx06-001'}
+  - !status: {status: 'NX06-001 Storage inventory & SSD/HDD/NVMe classification', option: 'g-storage'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -22,11 +22,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx06-001'
+    option: 'g-storage'
     weight: 2
 
   # 'NX06-002 TRIM enable & verification'
-  - !status: {status: 'NX06-002 TRIM enable & verification', option: 'nx06-002'}
+  - !status: {status: 'NX06-002 TRIM enable & verification', option: 'g-storage'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -35,11 +35,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx06-002'
+    option: 'g-storage'
     weight: 2
 
   # 'NX06-003 Optimize Drives schedule configuration'
-  - !status: {status: 'NX06-003 Optimize Drives schedule configuration', option: 'nx06-003'}
+  - !status: {status: 'NX06-003 Optimize Drives schedule configuration', option: 'g-storage'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -48,11 +48,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx06-003'
+    option: 'g-storage'
     weight: 2
 
   # 'NX06-004 Storage Sense policy configuration'
-  - !status: {status: 'NX06-004 Storage Sense policy configuration', option: 'nx06-004'}
+  - !status: {status: 'NX06-004 Storage Sense policy configuration', option: 'g-storage'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -61,11 +61,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx06-004'
+    option: 'g-storage'
     weight: 2
 
   # 'NX06-005 Temporary files cleanup (on-demand)'
-  - !status: {status: 'NX06-005 Temporary files cleanup (on-demand)', option: 'nx06-005'}
+  - !status: {status: 'NX06-005 Temporary files cleanup (on-demand)', option: 'g-storage'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -74,11 +74,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx06-005'
+    option: 'g-storage'
     weight: 2
 
   # 'NX06-006 Windows Update cache cleanup (on-demand)'
-  - !status: {status: 'NX06-006 Windows Update cache cleanup (on-demand)', option: 'nx06-006'}
+  - !status: {status: 'NX06-006 Windows Update cache cleanup (on-demand)', option: 'g-storage'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -87,11 +87,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx06-006'
+    option: 'g-storage'
     weight: 2
 
   # 'NX06-007 Delivery Optimization cache cleanup (on-demand)'
-  - !status: {status: 'NX06-007 Delivery Optimization cache cleanup (on-demand)', option: 'nx06-007'}
+  - !status: {status: 'NX06-007 Delivery Optimization cache cleanup (on-demand)', option: 'g-storage'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -100,11 +100,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx06-007'
+    option: 'g-storage'
     weight: 2
 
   # 'NX06-008 NTFS last-access update policy'
-  - !status: {status: 'NX06-008 NTFS last-access update policy', option: 'nx06-008'}
+  - !status: {status: 'NX06-008 NTFS last-access update policy', option: 'g-storage'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -113,11 +113,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx06-008'
+    option: 'g-storage'
     weight: 2
 
   # 'NX06-009 NTFS 8.3 short-name creation policy'
-  - !status: {status: 'NX06-009 NTFS 8.3 short-name creation policy', option: 'nx06-009'}
+  - !status: {status: 'NX06-009 NTFS 8.3 short-name creation policy', option: 'g-storage'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -126,24 +126,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx06-009'
-    weight: 2
-
-  # 'NX06-010 NTFS memory usage configuration' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX06-010 NTFS memory usage configuration', option: 'nx06-010'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Set-NxNtfsMemoryUsage -Mode 'Report' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx06-010'
+    option: 'g-storage'
     weight: 2
 
   # 'NX06-011 Write caching policy (per-device)'
-  - !status: {status: 'NX06-011 Write caching policy (per-device)', option: 'nx06-011'}
+  - !status: {status: 'NX06-011 Write caching policy (per-device)', option: 'g-storage'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -152,11 +139,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx06-011'
+    option: 'g-storage'
     weight: 2
 
   # 'NX06-012 Disk device power management (storage D3 in Modern Standby)'
-  - !status: {status: 'NX06-012 Disk device power management (storage D3 in Modern Standby)', option: 'nx06-012'}
+  - !status: {status: 'NX06-012 Disk device power management (storage D3 in Modern Standby)', option: 'g-storage'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -165,11 +152,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx06-012'
+    option: 'g-storage'
     weight: 2
 
   # 'NX06-013 Drive health (SMART) report'
-  - !status: {status: 'NX06-013 Drive health (SMART) report', option: 'nx06-013'}
+  - !status: {status: 'NX06-013 Drive health (SMART) report', option: 'g-storage'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -178,5 +165,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx06-013'
+    option: 'g-storage'
     weight: 2

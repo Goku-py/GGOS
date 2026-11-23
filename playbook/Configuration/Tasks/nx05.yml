@@ -1,19 +1,19 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX05.json (Memory Management). Playbook version 0.7.0.
+# Source: registry/NX05.json (Memory Management). Playbook version 0.8.0.
 # Every action is option-gated (option name = lowercase tweak id): unselected
 # tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
 ---
 title: 'NEXTRIX NX05 - Memory Management'
 description: >
   Generated from registry/NX05.json: 11 selectable tweak option(s)
-  (option names are lowercase tweak ids). Function actions run the journaled
+  (option names are curated UI group ids). Function actions run the journaled
   NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak
   pipeline (capture -> journal -> apply -> verify), never a raw engine write.
 actions:
   - !status: {status: 'NX05 Memory Management: applying selected tweaks'}
 
   # 'NX05-001 Normalize pagefile to system-managed'
-  - !status: {status: 'NX05-001 Normalize pagefile to system-managed', option: 'nx05-001'}
+  - !status: {status: 'NX05-001 Normalize pagefile to system-managed', option: 'g-memory'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -22,50 +22,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx05-001'
-    weight: 2
-
-  # 'NX05-002 Custom pagefile configuration' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX05-002 Custom pagefile configuration', option: 'nx05-002'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Set-NxCustomPagefile -Drive 'C:' -InitialSizeMB 1024 -MaximumSizeMB 8192 -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx05-002'
-    weight: 2
-
-  # 'NX05-003 Disable pagefile' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX05-003 Disable pagefile', option: 'nx05-003'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Disable-NxPagefile -AcknowledgeCommitRisk -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx05-003'
-    weight: 2
-
-  # 'NX05-004 Memory compression configuration' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX05-004 Memory compression configuration', option: 'nx05-004'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Set-NxMemoryCompression -Enabled:$false -MinimumRamGB 16 -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx05-004'
+    option: 'g-memory'
     weight: 2
 
   # 'NX05-005 Memory pressure & commit monitoring report'
-  - !status: {status: 'NX05-005 Memory pressure & commit monitoring report', option: 'nx05-005'}
+  - !status: {status: 'NX05-005 Memory pressure & commit monitoring report', option: 'g-memory'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -74,11 +35,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx05-005'
+    option: 'g-memory'
     weight: 2
 
   # 'NX05-006 Standby memory diagnostic report'
-  - !status: {status: 'NX05-006 Standby memory diagnostic report', option: 'nx05-006'}
+  - !status: {status: 'NX05-006 Standby memory diagnostic report', option: 'g-memory'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -87,41 +48,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx05-006'
-    weight: 2
-
-  # 'NX05-007 Large System Cache' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX05-007 Large System Cache', option: 'nx05-007'}
-  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
-  # journals BEFORE mutating, verifies, and restores the original on failure.
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Invoke-NxRegistryTweak -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management' -Name 'LargeSystemCache' -Kind 'DWord' -Data '1' -TweakId 'NX05-007' -TweakVersion '1' -Approval 'ExplicitConsent' -Profiles 'P4','P5' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx05-007'
-    weight: 2
-
-  # 'NX05-008 Clear pagefile at shutdown' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX05-008 Clear pagefile at shutdown', option: 'nx05-008'}
-  # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
-  # journals BEFORE mutating, verifies, and restores the original on failure.
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Invoke-NxRegistryTweak -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management' -Name 'ClearPageFileAtShutdown' -Kind 'DWord' -Data '1' -TweakId 'NX05-008' -TweakVersion '1' -Approval 'ExplicitConsent' -Profiles 'P8','P9' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx05-008'
+    option: 'g-memory'
     weight: 2
 
   # 'NX05-009 Crash dump configuration'
-  - !status: {status: 'NX05-009 Crash dump configuration', option: 'nx05-009'}
+  - !status: {status: 'NX05-009 Crash dump configuration', option: 'g-memory'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -130,24 +61,11 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx05-009'
-    weight: 2
-
-  # 'NX05-010 Pool limit configuration' [presetExcluded: default UNCHECKED]
-  - !status: {status: 'NX05-010 Pool limit configuration', option: 'nx05-010'}
-  - !powerShell:
-    command: |
-      foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
-      Set-NxPoolLimitConfiguration -PoolUsageMaximum 60 -AcknowledgeSymptom -SymptomNote 'Documented paged-pool exhaustion symptom class (Event ID 2020/2004); see documentationSource' -JournalRoot (Join-Path $env:ProgramData 'NEXTRIX\Journal') -Approved -Approval 'ExplicitConsent'
-    exeDir: true
-    wait: true
-    runas: currentUserElevated
-    errorAction: Notify
-    option: 'nx05-010'
+    option: 'g-memory'
     weight: 2
 
   # 'NX05-011 Memory diagnostics suite'
-  - !status: {status: 'NX05-011 Memory diagnostics suite', option: 'nx05-011'}
+  - !status: {status: 'NX05-011 Memory diagnostics suite', option: 'g-memory'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -156,5 +74,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'nx05-011'
+    option: 'g-memory'
     weight: 2
