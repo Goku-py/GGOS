@@ -71,7 +71,7 @@ Owner-approved and pending decisions. Each ADR records context, decision, owner 
 - **Versioning:** NEXTRIX starts at **v0.1.0** (Phase 0–2 foundation). The old GGOS tags were deleted with the old content; the version namespace is fresh.
 - **Consequences:** PD-5 resolved by execution. Release notes and `CHANGELOG.md` serve different audiences but must not diverge in substance — notes summarize, `CHANGELOG.md` details.
 
-**Execution note (2026-11-23):** mirror backup of the removed repository state at `C:\Users\Administrator\AppData\Local\Temp\opencode\NEXTRIX-remote-backup-2026-11-23.git` — the owner should move it to permanent storage (temp folders are periodically cleaned).
+**Execution note (2026-11-23, updated same day):** a full mirror backup of the removed repository state was taken before any deletion, as a safety measure. The owner later confirmed the backup was not needed and instructed its deletion; it has been removed. No copy of the old GGOS content is retained by NEXTRIX.
 
 ## Pending decisions (escalated, not yet taken)
 

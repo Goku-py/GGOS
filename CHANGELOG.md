@@ -41,3 +41,4 @@ No NEXTRIX modifications have been applied to any machine. No performance claims
 - Official GitHub remote connected: `Goku-py/NEXTRIX` (private). Previous repository content (the GGOS project: branch history, 5 tags, releases) removed at owner instruction; **full mirror backup taken locally before deletion** (ADR-007).
 - Release policy set (ADR-007): every version release = commits pushed + GitHub Release with short, easy-to-understand notes specific to that release; the detailed engineering log remains here.
 - First release published: **v0.1.0 — Foundation** (this commit).
+- Owner confirmed the old-content backup was not needed; the local mirror backup was deleted at owner instruction (ADR-007 execution note updated).
