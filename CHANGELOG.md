@@ -2,7 +2,28 @@
 
 All notable changes to the NEXTRIX repository. Dates are ISO. Statuses follow the verification ladder in `TWEAK_CLASSIFICATION.md`.
 
-## 2026-11-23 — Phase 4 Wave 1 (v0.3.0)
+## 2026-11-23 - Phase 4 Wave 3 (v0.5.0)
+
+- **NX08 Input & Peripherals** (8) - incl. researched **NX08-008 DataQueueSize** (mouclass/kbdclass queue depth; default 100; community floor 16 enforced in code; placebo contradiction and click-loss-at-1 recorded; no performance claim). 53 assertions.
+- **NX10 Thermal Management** (8) - read-only monitoring with hard uncertainty discipline (disagreeing temperature sources reported as Uncertain-SourceDisagreement, never averaged). 130 assertions.
+- **NX12 Windows Debloating** (14) - three-layer protected-dependency guard enforced inside the removal engines; journaled identity/scope before removal; honest Success-Irreversible labels; playbook actions are plan-first (removal write functions await explicit-selection wiring - KNOWN_ISSUES 13). 57 assertions.
+- **NX14 Security Configuration** (15) - read-only reports plus mutation surfaces that can never lower a protection; banned-target code guard mirrors the schema and is stricter; ExplicitConsent gates. 152 assertions.
+- **NX17 Advanced Windows Configuration** (14) - 2 Implemented / 12 read-only Defined by design (BCD writes, device MSI/affinity, Driver Verifier, timer/HPET forcing deliberately withheld). 41 assertions.
+- **NX19 CPU Topology & Scheduling** (11) - open P/Invoke engine: GetLogicalProcessorInformationEx tiers, dies/CCD, X3D via >2x per-die L3 asymmetry, LP-to-CPU-Set-ID map; synthetic coverage for Intel hybrid/two- and three-tier, AMD dual-CCD/X3D/boundary cases, bit 63, multi-group; no hardcoded indexes (audited). 149 assertions.
+- **NX20 Hardware & Driver Management** (11) - read-only inventory reusing NxHardware; found and drove the fix of an NX16 null-date truncation (driver inventory 26 to 164 rows).
+- **Engine** - Import-NxCore function removed (function scoping defect; dot-source src/nxcore/Import-NxCore.ps1); bounded test runner tools/Test-NxAll.ps1 (per-suite timeouts, Windows PowerShell 5.1) after a PS7 DISM enumeration hang was diagnosed.
+- **Validations:** 1,216 assertions across 17 suites, 0 failures; validator 0/0 (270 tweaks / 19 files); parser 46 files clean; playbook 24 files, 0 errors, 71 journaled writes, 0 raw; status promotion 231 entries to SyntaxValidated.
+- **No NEXTRIX modification applied to any machine.**
+
+## 2026-11-23 - Phase 4 Wave 2 (v0.4.0)
+
+- **Seven categories delivered:** NX03 CPU (13), NX05 Memory (11), NX06 Storage (13), NX07 Network (22), NX11 Services (19), NX13 Privacy (14), NX15 Visual (14) - 106 new tweaks, all validator-clean at the gate.
+- **Highlights:** processor power settings with AC/DC journaled separately; pagefile exact-state capture as the restore anchor; DNS with mandatory proof-and-rollback; never-touch service enforcement (Print Spooler report-only); edition-aware telemetry floor with placebo guard (Home/Pro value kept but reported honestly); UCPD policy fallbacks for taskbar values.
+- **Engine:** function dispatcher wired into Invoke-NxApply; steps-list fix; rollback category delegation (Invoke-Nx09Rollback); journal integrity fix (integer timestamps, v1.1); validator 5.1 PSScriptRoot fix; NX02-005 migrated to the shared DirectX composer (key-path correction).
+- **Validations:** 561 assertions across 10 suites; validator 0/0 (189 tweaks / 12 files); parser 31 files; playbook 17 files, 0 errors, 71 journaled writes at that point.
+- **No NEXTRIX modification applied to any machine.**
+
+## 2026-11-23 - Phase 4 Wave 1 (v0.3.0)
 
 - **NX01 Windows Foundation** — 16 entries (15 Implemented, 1 honest Defined); Microsoft documentation verified for policy evidence; CDM registry families E0 with provenance.
 - **NX02 Gaming & Esports** — 12 entries (9 Implemented, 3 composition Defines); Streamer-profile exclusions verified programmatically; no global FSO/IFEO patterns.
