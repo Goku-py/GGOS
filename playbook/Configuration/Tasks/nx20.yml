@@ -1,13 +1,13 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX20.json (Hardware & Driver Management). Playbook version 0.9.3.
-# Every action is option-gated (option name = use-case bundle or form factor):
-# unselected bundles and the other form factor never run. Advanced/troubleshooting
+# Source: registry/NX20.json (Hardware & Driver Management). Playbook version 0.9.4.
+# Every action is option-gated (option name = QoL choice or form factor):
+# unselected choices and the other form factor never run. Advanced/troubleshooting
 # entries are CLI-only and absent.
 ---
 title: 'NEXTRIX NX20 - Hardware & Driver Management'
 description: >
   Generated from registry/NX20.json: 11 selectable tweak option(s)
-  (option names are curated bundles or the Desktop/Laptop form factor). Function
+  (option names are QoL choices or the Desktop/Laptop form factor). Function
   actions run the journaled NxCore engine; registry actions run the journaled
   Invoke-NxRegistryTweak pipeline (capture -> journal -> apply -> verify), never a raw engine write.
 actions:
@@ -21,7 +21,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-security'
+    option: 'q-health'
     weight: 2
 
   # 'NX20-002 GPU vendor & driver capability report'
@@ -33,7 +33,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-security'
+    option: 'q-health'
     weight: 2
 
   # 'NX20-003 NVIDIA driver management (inventory, guidance, profile inspection)'
@@ -45,7 +45,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-security'
+    option: 'q-health'
     weight: 2
 
   # 'NX20-004 AMD driver management (equivalent)'
@@ -57,7 +57,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-security'
+    option: 'q-health'
     weight: 2
 
   # 'NX20-005 Intel driver management (equivalent)'
@@ -69,7 +69,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-security'
+    option: 'q-health'
     weight: 2
 
   # 'NX20-006 Network driver inspection & version report'
@@ -81,7 +81,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-security'
+    option: 'q-health'
     weight: 2
 
   # 'NX20-007 USB hardware inventory report'
@@ -93,7 +93,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-security'
+    option: 'q-health'
     weight: 2
 
   # 'NX20-008 Installed driver history report'
@@ -105,7 +105,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-security'
+    option: 'q-health'
     weight: 2
 
   # 'NX20-009 Hardware compatibility report generator'
@@ -117,7 +117,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-security'
+    option: 'q-health'
     weight: 2
 
   # 'NX20-010 Device configuration inspection'
@@ -129,7 +129,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-security'
+    option: 'q-health'
     weight: 2
 
   # 'NX20-011 BIOS/version currency guidance (report only)'
@@ -141,5 +141,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-security'
+    option: 'q-health'
     weight: 2

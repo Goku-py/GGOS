@@ -1,13 +1,13 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX09.json (Power Management). Playbook version 0.9.3.
-# Every action is option-gated (option name = use-case bundle or form factor):
-# unselected bundles and the other form factor never run. Advanced/troubleshooting
+# Source: registry/NX09.json (Power Management). Playbook version 0.9.4.
+# Every action is option-gated (option name = QoL choice or form factor):
+# unselected choices and the other form factor never run. Advanced/troubleshooting
 # entries are CLI-only and absent.
 ---
 title: 'NEXTRIX NX09 - Power Management'
 description: >
   Generated from registry/NX09.json: 15 selectable tweak option(s)
-  (option names are curated bundles or the Desktop/Laptop form factor). Function
+  (option names are QoL choices or the Desktop/Laptop form factor). Function
   actions run the journaled NxCore engine; registry actions run the journaled
   Invoke-NxRegistryTweak pipeline (capture -> journal -> apply -> verify), never a raw engine write.
 actions:
@@ -21,7 +21,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-cpu-power'
+    option: 'q-power'
     weight: 2
 
   # 'NX09-002 Ultimate Performance provisioning'
@@ -45,7 +45,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-cpu-power'
+    option: 'q-power'
     weight: 2
 
   # 'NX09-004 PCIe ASPM link policy'
@@ -81,7 +81,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-cpu-power'
+    option: 'q-power'
     weight: 2
 
   # 'NX09-007 Sleep configuration'
@@ -93,7 +93,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-cpu-power'
+    option: 'q-power'
     weight: 2
 
   # 'NX09-008 Hibernate configuration'
@@ -105,7 +105,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-cpu-power'
+    option: 'q-power'
     weight: 2
 
   # 'NX09-009 Fast Startup configuration'
@@ -117,7 +117,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-cpu-power'
+    option: 'q-power'
     weight: 2
 
   # 'NX09-010 Lid close behavior (laptops)'
@@ -153,7 +153,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-cpu-power'
+    option: 'q-power'
     weight: 2
 
   # 'NX09-013 Power plan export/import/restore tooling'
@@ -165,7 +165,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-cpu-power'
+    option: 'q-power'
     weight: 2
   - !powerShell:
     command: |
@@ -175,7 +175,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-cpu-power'
+    option: 'q-power'
     weight: 2
 
   # 'NX09-014 Energy report (powercfg /energy)'
@@ -187,7 +187,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-cpu-power'
+    option: 'q-power'
     weight: 2
 
   # 'NX09-015 Battery report (powercfg /batteryreport)'

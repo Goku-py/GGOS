@@ -598,79 +598,61 @@ $model = @{
 }
 
 # ---------------------------------------------------------------- UI model
-# The AME wizard is a selection surface, not a tweak browser. NEXTRIX maps the
-# non-presetExcluded tweaks to curated groups, then folds those groups into
-# use-case bundles (three selection pages). presetExcluded (advanced/
-# troubleshooting) stays CLI-only with explicit consent. AME engine rules
-# enforced below: CheckboxPage Description 50-85 chars, short Option Text,
+# The AME wizard is a selection surface, not a tweak browser. NEXTRIX exposes
+# quality-of-life choices (how Windows should look, behave and protect privacy),
+# not the technical tweak names; every choice maps to journaled tweaks underneath.
+# presetExcluded (advanced/troubleshooting) stays CLI-only with explicit consent.
+# AME rules enforced below: CheckboxPage Description 50-85 chars, short Option Text,
 # max 4 options per page, hard 4-page budget.
 $UiCategoryDefault = @{
-    'NX01' = 'g-suggestions'; 'NX02' = 'g-gamemode'; 'NX03' = 'g-cpu'; 'NX04' = 'g-gpusched'
-    'NX05' = 'g-memory'; 'NX06' = 'g-storage'; 'NX07' = 'g-eth'; 'NX08' = 'g-input'
-    'NX09' = 'g-power'; 'NX10' = 'g-hardware'; 'NX11' = 'g-services'; 'NX12' = 'g-debloat'
-    'NX13' = 'g-telemetry'; 'NX14' = 'g-security'; 'NX15' = 'g-visual'; 'NX16' = 'g-maint'
-    'NX17' = 'g-security'; 'NX18' = 'g-session'; 'NX19' = 'g-cpu'; 'NX20' = 'g-hardware'
+    'NX01' = 'q-start';     'NX02' = 'q-game-mode'; 'NX03' = 'q-power';      'NX04' = 'q-graphics'
+    'NX05' = 'q-power';     'NX06' = 'q-explorer';  'NX07' = 'q-network';    'NX08' = 'q-input'
+    'NX09' = 'q-power';     'NX10' = 'q-health';    'NX11' = 'q-background'; 'NX12' = 'q-debloat'
+    'NX13' = 'q-privacy';   'NX14' = 'q-health';    'NX15' = 'q-start';      'NX16' = 'q-health'
+    'NX17' = 'q-health';    'NX18' = 'q-game-mode'; 'NX19' = 'q-power';      'NX20' = 'q-health'
 }
+# Visual QoL is where people differ most: split NX15 into Animations, Explorer
+# and Start/notifications instead of one opaque visual bundle.
 $UiIdOverrides = @{
-    'NX01-009' = 'g-search'; 'NX01-011' = 'g-updates'; 'NX01-012' = 'g-updates'; 'NX01-013' = 'g-updates'; 'NX01-014' = 'g-updates'
-    'NX01-015' = 'g-maint'; 'NX01-016' = 'g-visual'
-    'NX02-008' = 'g-gamemode'
-    'NX04-003' = 'g-windowed'; 'NX04-005' = 'g-windowed'; 'NX04-007' = 'g-windowed'
-    'NX04-009' = 'g-vendor'; 'NX04-010' = 'g-vendor'; 'NX04-011' = 'g-vendor'; 'NX04-012' = 'g-vendor'; 'NX04-013' = 'g-vendor'; 'NX04-014' = 'g-vendor'; 'NX04-015' = 'g-vendor'; 'NX04-016' = 'g-vendor'
-    'NX04-017' = 'g-vendor'; 'NX04-018' = 'g-vendor'; 'NX04-019' = 'g-vendor'; 'NX04-020' = 'g-vendor'; 'NX04-021' = 'g-vendor'; 'NX04-022' = 'g-vendor'; 'NX04-023' = 'g-vendor'
-    'NX07-001' = 'g-netdiag'; 'NX07-012' = 'g-wifi'; 'NX07-013' = 'g-wifi'; 'NX07-014' = 'g-wifi'; 'NX07-015' = 'g-wifi'; 'NX07-016' = 'g-wifi'
-    'NX07-017' = 'g-netdiag'; 'NX07-018' = 'g-netdiag'; 'NX07-019' = 'g-netdiag'; 'NX07-020' = 'g-netdiag'; 'NX07-022' = 'g-netdiag'
-    'NX11-001' = 'g-startup'; 'NX11-002' = 'g-startup'; 'NX11-003' = 'g-startup'; 'NX11-004' = 'g-startup'
-    'NX13-005' = 'g-permissions'; 'NX13-011' = 'g-permissions'; 'NX13-014' = 'g-permissions'
+    'NX15-001' = 'q-visual'; 'NX15-002' = 'q-visual'; 'NX15-003' = 'q-visual'; 'NX15-014' = 'q-visual'
+    'NX15-006' = 'q-explorer'; 'NX15-007' = 'q-explorer'; 'NX15-008' = 'q-explorer'
+    'NX15-009' = 'q-explorer'; 'NX15-010' = 'q-explorer'
 }
-# Use-case bundles: each bundle absorbs one or more UI groups. A group belongs to
-# exactly one bundle, so every emitted action has exactly one option gate.
+# QoL choices. Each is its own UI group, so every emitted action has exactly one gate.
 $UiBundles = [ordered]@{
-    'b-game-mode' = 'Game Mode & Game Bar'
-    'b-gpu'       = 'GPU & display tuning'
-    'b-cpu-power' = 'CPU, power & memory'
-    'b-input'     = 'Input & USB devices'
-    'b-windows'   = 'Windows cleanup'
-    'b-storage'   = 'Storage & filesystem'
-    'b-network'   = 'Network & DNS'
-    'b-maint'     = 'Maintenance & recovery'
-    'b-privacy'   = 'Privacy & telemetry'
-    'b-startup'   = 'Startup & background apps'
-    'b-debloat'   = 'Optional app removal (plans)'
-    'b-security'  = 'Security & hardware reports'
+    'q-start'      = 'Cleaner Start & notifications'
+    'q-explorer'   = 'Files, Explorer & storage'
+    'q-visual'     = 'Animations & transparency'
+    'q-health'     = 'Healthy Windows & reports'
+    'q-privacy'    = 'Less tracking & personalized ads'
+    'q-background' = 'Fewer startup & background apps'
+    'q-debloat'    = 'Remove apps I don''t use'
+    'q-network'    = 'Stable network & DNS'
+    'q-game-mode'  = 'Game Mode, no recording'
+    'q-graphics'   = 'Graphics & display smoothness'
+    'q-input'      = 'Mouse & keyboard feel'
+    'q-power'      = 'Performance or battery'
 }
-$UiBundleGroups = @{
-    'b-game-mode' = @('g-gamemode','g-windowed')
-    'b-gpu'       = @('g-gpusched','g-vendor')
-    'b-cpu-power' = @('g-cpu','g-power','g-memory')
-    'b-input'     = @('g-input')
-    'b-windows'   = @('g-suggestions','g-search','g-updates','g-visual')
-    'b-storage'   = @('g-storage')
-    'b-network'   = @('g-eth','g-wifi','g-netdiag')
-    'b-maint'     = @('g-maint')
-    'b-privacy'   = @('g-telemetry','g-permissions')
-    'b-startup'   = @('g-startup','g-services')
-    'b-debloat'   = @('g-debloat')
-    'b-security'  = @('g-security','g-hardware')
-}
+$UiBundleGroups = @{}
+foreach ($q in $UiBundles.Keys) { $UiBundleGroups[$q] = @($q) }
 $UiGroupBundle = @{}
-foreach ($bk in $UiBundleGroups.Keys) {
-    foreach ($g in @($UiBundleGroups[$bk])) {
-        if ($UiGroupBundle.ContainsKey($g)) { throw "UI: group '$g' mapped to two bundles" }
-        $UiGroupBundle[$g] = $bk
+foreach ($q in $UiBundleGroups.Keys) {
+    foreach ($g in @($UiBundleGroups[$q])) {
+        if ($UiGroupBundle.ContainsKey($g)) { throw "UI: group '$g' mapped to two choices" }
+        $UiGroupBundle[$g] = $q
     }
 }
-$UiDefaultChecked = @{ 'b-maint' = $true }
+$UiDefaultChecked = @{ 'q-health' = $true }
 # First page: form factor radio. Desktop and Laptop are mutually exclusive, so a
 # radio page is used (checkboxes cannot enforce a single choice). Hardware-specific
-# tweak ids are re-gated from their bundle to the matching form-factor option.
+# tweak ids are re-gated from their QoL choice to the matching form-factor option.
 $UiFormFactorOptions = @(
     @{ name = 'ff-desktop'; text = 'Desktop PC' }
     @{ name = 'ff-laptop';  text = 'Laptop' }
 )
 $UiFormFactorDefault = 'ff-desktop'
 $UiFormFactorDescription = 'Pick Desktop or Laptop so the right power and thermal tweaks apply.'
-$UiFormFactorTopLine = 'Desktop adds Ultimate Performance; Laptop adds battery, lid and thermal tweaks.'
+$UiFormFactorTopLine = 'Desktop: Ultimate Performance. Laptop: battery, lid, Wi-Fi and thermal tweaks.'
 $UiFormFactor = @{
     'NX04-008' = 'ff-laptop'   # hybrid graphics routing (laptop)
     'NX06-012' = 'ff-laptop'   # storage D3 in Modern Standby (laptop)
@@ -686,13 +668,13 @@ $UiFormFactor = @{
     'NX10-007' = 'ff-laptop'   # AC/DC thermal report (laptop)
     'NX09-002' = 'ff-desktop'  # Ultimate Performance provisioning (desktop)
 }
-# Three selection pages plus the form-factor page = four wizard pages (the hard
-# budget). AME rules: CheckboxPage Description 50-85 chars, max 4 options/page;
-# RadioPage here has exactly two options.
+# Three QoL pages plus the form-factor page = four wizard pages (the hard budget).
+# AME rules: CheckboxPage Description 50-85 chars, max 4 options/page; RadioPage
+# here has exactly two options.
 $UiPages = @(
-    @{ desc = 'Gaming: Game Mode, GPU/display, CPU-power-memory and input tweaks.'; bundles = @('b-game-mode','b-gpu','b-cpu-power','b-input') }
-    @{ desc = 'Everyday: Windows cleanup, storage, network/DNS and maintenance tweaks.'; bundles = @('b-windows','b-storage','b-network','b-maint') }
-    @{ desc = 'Privacy: telemetry, startup apps, app-removal plans and security reports.'; bundles = @('b-privacy','b-startup','b-debloat','b-security') }
+    @{ desc = 'Everyday: cleaner Start, files/storage, visuals and Windows health.'; bundles = @('q-start','q-explorer','q-visual','q-health') }
+    @{ desc = 'Privacy, apps and network: less tracking, fewer background apps, DNS.'; bundles = @('q-privacy','q-background','q-debloat','q-network') }
+    @{ desc = 'Gaming and input: Game Mode, graphics, mouse/keyboard and power.'; bundles = @('q-game-mode','q-graphics','q-input','q-power') }
 )
 
 foreach ($c in $categories) {
@@ -796,7 +778,7 @@ foreach ($c in $categories) {
         $bundleOption = $groupId
         if ($UiGroupBundle.ContainsKey($groupId)) { $bundleOption = [string]$UiGroupBundle[$groupId] }
         # Hardware-specific tweaks follow the Desktop/Laptop radio instead of the
-        # bundle so a laptop never receives desktop-only settings and vice versa.
+        # QoL choice so a laptop never receives desktop-only settings and vice versa.
         if ($UiFormFactor.ContainsKey([string]$t.id)) { $bundleOption = [string]$UiFormFactor[[string]$t.id] }
         $selectable += @{
             tweak = $t
@@ -947,9 +929,9 @@ function New-NxPlaybookConf($Model) {
     $L.Add('    <Title>' + (ConvertTo-NxXmlText ("NEXTRIX v" + $Model.version)) + '</Title>')
     $L.Add('    <ShortDescription>' + (ConvertTo-NxXmlText 'Selective, journaled Windows 11 configuration with NEXTRIX-owned rollback.') + '</ShortDescription>')
     $L.Add('    <Description><![CDATA[')
-    $L.Add('NEXTRIX is a journaled Windows 11 tweak playbook. Pick Desktop or Laptop first, then')
-    $L.Add('the use-case bundles you want. Only selected tweaks run; every change is journaled by')
-    $L.Add('NxCore and can be undone from the command line. Windows Update and security stay on.')
+    $L.Add('NEXTRIX is a journaled Windows 11 quality-of-life playbook. Pick Desktop or Laptop,')
+    $L.Add('then the everyday, privacy and gaming choices you want. Only selected tweaks run;')
+    $L.Add('every change is journaled by NxCore and can be undone from the command line.')
     $L.Add('No performance claims - validate on your own hardware.]]>')
     $L.Add('    </Description>')
     $L.Add('    <Details>' + (ConvertTo-NxXmlText ('Windows 11 23H2-26H2 (22631, 26100, 26200, 26300). Requirements: Internet, PluggedIn. Journal at %ProgramData%\NEXTRIX\Journal. Wizard: AME Beta v0.8.4.')) + '</Details>')
@@ -1001,7 +983,7 @@ function New-NxPlaybookConf($Model) {
     $L.Add('            </Options>')
     $L.Add('        </RadioPage>')
 
-    # Use-case bundle pages (see $UiBundles/$UiPages). AME rules enforced:
+    # QoL choice pages (see $UiBundles/$UiPages). AME rules enforced:
     # CheckboxPage Description 50-85 chars, short option Text, max 4 options/page,
     # and a hard 4-page budget (1 form-factor page + 3 selection pages).
     $includedBundles = @()
@@ -1019,7 +1001,7 @@ function New-NxPlaybookConf($Model) {
             }
             if ($count -eq 0) { continue }
             $bText = [string]$UiBundles[[string]$b]
-            if ([string]::IsNullOrWhiteSpace($bText)) { throw "UI bundle '$b' has no display text" }
+            if ([string]::IsNullOrWhiteSpace($bText)) { throw "UI choice '$b' has no display text" }
             if ($bText.Length -gt 40) { throw "UI option text over 40 chars: '$bText'" }
             $opts += @{ name = [string]$b; text = $bText; checked = [bool]$UiDefaultChecked[[string]$b] }
             $includedBundles += [string]$b
@@ -1137,8 +1119,8 @@ function New-NxCategoryYml($Model, $Cat) {
     $nRb = @($Cat.rollbackRouted).Count
     $L.Add('# NEXTRIX category task file. GENERATED FILE, do not edit by hand.')
     $L.Add("# Source: registry/$($Cat.file) ($($Cat.categoryName)). Playbook version $($Model.version).")
-    $L.Add('# Every action is option-gated (option name = use-case bundle or form factor):')
-    $L.Add('# unselected bundles and the other form factor never run. Advanced/troubleshooting')
+    $L.Add('# Every action is option-gated (option name = QoL choice or form factor):')
+    $L.Add('# unselected choices and the other form factor never run. Advanced/troubleshooting')
     $L.Add('# entries are CLI-only and absent.')
     if ($nPf -gt 0 -or $nRb -gt 0) {
         $routed = @()
@@ -1152,7 +1134,7 @@ function New-NxCategoryYml($Model, $Cat) {
     $L.Add("  Generated from registry/$($Cat.file): $nSel selectable tweak option(s)")
     if ($nPf -gt 0) { $L.Add("  and $nPf tweak(s) routed to the mandatory pre-flight") }
     if ($nRb -gt 0) { $L.Add("  and $nRb CLI-only rollback entries (rollback is never an install action)") }
-    $L.Add('  (option names are curated bundles or the Desktop/Laptop form factor). Function')
+    $L.Add('  (option names are QoL choices or the Desktop/Laptop form factor). Function')
     $L.Add('  actions run the journaled NxCore engine; registry actions run the journaled')
     $L.Add('  Invoke-NxRegistryTweak pipeline (capture -> journal -> apply -> verify), never a raw engine write.')
     $L.Add('actions:')

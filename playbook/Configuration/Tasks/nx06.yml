@@ -1,13 +1,13 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX06.json (Storage & Filesystem). Playbook version 0.9.3.
-# Every action is option-gated (option name = use-case bundle or form factor):
-# unselected bundles and the other form factor never run. Advanced/troubleshooting
+# Source: registry/NX06.json (Storage & Filesystem). Playbook version 0.9.4.
+# Every action is option-gated (option name = QoL choice or form factor):
+# unselected choices and the other form factor never run. Advanced/troubleshooting
 # entries are CLI-only and absent.
 ---
 title: 'NEXTRIX NX06 - Storage & Filesystem'
 description: >
   Generated from registry/NX06.json: 13 selectable tweak option(s)
-  (option names are curated bundles or the Desktop/Laptop form factor). Function
+  (option names are QoL choices or the Desktop/Laptop form factor). Function
   actions run the journaled NxCore engine; registry actions run the journaled
   Invoke-NxRegistryTweak pipeline (capture -> journal -> apply -> verify), never a raw engine write.
 actions:
@@ -21,7 +21,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-storage'
+    option: 'q-explorer'
     weight: 2
 
   # 'NX06-002 TRIM enable & verification'
@@ -33,7 +33,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-storage'
+    option: 'q-explorer'
     weight: 2
 
   # 'NX06-003 Optimize Drives schedule configuration'
@@ -45,7 +45,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-storage'
+    option: 'q-explorer'
     weight: 2
 
   # 'NX06-004 Storage Sense policy configuration'
@@ -57,7 +57,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-storage'
+    option: 'q-explorer'
     weight: 2
 
   # 'NX06-005 Temporary files cleanup (on-demand)'
@@ -69,7 +69,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-storage'
+    option: 'q-explorer'
     weight: 2
 
   # 'NX06-006 Windows Update cache cleanup (on-demand)'
@@ -81,7 +81,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-storage'
+    option: 'q-explorer'
     weight: 2
 
   # 'NX06-007 Delivery Optimization cache cleanup (on-demand)'
@@ -93,7 +93,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-storage'
+    option: 'q-explorer'
     weight: 2
 
   # 'NX06-008 NTFS last-access update policy'
@@ -105,7 +105,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-storage'
+    option: 'q-explorer'
     weight: 2
 
   # 'NX06-009 NTFS 8.3 short-name creation policy'
@@ -117,7 +117,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-storage'
+    option: 'q-explorer'
     weight: 2
 
   # 'NX06-011 Write caching policy (per-device)'
@@ -129,7 +129,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-storage'
+    option: 'q-explorer'
     weight: 2
 
   # 'NX06-012 Disk device power management (storage D3 in Modern Standby)'
@@ -153,5 +153,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-storage'
+    option: 'q-explorer'
     weight: 2

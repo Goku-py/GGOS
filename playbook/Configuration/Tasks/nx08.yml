@@ -1,13 +1,13 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX08.json (Input & Peripherals). Playbook version 0.9.3.
-# Every action is option-gated (option name = use-case bundle or form factor):
-# unselected bundles and the other form factor never run. Advanced/troubleshooting
+# Source: registry/NX08.json (Input & Peripherals). Playbook version 0.9.4.
+# Every action is option-gated (option name = QoL choice or form factor):
+# unselected choices and the other form factor never run. Advanced/troubleshooting
 # entries are CLI-only and absent.
 ---
 title: 'NEXTRIX NX08 - Input & Peripherals'
 description: >
   Generated from registry/NX08.json: 8 selectable tweak option(s)
-  (option names are curated bundles or the Desktop/Laptop form factor). Function
+  (option names are QoL choices or the Desktop/Laptop form factor). Function
   actions run the journaled NxCore engine; registry actions run the journaled
   Invoke-NxRegistryTweak pipeline (capture -> journal -> apply -> verify), never a raw engine write.
 actions:
@@ -21,7 +21,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-input'
+    option: 'q-input'
     weight: 2
 
   # 'NX08-002 Mouse pointer speed/sensitivity'
@@ -33,7 +33,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-input'
+    option: 'q-input'
     weight: 2
 
   # 'NX08-003 Mouse polling rate inspection'
@@ -45,7 +45,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-input'
+    option: 'q-input'
     weight: 2
 
   # 'NX08-004 Keyboard repeat delay/rate'
@@ -57,7 +57,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-input'
+    option: 'q-input'
     weight: 2
 
   # 'NX08-005 Game controller inspection & configuration'
@@ -69,7 +69,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-input'
+    option: 'q-input'
     weight: 2
 
   # 'NX08-006 Bluetooth peripheral inspection & power policy'
@@ -93,7 +93,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-input'
+    option: 'q-input'
     weight: 2
 
   # 'NX08-008 Mouse/keyboard data-queue size configuration'
@@ -105,5 +105,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-input'
+    option: 'q-input'
     weight: 2

@@ -2,6 +2,14 @@
 
 All notable changes to the NEXTRIX repository. Dates are ISO. Statuses follow the verification ladder in `TWEAK_CLASSIFICATION.md`.
 
+## 2026-11-24 - QoL choice surface (v0.9.4)
+
+- **The wizard no longer shows technical tweak names.** The 12 checkboxes are quality-of-life choices: cleaner Start/notifications; files, Explorer and storage; animations/transparency; healthy Windows/reports; less tracking/ads; fewer background apps; remove apps; network/DNS; Game Mode/recording; graphics smoothness; mouse/keyboard feel; performance/battery.
+- **Visual QoL is split three ways** (NX15 re-gated): animations/transparency, Explorer/file extensions, and Start/taskbar/notifications/lock screen. These person-to-person preferences no longer sit inside one opaque visual bundle.
+- **4 pages total** (Desktop/Laptop + 3 QoL pages); descriptions 67/69/64 chars, labels <= 36 chars, 231 journaled actions preserved.
+- Underlying per-tweak journaling is unchanged; presetExcluded/advanced entries stay CLI-only.
+- **No NEXTRIX modification applied to any machine.**
+
 ## 2026-11-24 - Form factor page + page copy rewrite (v0.9.3)
 
 - **First page is now Desktop or Laptop** (`RadioPage`, default Desktop). The radio guarantees exactly one form factor: Laptop re-gates 12 hardware-specific tweaks (hybrid graphics, Modern Standby storage D3, adapter/Wi-Fi/Bluetooth power, PCIe ASPM, USB selective suspend, lid close, battery reports, AC/DC thermal); Desktop gates Ultimate Performance provisioning. Selecting a form factor applies its hardware-specific tweaks independently of the bundle pages.

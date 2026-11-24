@@ -1,7 +1,7 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX16.json (Maintenance & Recovery). Playbook version 0.9.3.
-# Every action is option-gated (option name = use-case bundle or form factor):
-# unselected bundles and the other form factor never run. Advanced/troubleshooting
+# Source: registry/NX16.json (Maintenance & Recovery). Playbook version 0.9.4.
+# Every action is option-gated (option name = QoL choice or form factor):
+# unselected choices and the other form factor never run. Advanced/troubleshooting
 # entries are CLI-only and absent.
 # Routed out of this file: NX16-004 -> Tasks/nxcore.yml (unconditional pre-flight); NX16-013 -> CLI-only rollback (not an install action), NX16-014 -> CLI-only rollback (not an install action), NX16-015 -> CLI-only rollback (not an install action), NX16-016 -> CLI-only rollback (not an install action)
 ---
@@ -10,7 +10,7 @@ description: >
   Generated from registry/NX16.json: 12 selectable tweak option(s)
   and 1 tweak(s) routed to the mandatory pre-flight
   and 4 CLI-only rollback entries (rollback is never an install action)
-  (option names are curated bundles or the Desktop/Laptop form factor). Function
+  (option names are QoL choices or the Desktop/Laptop form factor). Function
   actions run the journaled NxCore engine; registry actions run the journaled
   Invoke-NxRegistryTweak pipeline (capture -> journal -> apply -> verify), never a raw engine write.
 actions:
@@ -24,7 +24,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-maint'
+    option: 'q-health'
     weight: 2
 
   # 'NX16-002 Pre-change restore point creation ritual'
@@ -36,7 +36,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-maint'
+    option: 'q-health'
     weight: 2
 
   # 'NX16-003 Targeted registry backup'
@@ -48,7 +48,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-maint'
+    option: 'q-health'
     weight: 2
 
   # 'NX16-005 Service configuration backup'
@@ -60,7 +60,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-maint'
+    option: 'q-health'
     weight: 2
 
   # 'NX16-006 Scheduled task backup'
@@ -72,7 +72,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-maint'
+    option: 'q-health'
     weight: 2
 
   # 'NX16-007 DISM health check & repair tooling'
@@ -84,7 +84,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-maint'
+    option: 'q-health'
     weight: 2
 
   # 'NX16-008 SFC verification tooling'
@@ -96,7 +96,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-maint'
+    option: 'q-health'
     weight: 2
 
   # 'NX16-009 Component store cleanup (on-demand)'
@@ -108,7 +108,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-maint'
+    option: 'q-health'
     weight: 2
 
   # 'NX16-010 Driver inventory & history report'
@@ -120,7 +120,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-maint'
+    option: 'q-health'
     weight: 2
 
   # 'NX16-012 Windows build & UBR verification report'
@@ -132,7 +132,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-maint'
+    option: 'q-health'
     weight: 2
 
   # 'NX16-017 Owner support-bundle export'
@@ -144,5 +144,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-maint'
+    option: 'q-health'
     weight: 2

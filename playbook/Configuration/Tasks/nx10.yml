@@ -1,13 +1,13 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX10.json (Thermal Management). Playbook version 0.9.3.
-# Every action is option-gated (option name = use-case bundle or form factor):
-# unselected bundles and the other form factor never run. Advanced/troubleshooting
+# Source: registry/NX10.json (Thermal Management). Playbook version 0.9.4.
+# Every action is option-gated (option name = QoL choice or form factor):
+# unselected choices and the other form factor never run. Advanced/troubleshooting
 # entries are CLI-only and absent.
 ---
 title: 'NEXTRIX NX10 - Thermal Management'
 description: >
   Generated from registry/NX10.json: 8 selectable tweak option(s)
-  (option names are curated bundles or the Desktop/Laptop form factor). Function
+  (option names are QoL choices or the Desktop/Laptop form factor). Function
   actions run the journaled NxCore engine; registry actions run the journaled
   Invoke-NxRegistryTweak pipeline (capture -> journal -> apply -> verify), never a raw engine write.
 actions:
@@ -21,7 +21,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-security'
+    option: 'q-health'
     weight: 2
 
   # 'NX10-002 GPU temperature & throttling report'
@@ -33,7 +33,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-security'
+    option: 'q-health'
     weight: 2
 
   # 'NX10-003 CPU power-limit monitoring'
@@ -45,7 +45,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-security'
+    option: 'q-health'
     weight: 2
 
   # 'NX10-004 GPU power-limit monitoring'
@@ -57,7 +57,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-security'
+    option: 'q-health'
     weight: 2
 
   # 'NX10-005 Fan speed monitoring (where exposed)'
@@ -69,7 +69,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-security'
+    option: 'q-health'
     weight: 2
 
   # 'NX10-006 OEM fan/cooling profile detection'
@@ -81,7 +81,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-security'
+    option: 'q-health'
     weight: 2
 
   # 'NX10-007 AC/DC thermal behavior report'
@@ -105,5 +105,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-security'
+    option: 'q-health'
     weight: 2

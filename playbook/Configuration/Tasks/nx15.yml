@@ -1,13 +1,13 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX15.json (Visual & Interface). Playbook version 0.9.3.
-# Every action is option-gated (option name = use-case bundle or form factor):
-# unselected bundles and the other form factor never run. Advanced/troubleshooting
+# Source: registry/NX15.json (Visual & Interface). Playbook version 0.9.4.
+# Every action is option-gated (option name = QoL choice or form factor):
+# unselected choices and the other form factor never run. Advanced/troubleshooting
 # entries are CLI-only and absent.
 ---
 title: 'NEXTRIX NX15 - Visual & Interface'
 description: >
   Generated from registry/NX15.json: 14 selectable tweak option(s)
-  (option names are curated bundles or the Desktop/Laptop form factor). Function
+  (option names are QoL choices or the Desktop/Laptop form factor). Function
   actions run the journaled NxCore engine; registry actions run the journaled
   Invoke-NxRegistryTweak pipeline (capture -> journal -> apply -> verify), never a raw engine write.
 actions:
@@ -23,7 +23,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-windows'
+    option: 'q-visual'
     weight: 2
 
   # 'NX15-002 Transparency effects'
@@ -37,7 +37,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-windows'
+    option: 'q-visual'
     weight: 2
 
   # 'NX15-003 Window shadows & menu show delay'
@@ -51,7 +51,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-windows'
+    option: 'q-visual'
     weight: 2
 
   # 'NX15-004 Taskbar configuration set'
@@ -63,7 +63,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-windows'
+    option: 'q-start'
     weight: 2
 
   # 'NX15-005 Start menu recommendations configuration'
@@ -75,7 +75,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-windows'
+    option: 'q-start'
     weight: 2
 
   # 'NX15-006 Explorer configuration set'
@@ -89,7 +89,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-windows'
+    option: 'q-explorer'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -101,7 +101,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-windows'
+    option: 'q-explorer'
     weight: 2
 
   # 'NX15-007 File extension visibility'
@@ -115,7 +115,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-windows'
+    option: 'q-explorer'
     weight: 2
 
   # 'NX15-008 Hidden files visibility'
@@ -129,7 +129,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-windows'
+    option: 'q-explorer'
     weight: 2
 
   # 'NX15-009 Context menu configuration (classic / new)'
@@ -141,7 +141,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-windows'
+    option: 'q-explorer'
     weight: 2
 
   # 'NX15-010 Explorer compact view'
@@ -155,7 +155,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-windows'
+    option: 'q-explorer'
     weight: 2
 
   # 'NX15-011 Notification Center configuration'
@@ -169,7 +169,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-windows'
+    option: 'q-start'
     weight: 2
 
   # 'NX15-012 Lock screen configuration (image vs Spotlight)'
@@ -183,7 +183,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-windows'
+    option: 'q-start'
     weight: 2
 
   # 'NX15-013 Desktop icon configuration'
@@ -197,7 +197,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-windows'
+    option: 'q-start'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -209,7 +209,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-windows'
+    option: 'q-start'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -221,7 +221,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-windows'
+    option: 'q-start'
     weight: 2
 
   # 'NX15-014 Font smoothing configuration'
@@ -235,7 +235,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-windows'
+    option: 'q-visual'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -247,5 +247,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-windows'
+    option: 'q-visual'
     weight: 2

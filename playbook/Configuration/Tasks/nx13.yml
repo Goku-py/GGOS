@@ -1,13 +1,13 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX13.json (Privacy & Telemetry). Playbook version 0.9.3.
-# Every action is option-gated (option name = use-case bundle or form factor):
-# unselected bundles and the other form factor never run. Advanced/troubleshooting
+# Source: registry/NX13.json (Privacy & Telemetry). Playbook version 0.9.4.
+# Every action is option-gated (option name = QoL choice or form factor):
+# unselected choices and the other form factor never run. Advanced/troubleshooting
 # entries are CLI-only and absent.
 ---
 title: 'NEXTRIX NX13 - Privacy & Telemetry'
 description: >
   Generated from registry/NX13.json: 14 selectable tweak option(s)
-  (option names are curated bundles or the Desktop/Laptop form factor). Function
+  (option names are QoL choices or the Desktop/Laptop form factor). Function
   actions run the journaled NxCore engine; registry actions run the journaled
   Invoke-NxRegistryTweak pipeline (capture -> journal -> apply -> verify), never a raw engine write.
 actions:
@@ -23,7 +23,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'q-privacy'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -35,7 +35,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'q-privacy'
     weight: 2
 
   # 'NX13-002 Activity history disable'
@@ -49,7 +49,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'q-privacy'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -61,7 +61,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'q-privacy'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -73,7 +73,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'q-privacy'
     weight: 2
 
   # 'NX13-003 Tailored experiences disable'
@@ -87,7 +87,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'q-privacy'
     weight: 2
 
   # 'NX13-004 Diagnostic data level (edition-aware documented floor)'
@@ -99,7 +99,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'q-privacy'
     weight: 2
 
   # 'NX13-005 App permission defaults (location/camera/microphone/contacts/calendar)'
@@ -111,7 +111,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'q-privacy'
     weight: 2
 
   # 'NX13-006 App launch tracking policy (non-Start_Track)'
@@ -125,7 +125,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'q-privacy'
     weight: 2
 
   # 'NX13-007 General consent & ad-personalization toggles'
@@ -139,7 +139,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'q-privacy'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -151,7 +151,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'q-privacy'
     weight: 2
 
   # 'NX13-008 Feedback frequency configuration'
@@ -165,7 +165,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'q-privacy'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -177,7 +177,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'q-privacy'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -189,7 +189,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'q-privacy'
     weight: 2
 
   # 'NX13-009 Inking & typing personalization policy'
@@ -203,7 +203,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'q-privacy'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -215,7 +215,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'q-privacy'
     weight: 2
 
   # 'NX13-010 Cloud content search preferences'
@@ -229,7 +229,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'q-privacy'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -241,7 +241,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'q-privacy'
     weight: 2
 
   # 'NX13-011 Clipboard history configuration'
@@ -255,7 +255,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'q-privacy'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -267,7 +267,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'q-privacy'
     weight: 2
 
   # 'NX13-012 Cross-device experiences configuration'
@@ -281,7 +281,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'q-privacy'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -293,7 +293,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'q-privacy'
     weight: 2
 
   # 'NX13-013 Telemetry-related scheduled tasks (selective)'
@@ -305,7 +305,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'q-privacy'
     weight: 2
 
   # 'NX13-014 Permission audit report'
@@ -317,5 +317,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'q-privacy'
     weight: 2

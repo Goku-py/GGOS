@@ -1,13 +1,13 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX04.json (GPU & Graphics). Playbook version 0.9.3.
-# Every action is option-gated (option name = use-case bundle or form factor):
-# unselected bundles and the other form factor never run. Advanced/troubleshooting
+# Source: registry/NX04.json (GPU & Graphics). Playbook version 0.9.4.
+# Every action is option-gated (option name = QoL choice or form factor):
+# unselected choices and the other form factor never run. Advanced/troubleshooting
 # entries are CLI-only and absent.
 ---
 title: 'NEXTRIX NX04 - GPU & Graphics'
 description: >
   Generated from registry/NX04.json: 23 selectable tweak option(s)
-  (option names are curated bundles or the Desktop/Laptop form factor). Function
+  (option names are QoL choices or the Desktop/Laptop form factor). Function
   actions run the journaled NxCore engine; registry actions run the journaled
   Invoke-NxRegistryTweak pipeline (capture -> journal -> apply -> verify), never a raw engine write.
 actions:
@@ -21,7 +21,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-game-mode'
+    option: 'q-graphics'
     weight: 2
 
   # 'NX04-004 Auto HDR'
@@ -33,7 +33,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-gpu'
+    option: 'q-graphics'
     weight: 2
 
   # 'NX04-007 Display presentation configuration'
@@ -45,7 +45,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-game-mode'
+    option: 'q-graphics'
     weight: 2
 
   # 'NX04-008 Hybrid graphics reporting & app routing'
@@ -69,7 +69,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-gpu'
+    option: 'q-graphics'
     weight: 2
 
   # 'NX04-009 NVIDIA power management mode (per-profile)'
@@ -81,7 +81,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-gpu'
+    option: 'q-graphics'
     weight: 2
 
   # 'NX04-010 NVIDIA Low Latency Mode (per-profile)'
@@ -93,7 +93,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-gpu'
+    option: 'q-graphics'
     weight: 2
 
   # 'NX04-011 NVIDIA vertical sync mode (per-profile)'
@@ -105,7 +105,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-gpu'
+    option: 'q-graphics'
     weight: 2
 
   # 'NX04-012 NVIDIA Maximum Frame Rate (per-profile)'
@@ -117,7 +117,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-gpu'
+    option: 'q-graphics'
     weight: 2
 
   # 'NX04-013 NVIDIA Threaded Optimization (per-profile)'
@@ -129,7 +129,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-gpu'
+    option: 'q-graphics'
     weight: 2
 
   # 'NX04-014 NVIDIA texture filtering quality (per-profile)'
@@ -141,7 +141,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-gpu'
+    option: 'q-graphics'
     weight: 2
 
   # 'NX04-015 NVIDIA shader cache policy'
@@ -153,7 +153,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-gpu'
+    option: 'q-graphics'
     weight: 2
 
   # 'NX04-016 NVIDIA per-game profile framework'
@@ -165,7 +165,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-gpu'
+    option: 'q-graphics'
     weight: 2
 
   # 'NX04-017 AMD Radeon Anti-Lag (per-profile)'
@@ -177,7 +177,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-gpu'
+    option: 'q-graphics'
     weight: 2
 
   # 'NX04-018 AMD Radeon Chill (per-profile)'
@@ -189,7 +189,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-gpu'
+    option: 'q-graphics'
     weight: 2
 
   # 'NX04-019 AMD Enhanced Sync (per-profile)'
@@ -201,7 +201,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-gpu'
+    option: 'q-graphics'
     weight: 2
 
   # 'NX04-020 AMD Wait for Vertical Refresh (per-profile)'
@@ -213,7 +213,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-gpu'
+    option: 'q-graphics'
     weight: 2
 
   # 'NX04-021 AMD Surface Format Optimization'
@@ -225,7 +225,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-gpu'
+    option: 'q-graphics'
     weight: 2
 
   # 'NX04-022 AMD per-game profile framework + shader cache'
@@ -237,7 +237,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-gpu'
+    option: 'q-graphics'
     weight: 2
 
   # 'NX04-023 Intel graphics / Arc settings framework'
@@ -249,5 +249,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-gpu'
+    option: 'q-graphics'
     weight: 2
