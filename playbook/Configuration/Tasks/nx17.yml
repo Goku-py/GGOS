@@ -1,13 +1,13 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX17.json (Advanced Windows Configuration). Playbook version 0.9.2.
-# Every action is option-gated (option name = the use-case bundle): unselected
-# bundles never run. Advanced/troubleshooting entries are CLI-only and absent.
+# Source: registry/NX17.json (Advanced Windows Configuration). Playbook version 0.9.3.
+# Every action is option-gated (option name = use-case bundle or form factor):
+# unselected bundles and the other form factor never run. Advanced/troubleshooting
+# entries are CLI-only and absent.
 ---
 title: 'NEXTRIX NX17 - Advanced Windows Configuration'
 description: >
   Generated from registry/NX17.json: 14 selectable tweak option(s)
-  (option names are curated UI group ids). Function actions run the journaled
-  NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak
-  pipeline (capture -> journal -> apply -> verify), never a raw engine write.
+  (option names are curated bundles or the Desktop/Laptop form factor). Function
+  actions run the journaled NxCore engine; registry actions run the journaled
+  Invoke-NxRegistryTweak pipeline (capture -> journal -> apply -> verify), never a raw engine write.
 actions:
-  - !status: {status: 'NX17 Advanced Windows Configuration: applying selected tweaks'}

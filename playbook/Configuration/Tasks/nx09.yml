@@ -1,16 +1,16 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX09.json (Power Management). Playbook version 0.9.2.
-# Every action is option-gated (option name = the use-case bundle): unselected
-# bundles never run. Advanced/troubleshooting entries are CLI-only and absent.
+# Source: registry/NX09.json (Power Management). Playbook version 0.9.3.
+# Every action is option-gated (option name = use-case bundle or form factor):
+# unselected bundles and the other form factor never run. Advanced/troubleshooting
+# entries are CLI-only and absent.
 ---
 title: 'NEXTRIX NX09 - Power Management'
 description: >
   Generated from registry/NX09.json: 15 selectable tweak option(s)
-  (option names are curated UI group ids). Function actions run the journaled
-  NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak
-  pipeline (capture -> journal -> apply -> verify), never a raw engine write.
+  (option names are curated bundles or the Desktop/Laptop form factor). Function
+  actions run the journaled NxCore engine; registry actions run the journaled
+  Invoke-NxRegistryTweak pipeline (capture -> journal -> apply -> verify), never a raw engine write.
 actions:
-  - !status: {status: 'NX09 Power Management: applying selected tweaks'}
 
   # 'NX09-001 Active power plan selection'
   - !powerShell:
@@ -33,7 +33,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-cpu-power'
+    option: 'ff-desktop'
     weight: 2
 
   # 'NX09-003 Custom NEXTRIX plan generation'
@@ -57,7 +57,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-cpu-power'
+    option: 'ff-laptop'
     weight: 2
 
   # 'NX09-005 USB selective suspend policy'
@@ -69,7 +69,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-cpu-power'
+    option: 'ff-laptop'
     weight: 2
 
   # 'NX09-006 Display timeout configuration'
@@ -129,7 +129,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-cpu-power'
+    option: 'ff-laptop'
     weight: 2
 
   # 'NX09-011 OEM battery conservation reporting'
@@ -141,7 +141,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-cpu-power'
+    option: 'ff-laptop'
     weight: 2
 
   # 'NX09-012 OEM performance mode detection'
@@ -199,5 +199,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-cpu-power'
+    option: 'ff-laptop'
     weight: 2

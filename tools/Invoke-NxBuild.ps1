@@ -661,13 +661,38 @@ foreach ($bk in $UiBundleGroups.Keys) {
     }
 }
 $UiDefaultChecked = @{ 'b-maint' = $true }
-# Three selection pages = the maximum useful surface. The playbook info screen
-# plus these pages is four screens total; AME hard limits (4 options/page,
-# Description 50-85 chars) are enforced below.
+# First page: form factor radio. Desktop and Laptop are mutually exclusive, so a
+# radio page is used (checkboxes cannot enforce a single choice). Hardware-specific
+# tweak ids are re-gated from their bundle to the matching form-factor option.
+$UiFormFactorOptions = @(
+    @{ name = 'ff-desktop'; text = 'Desktop PC' }
+    @{ name = 'ff-laptop';  text = 'Laptop' }
+)
+$UiFormFactorDefault = 'ff-desktop'
+$UiFormFactorDescription = 'Pick Desktop or Laptop so the right power and thermal tweaks apply.'
+$UiFormFactorTopLine = 'Desktop adds Ultimate Performance; Laptop adds battery, lid and thermal tweaks.'
+$UiFormFactor = @{
+    'NX04-008' = 'ff-laptop'   # hybrid graphics routing (laptop)
+    'NX06-012' = 'ff-laptop'   # storage D3 in Modern Standby (laptop)
+    'NX07-002' = 'ff-laptop'   # adapter power management (laptop)
+    'NX07-012' = 'ff-laptop'   # Wi-Fi roaming aggressiveness (laptop)
+    'NX07-015' = 'ff-laptop'   # Wi-Fi transmit power (laptop)
+    'NX08-006' = 'ff-laptop'   # Bluetooth power policy (laptop)
+    'NX09-004' = 'ff-laptop'   # PCIe ASPM AC/DC policy (laptop)
+    'NX09-005' = 'ff-laptop'   # USB selective suspend AC/DC (laptop)
+    'NX09-010' = 'ff-laptop'   # lid-close behavior (laptop)
+    'NX09-011' = 'ff-laptop'   # OEM battery conservation report (laptop)
+    'NX09-015' = 'ff-laptop'   # battery report (laptop)
+    'NX10-007' = 'ff-laptop'   # AC/DC thermal report (laptop)
+    'NX09-002' = 'ff-desktop'  # Ultimate Performance provisioning (desktop)
+}
+# Three selection pages plus the form-factor page = four wizard pages (the hard
+# budget). AME rules: CheckboxPage Description 50-85 chars, max 4 options/page;
+# RadioPage here has exactly two options.
 $UiPages = @(
-    @{ desc = 'Gaming PCs: pick only the tuning you want for your hardware and games.'; bundles = @('b-game-mode','b-gpu','b-cpu-power','b-input') }
-    @{ desc = 'Everyday desktops and laptops: cleanup, storage, network and maintenance.'; bundles = @('b-windows','b-storage','b-network','b-maint') }
-    @{ desc = 'Privacy, background apps and reports: choose only what you want changed.'; bundles = @('b-privacy','b-startup','b-debloat','b-security') }
+    @{ desc = 'Gaming: Game Mode, GPU/display, CPU-power-memory and input tweaks.'; bundles = @('b-game-mode','b-gpu','b-cpu-power','b-input') }
+    @{ desc = 'Everyday: Windows cleanup, storage, network/DNS and maintenance tweaks.'; bundles = @('b-windows','b-storage','b-network','b-maint') }
+    @{ desc = 'Privacy: telemetry, startup apps, app-removal plans and security reports.'; bundles = @('b-privacy','b-startup','b-debloat','b-security') }
 )
 
 foreach ($c in $categories) {
@@ -768,11 +793,16 @@ foreach ($c in $categories) {
                 }
             }
         }
+        $bundleOption = $groupId
+        if ($UiGroupBundle.ContainsKey($groupId)) { $bundleOption = [string]$UiGroupBundle[$groupId] }
+        # Hardware-specific tweaks follow the Desktop/Laptop radio instead of the
+        # bundle so a laptop never receives desktop-only settings and vice versa.
+        if ($UiFormFactor.ContainsKey([string]$t.id)) { $bundleOption = [string]$UiFormFactor[[string]$t.id] }
         $selectable += @{
             tweak = $t
             option = ([string]$t.id).ToLowerInvariant()
             group = $groupId
-            groupOption = $(if ($UiGroupBundle.ContainsKey($groupId)) { [string]$UiGroupBundle[$groupId] } else { $groupId })
+            groupOption = $bundleOption
             wizardInclude = $wizardInclude
             wizardExcludeReason = $excludeReason
             checked = (-not [bool]$t.presetExcluded)
@@ -917,17 +947,15 @@ function New-NxPlaybookConf($Model) {
     $L.Add('    <Title>' + (ConvertTo-NxXmlText ("NEXTRIX v" + $Model.version)) + '</Title>')
     $L.Add('    <ShortDescription>' + (ConvertTo-NxXmlText 'Selective, journaled Windows 11 configuration with NEXTRIX-owned rollback.') + '</ShortDescription>')
     $L.Add('    <Description><![CDATA[')
-    $L.Add('NEXTRIX applies only what you select. A short pre-flight (journal, hardware and build')
-    $L.Add('reports, restore point, targeted backups) runs first, then the selected bundles are applied.')
-    $L.Add('')
-    $L.Add('Every change is journaled by the bundled NxCore engine; undo runs from the command')
-    $L.Add('line (per tweak, category, profile or all). Windows Update and security features stay on')
-    $L.Add('by default. No performance claims are made - validate on your own hardware.]]>')
+    $L.Add('NEXTRIX is a journaled Windows 11 tweak playbook. Pick Desktop or Laptop first, then')
+    $L.Add('the use-case bundles you want. Only selected tweaks run; every change is journaled by')
+    $L.Add('NxCore and can be undone from the command line. Windows Update and security stay on.')
+    $L.Add('No performance claims - validate on your own hardware.]]>')
     $L.Add('    </Description>')
     $L.Add('    <Details>' + (ConvertTo-NxXmlText ('Windows 11 23H2-26H2 (22631, 26100, 26200, 26300). Requirements: Internet, PluggedIn. Journal at %ProgramData%\NEXTRIX\Journal. Wizard: AME Beta v0.8.4.')) + '</Details>')
     $L.Add('    <ProgressText><![CDATA[')
-    $L.Add('NEXTRIX captures your current state (journal, reports, restore point, backups), then applies')
-    $L.Add('only the bundles you selected. Every change is journaled for rollback.]]>')
+    $L.Add('Applying the tweaks you selected. The pre-flight journal, reports, restore point and')
+    $L.Add('backups run first; every change is journaled for rollback.]]>')
     $L.Add('    </ProgressText>')
     $L.Add("    <Version>$($Model.version)</Version>")
     $L.Add('    <SupportedBuilds>')
@@ -955,9 +983,27 @@ function New-NxPlaybookConf($Model) {
     $L.Add("    <Git>$NxGitUrl</Git>")
     $L.Add('    <FeaturePages>')
 
+    # Page 1: form factor (RadioPage - exactly one of Desktop / Laptop).
+    $pageNo = 0
+    $ffDesc = [string]$UiFormFactorDescription
+    if ($ffDesc.Length -lt 50 -or $ffDesc.Length -gt 85) { throw "UI radio page description length $($ffDesc.Length) outside AME 50-85: '$ffDesc'" }
+    if (@($UiFormFactorOptions).Count -gt 2) { throw 'UI: form-factor RadioPage must not exceed 2 options' }
+    $pageNo++
+    $L.Add('        <RadioPage DefaultOption="' + (ConvertTo-NxXmlAttr $UiFormFactorDefault) + '" Description="' + (ConvertTo-NxXmlAttr $ffDesc) + '">')
+    $L.Add('            <TopLine Text="' + (ConvertTo-NxXmlAttr $UiFormFactorTopLine) + '"/>')
+    $L.Add('            <Options>')
+    foreach ($o in $UiFormFactorOptions) {
+        $L.Add('                <RadioOption>')
+        $L.Add('                    <Text>' + (ConvertTo-NxXmlText $o.text) + '</Text>')
+        $L.Add('                    <Name>' + (ConvertTo-NxXmlText $o.name) + '</Name>')
+        $L.Add('                </RadioOption>')
+    }
+    $L.Add('            </Options>')
+    $L.Add('        </RadioPage>')
+
     # Use-case bundle pages (see $UiBundles/$UiPages). AME rules enforced:
     # CheckboxPage Description 50-85 chars, short option Text, max 4 options/page,
-    # and a hard 4-page budget (3 selection pages + the playbook info screen).
+    # and a hard 4-page budget (1 form-factor page + 3 selection pages).
     $includedBundles = @()
     foreach ($page in $UiPages) {
         $pageNo++
@@ -993,9 +1039,10 @@ function New-NxPlaybookConf($Model) {
         $L.Add('            </Options>')
         $L.Add('        </CheckboxPage>')
     }
+    $allowedUiOptions = @($includedBundles) + @($UiFormFactorOptions | ForEach-Object { [string]$_.name })
     foreach ($cat in $Model.categories) {
         foreach ($e in @($cat.selectable | Where-Object { $_.wizardInclude })) {
-            if ($includedBundles -notcontains [string]$e.groupOption) { throw "UI: $($e.tweak.id) mapped to bundle '$($e.groupOption)' which is on no page" }
+            if ($allowedUiOptions -notcontains [string]$e.groupOption) { throw "UI: $($e.tweak.id) mapped to option '$($e.groupOption)' which is on no page" }
         }
     }
     if ($pageNo -gt 4) { throw "UI page count $pageNo exceeds the 4-page budget" }
@@ -1043,7 +1090,6 @@ function New-NxMainYml($Model) {
         $nRb = @($cat.rollbackRouted).Count
         $L.Add("  # 2.$wavePos) Category $($cat.name) ($($cat.categoryName)) - wave position $wavePos")
         $L.Add("  #    $nSel selectable option(s), $nPf routed to the pre-flight, $nRb CLI-only rollback entries (not applied).")
-        $L.Add('  - !status: {status: ' + (ConvertTo-NxYq ("$($cat.name) $($cat.categoryName)")) + '}')
         $L.Add('  - !task: {path: ' + (ConvertTo-NxYq ("Tasks/$($cat.name.ToLowerInvariant()).yml")) + '}')
         $L.Add('')
     }
@@ -1091,8 +1137,9 @@ function New-NxCategoryYml($Model, $Cat) {
     $nRb = @($Cat.rollbackRouted).Count
     $L.Add('# NEXTRIX category task file. GENERATED FILE, do not edit by hand.')
     $L.Add("# Source: registry/$($Cat.file) ($($Cat.categoryName)). Playbook version $($Model.version).")
-    $L.Add('# Every action is option-gated (option name = the use-case bundle): unselected')
-    $L.Add('# bundles never run. Advanced/troubleshooting entries are CLI-only and absent.')
+    $L.Add('# Every action is option-gated (option name = use-case bundle or form factor):')
+    $L.Add('# unselected bundles and the other form factor never run. Advanced/troubleshooting')
+    $L.Add('# entries are CLI-only and absent.')
     if ($nPf -gt 0 -or $nRb -gt 0) {
         $routed = @()
         if ($nPf -gt 0) { $routed += (@($Cat.preflightRouted | ForEach-Object { "$($_.id) -> Tasks/nxcore.yml (unconditional pre-flight)" }) -join ', ') }
@@ -1105,11 +1152,10 @@ function New-NxCategoryYml($Model, $Cat) {
     $L.Add("  Generated from registry/$($Cat.file): $nSel selectable tweak option(s)")
     if ($nPf -gt 0) { $L.Add("  and $nPf tweak(s) routed to the mandatory pre-flight") }
     if ($nRb -gt 0) { $L.Add("  and $nRb CLI-only rollback entries (rollback is never an install action)") }
-    $L.Add('  (option names are curated UI group ids). Function actions run the journaled')
-    $L.Add('  NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak')
-    $L.Add('  pipeline (capture -> journal -> apply -> verify), never a raw engine write.')
+    $L.Add('  (option names are curated bundles or the Desktop/Laptop form factor). Function')
+    $L.Add('  actions run the journaled NxCore engine; registry actions run the journaled')
+    $L.Add('  Invoke-NxRegistryTweak pipeline (capture -> journal -> apply -> verify), never a raw engine write.')
     $L.Add('actions:')
-    $L.Add('  - !status: {status: ' + (ConvertTo-NxYq ("$($Cat.name) $($Cat.categoryName): applying selected tweaks")) + '}')
     foreach ($entry in $Cat.selectable) {
         $t = $entry.tweak
         if (-not $entry.wizardInclude) { continue }   # tooling-only: presetExcluded or pending engine function

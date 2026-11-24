@@ -2,6 +2,16 @@
 
 All notable changes to the NEXTRIX repository. Dates are ISO. Statuses follow the verification ladder in `TWEAK_CLASSIFICATION.md`.
 
+## 2026-11-24 - Form factor page + page copy rewrite (v0.9.3)
+
+- **First page is now Desktop or Laptop** (`RadioPage`, default Desktop). The radio guarantees exactly one form factor: Laptop re-gates 12 hardware-specific tweaks (hybrid graphics, Modern Standby storage D3, adapter/Wi-Fi/Bluetooth power, PCIe ASPM, USB selective suspend, lid close, battery reports, AC/DC thermal); Desktop gates Ultimate Performance provisioning. Selecting a form factor applies its hardware-specific tweaks independently of the bundle pages.
+- **Page text rewritten inside the AME 50-85 char limit and now names the tweaks**: Gaming 66, Everyday 71, Privacy 73, form factor 67 chars; every option label <= 40 chars.
+- **Quieter progress:** per-category status lines were removed from `main.yml` and every category task file. The progress stream now shows the pre-flight, the selected actions and completion - it no longer announces "applying selected tweaks" for categories the user did not select.
+- **Info page shortened** to a ~50-word summary; it no longer narrates the pre-flight/apply process.
+- **4 wizard pages total** (form factor + 3 use-case pages); the hard 4-page budget and 4-options/page limits are still enforced by the generator.
+- Underlying per-tweak journaling is unchanged; presetExcluded entries stay CLI-only.
+- **No NEXTRIX modification applied to any machine.**
+
 ## 2026-11-24 - Use-case selection, 3 pages, no undo page (v0.9.2)
 
 - **The Undo page is gone from the installer.** Rollback was never an install-time choice; it is a post-install CLI action (`Invoke-NxRollback` from the bundled NxCore). The playbook no longer emits a rollback page or `Tasks/rollback.yml`.
