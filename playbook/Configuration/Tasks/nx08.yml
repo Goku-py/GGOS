@@ -1,5 +1,5 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX08.json (Input & Peripherals). Playbook version 0.8.0.
+# Source: registry/NX08.json (Input & Peripherals). Playbook version 0.9.0.
 # Every action is option-gated (option name = lowercase tweak id): unselected
 # tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
 ---
@@ -13,7 +13,6 @@ actions:
   - !status: {status: 'NX08 Input & Peripherals: applying selected tweaks'}
 
   # 'NX08-001 Disable Enhance Pointer Precision'
-  - !status: {status: 'NX08-001 Disable Enhance Pointer Precision', option: 'g-input'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -22,11 +21,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-input'
+    option: 'b-input'
     weight: 2
 
   # 'NX08-002 Mouse pointer speed/sensitivity'
-  - !status: {status: 'NX08-002 Mouse pointer speed/sensitivity', option: 'g-input'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -35,11 +33,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-input'
+    option: 'b-input'
     weight: 2
 
   # 'NX08-003 Mouse polling rate inspection'
-  - !status: {status: 'NX08-003 Mouse polling rate inspection', option: 'g-input'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -48,11 +45,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-input'
+    option: 'b-input'
     weight: 2
 
   # 'NX08-004 Keyboard repeat delay/rate'
-  - !status: {status: 'NX08-004 Keyboard repeat delay/rate', option: 'g-input'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -61,11 +57,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-input'
+    option: 'b-input'
     weight: 2
 
   # 'NX08-005 Game controller inspection & configuration'
-  - !status: {status: 'NX08-005 Game controller inspection & configuration', option: 'g-input'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -74,11 +69,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-input'
+    option: 'b-input'
     weight: 2
 
   # 'NX08-006 Bluetooth peripheral inspection & power policy'
-  - !status: {status: 'NX08-006 Bluetooth peripheral inspection & power policy', option: 'g-input'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -87,11 +81,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-input'
+    option: 'b-input'
     weight: 2
 
   # 'NX08-007 USB controller & HID device inspection'
-  - !status: {status: 'NX08-007 USB controller & HID device inspection', option: 'g-input'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -100,11 +93,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-input'
+    option: 'b-input'
     weight: 2
 
   # 'NX08-008 Mouse/keyboard data-queue size configuration'
-  - !status: {status: 'NX08-008 Mouse/keyboard data-queue size configuration', option: 'g-input'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -113,5 +105,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-input'
+    option: 'b-input'
     weight: 2

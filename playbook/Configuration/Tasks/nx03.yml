@@ -1,5 +1,5 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX03.json (CPU & Processor Configuration). Playbook version 0.8.0.
+# Source: registry/NX03.json (CPU & Processor Configuration). Playbook version 0.9.0.
 # Every action is option-gated (option name = lowercase tweak id): unselected
 # tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
 ---
@@ -13,7 +13,6 @@ actions:
   - !status: {status: 'NX03 CPU & Processor Configuration: applying selected tweaks'}
 
   # 'NX03-006 CPU power throttling policy'
-  - !status: {status: 'NX03-006 CPU power throttling policy', option: 'g-cpu'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -22,11 +21,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-cpu'
+    option: 'b-gaming'
     weight: 2
 
   # 'NX03-013 CPU inventory & frequency report'
-  - !status: {status: 'NX03-013 CPU inventory & frequency report', option: 'g-cpu'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -35,5 +33,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-cpu'
+    option: 'b-gaming'
     weight: 2

@@ -1,5 +1,5 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX13.json (Privacy & Telemetry). Playbook version 0.8.0.
+# Source: registry/NX13.json (Privacy & Telemetry). Playbook version 0.9.0.
 # Every action is option-gated (option name = lowercase tweak id): unselected
 # tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
 ---
@@ -13,7 +13,6 @@ actions:
   - !status: {status: 'NX13 Privacy & Telemetry: applying selected tweaks'}
 
   # 'NX13-001 Advertising ID disable'
-  - !status: {status: 'NX13-001 Advertising ID disable', option: 'g-telemetry'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -24,7 +23,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-telemetry'
+    option: 'b-privacy'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -36,11 +35,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-telemetry'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX13-002 Activity history disable'
-  - !status: {status: 'NX13-002 Activity history disable', option: 'g-telemetry'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -51,7 +49,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-telemetry'
+    option: 'b-privacy'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -63,7 +61,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-telemetry'
+    option: 'b-privacy'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -75,11 +73,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-telemetry'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX13-003 Tailored experiences disable'
-  - !status: {status: 'NX13-003 Tailored experiences disable', option: 'g-telemetry'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -90,11 +87,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-telemetry'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX13-004 Diagnostic data level (edition-aware documented floor)'
-  - !status: {status: 'NX13-004 Diagnostic data level (edition-aware documented floor)', option: 'g-telemetry'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -103,11 +99,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-telemetry'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX13-005 App permission defaults (location/camera/microphone/contacts/calendar)'
-  - !status: {status: 'NX13-005 App permission defaults (location/camera/microphone/contacts/calendar)', option: 'g-permissions'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -116,11 +111,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-permissions'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX13-006 App launch tracking policy (non-Start_Track)'
-  - !status: {status: 'NX13-006 App launch tracking policy (non-Start_Track)', option: 'g-telemetry'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -131,11 +125,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-telemetry'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX13-007 General consent & ad-personalization toggles'
-  - !status: {status: 'NX13-007 General consent & ad-personalization toggles', option: 'g-telemetry'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -146,7 +139,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-telemetry'
+    option: 'b-privacy'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -158,11 +151,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-telemetry'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX13-008 Feedback frequency configuration'
-  - !status: {status: 'NX13-008 Feedback frequency configuration', option: 'g-telemetry'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -173,7 +165,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-telemetry'
+    option: 'b-privacy'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -185,7 +177,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-telemetry'
+    option: 'b-privacy'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -197,11 +189,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-telemetry'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX13-009 Inking & typing personalization policy'
-  - !status: {status: 'NX13-009 Inking & typing personalization policy', option: 'g-telemetry'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -212,7 +203,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-telemetry'
+    option: 'b-privacy'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -224,11 +215,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-telemetry'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX13-010 Cloud content search preferences'
-  - !status: {status: 'NX13-010 Cloud content search preferences', option: 'g-telemetry'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -239,7 +229,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-telemetry'
+    option: 'b-privacy'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -251,11 +241,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-telemetry'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX13-011 Clipboard history configuration'
-  - !status: {status: 'NX13-011 Clipboard history configuration', option: 'g-permissions'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -266,7 +255,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-permissions'
+    option: 'b-privacy'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -278,11 +267,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-permissions'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX13-012 Cross-device experiences configuration'
-  - !status: {status: 'NX13-012 Cross-device experiences configuration', option: 'g-telemetry'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -293,7 +281,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-telemetry'
+    option: 'b-privacy'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -305,11 +293,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-telemetry'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX13-013 Telemetry-related scheduled tasks (selective)'
-  - !status: {status: 'NX13-013 Telemetry-related scheduled tasks (selective)', option: 'g-telemetry'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -318,11 +305,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-telemetry'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX13-014 Permission audit report'
-  - !status: {status: 'NX13-014 Permission audit report', option: 'g-permissions'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -331,5 +317,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-permissions'
+    option: 'b-privacy'
     weight: 2

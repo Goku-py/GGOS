@@ -1,5 +1,5 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX15.json (Visual & Interface). Playbook version 0.8.0.
+# Source: registry/NX15.json (Visual & Interface). Playbook version 0.9.0.
 # Every action is option-gated (option name = lowercase tweak id): unselected
 # tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
 ---
@@ -13,7 +13,6 @@ actions:
   - !status: {status: 'NX15 Visual & Interface: applying selected tweaks'}
 
   # 'NX15-001 Visual effects policy (animations set)'
-  - !status: {status: 'NX15-001 Visual effects policy (animations set)', option: 'g-visual'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -24,11 +23,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-visual'
+    option: 'b-windows'
     weight: 2
 
   # 'NX15-002 Transparency effects'
-  - !status: {status: 'NX15-002 Transparency effects', option: 'g-visual'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -39,11 +37,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-visual'
+    option: 'b-windows'
     weight: 2
 
   # 'NX15-003 Window shadows & menu show delay'
-  - !status: {status: 'NX15-003 Window shadows & menu show delay', option: 'g-visual'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -54,11 +51,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-visual'
+    option: 'b-windows'
     weight: 2
 
   # 'NX15-004 Taskbar configuration set'
-  - !status: {status: 'NX15-004 Taskbar configuration set', option: 'g-visual'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -67,11 +63,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-visual'
+    option: 'b-windows'
     weight: 2
 
   # 'NX15-005 Start menu recommendations configuration'
-  - !status: {status: 'NX15-005 Start menu recommendations configuration', option: 'g-visual'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -80,11 +75,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-visual'
+    option: 'b-windows'
     weight: 2
 
   # 'NX15-006 Explorer configuration set'
-  - !status: {status: 'NX15-006 Explorer configuration set', option: 'g-visual'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -95,7 +89,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-visual'
+    option: 'b-windows'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -107,11 +101,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-visual'
+    option: 'b-windows'
     weight: 2
 
   # 'NX15-007 File extension visibility'
-  - !status: {status: 'NX15-007 File extension visibility', option: 'g-visual'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -122,11 +115,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-visual'
+    option: 'b-windows'
     weight: 2
 
   # 'NX15-008 Hidden files visibility'
-  - !status: {status: 'NX15-008 Hidden files visibility', option: 'g-visual'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -137,11 +129,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-visual'
+    option: 'b-windows'
     weight: 2
 
   # 'NX15-009 Context menu configuration (classic / new)'
-  - !status: {status: 'NX15-009 Context menu configuration (classic / new)', option: 'g-visual'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -150,11 +141,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-visual'
+    option: 'b-windows'
     weight: 2
 
   # 'NX15-010 Explorer compact view'
-  - !status: {status: 'NX15-010 Explorer compact view', option: 'g-visual'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -165,11 +155,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-visual'
+    option: 'b-windows'
     weight: 2
 
   # 'NX15-011 Notification Center configuration'
-  - !status: {status: 'NX15-011 Notification Center configuration', option: 'g-visual'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -180,11 +169,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-visual'
+    option: 'b-windows'
     weight: 2
 
   # 'NX15-012 Lock screen configuration (image vs Spotlight)'
-  - !status: {status: 'NX15-012 Lock screen configuration (image vs Spotlight)', option: 'g-visual'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -195,11 +183,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-visual'
+    option: 'b-windows'
     weight: 2
 
   # 'NX15-013 Desktop icon configuration'
-  - !status: {status: 'NX15-013 Desktop icon configuration', option: 'g-visual'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -210,7 +197,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-visual'
+    option: 'b-windows'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -222,7 +209,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-visual'
+    option: 'b-windows'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -234,11 +221,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-visual'
+    option: 'b-windows'
     weight: 2
 
   # 'NX15-014 Font smoothing configuration'
-  - !status: {status: 'NX15-014 Font smoothing configuration', option: 'g-visual'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -249,7 +235,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-visual'
+    option: 'b-windows'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -261,5 +247,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-visual'
+    option: 'b-windows'
     weight: 2

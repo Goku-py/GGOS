@@ -1,5 +1,5 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX11.json (Background Activity & Services). Playbook version 0.8.0.
+# Source: registry/NX11.json (Background Activity & Services). Playbook version 0.9.0.
 # Every action is option-gated (option name = lowercase tweak id): unselected
 # tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
 ---
@@ -13,7 +13,6 @@ actions:
   - !status: {status: 'NX11 Background Activity & Services: applying selected tweaks'}
 
   # 'NX11-001 Startup app inventory & selective management'
-  - !status: {status: 'NX11-001 Startup app inventory & selective management', option: 'g-startup'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -22,11 +21,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-startup'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX11-002 Per-app background permissions (UWP)'
-  - !status: {status: 'NX11-002 Per-app background permissions (UWP)', option: 'g-startup'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -35,11 +33,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-startup'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX11-003 Edge background mode disable'
-  - !status: {status: 'NX11-003 Edge background mode disable', option: 'g-startup'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -48,11 +45,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-startup'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX11-004 Edge startup boost disable'
-  - !status: {status: 'NX11-004 Edge startup boost disable', option: 'g-startup'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -61,11 +57,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-startup'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX11-005 Scheduled task inventory report'
-  - !status: {status: 'NX11-005 Scheduled task inventory report', option: 'g-services'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -74,11 +69,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-services'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX11-006 Selective scheduled task management'
-  - !status: {status: 'NX11-006 Selective scheduled task management', option: 'g-services'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -87,11 +81,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-services'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX11-007 Resource-heavy process identification report'
-  - !status: {status: 'NX11-007 Resource-heavy process identification report', option: 'g-services'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -100,11 +93,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-services'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX11-011 Print Spooler configuration'
-  - !status: {status: 'NX11-011 Print Spooler configuration', option: 'g-services'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -113,11 +105,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-services'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX11-015 Windows Error Reporting configuration'
-  - !status: {status: 'NX11-015 Windows Error Reporting configuration', option: 'g-services'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -126,11 +117,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-services'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX11-019 Service dependency inspection engine'
-  - !status: {status: 'NX11-019 Service dependency inspection engine', option: 'g-services'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -139,11 +129,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-services'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX11-008 Windows Search service configuration'
-  - !status: {status: 'NX11-008 Windows Search service configuration', option: 'g-services'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -152,11 +141,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-services'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX11-009 SysMain service configuration'
-  - !status: {status: 'NX11-009 SysMain service configuration', option: 'g-services'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -165,11 +153,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-services'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX11-010 Xbox services configuration'
-  - !status: {status: 'NX11-010 Xbox services configuration', option: 'g-services'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -178,11 +165,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-services'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX11-012 Bluetooth service configuration'
-  - !status: {status: 'NX11-012 Bluetooth service configuration', option: 'g-services'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -191,11 +177,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-services'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX11-013 Fax service configuration'
-  - !status: {status: 'NX11-013 Fax service configuration', option: 'g-services'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -204,11 +189,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-services'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX11-014 Remote Registry configuration'
-  - !status: {status: 'NX11-014 Remote Registry configuration', option: 'g-services'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -217,11 +201,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-services'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX11-016 Maps-related services configuration'
-  - !status: {status: 'NX11-016 Maps-related services configuration', option: 'g-services'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -230,11 +213,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-services'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX11-017 DiagTrack (Connected User Experiences) configuration'
-  - !status: {status: 'NX11-017 DiagTrack (Connected User Experiences) configuration', option: 'g-services'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -243,11 +225,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-services'
+    option: 'b-privacy'
     weight: 2
 
   # 'NX11-018 Third-party service inventory & selective configuration'
-  - !status: {status: 'NX11-018 Third-party service inventory & selective configuration', option: 'g-services'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -256,5 +237,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-services'
+    option: 'b-privacy'
     weight: 2

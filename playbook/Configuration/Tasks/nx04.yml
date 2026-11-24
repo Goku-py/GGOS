@@ -1,5 +1,5 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX04.json (GPU & Graphics). Playbook version 0.8.0.
+# Source: registry/NX04.json (GPU & Graphics). Playbook version 0.9.0.
 # Every action is option-gated (option name = lowercase tweak id): unselected
 # tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
 ---
@@ -13,7 +13,6 @@ actions:
   - !status: {status: 'NX04 GPU & Graphics: applying selected tweaks'}
 
   # 'NX04-003 Variable Refresh Rate (windowed)'
-  - !status: {status: 'NX04-003 Variable Refresh Rate (windowed)', option: 'g-windowed'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -22,11 +21,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-windowed'
+    option: 'b-gaming'
     weight: 2
 
   # 'NX04-004 Auto HDR'
-  - !status: {status: 'NX04-004 Auto HDR', option: 'g-gpusched'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -35,11 +33,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-gpusched'
+    option: 'b-gaming'
     weight: 2
 
   # 'NX04-007 Display presentation configuration'
-  - !status: {status: 'NX04-007 Display presentation configuration', option: 'g-windowed'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -48,11 +45,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-windowed'
+    option: 'b-gaming'
     weight: 2
 
   # 'NX04-008 Hybrid graphics reporting & app routing'
-  - !status: {status: 'NX04-008 Hybrid graphics reporting & app routing', option: 'g-gpusched'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -61,11 +57,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-gpusched'
+    option: 'b-gaming'
     weight: 2
 
   # 'NX04-002 Per-application GPU preference'
-  - !status: {status: 'NX04-002 Per-application GPU preference', option: 'g-gpusched'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -74,11 +69,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-gpusched'
+    option: 'b-gaming'
     weight: 2
 
   # 'NX04-009 NVIDIA power management mode (per-profile)'
-  - !status: {status: 'NX04-009 NVIDIA power management mode (per-profile)', option: 'g-vendor'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -87,11 +81,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-vendor'
+    option: 'b-vendor'
     weight: 2
 
   # 'NX04-010 NVIDIA Low Latency Mode (per-profile)'
-  - !status: {status: 'NX04-010 NVIDIA Low Latency Mode (per-profile)', option: 'g-vendor'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -100,11 +93,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-vendor'
+    option: 'b-vendor'
     weight: 2
 
   # 'NX04-011 NVIDIA vertical sync mode (per-profile)'
-  - !status: {status: 'NX04-011 NVIDIA vertical sync mode (per-profile)', option: 'g-vendor'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -113,11 +105,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-vendor'
+    option: 'b-vendor'
     weight: 2
 
   # 'NX04-012 NVIDIA Maximum Frame Rate (per-profile)'
-  - !status: {status: 'NX04-012 NVIDIA Maximum Frame Rate (per-profile)', option: 'g-vendor'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -126,11 +117,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-vendor'
+    option: 'b-vendor'
     weight: 2
 
   # 'NX04-013 NVIDIA Threaded Optimization (per-profile)'
-  - !status: {status: 'NX04-013 NVIDIA Threaded Optimization (per-profile)', option: 'g-vendor'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -139,11 +129,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-vendor'
+    option: 'b-vendor'
     weight: 2
 
   # 'NX04-014 NVIDIA texture filtering quality (per-profile)'
-  - !status: {status: 'NX04-014 NVIDIA texture filtering quality (per-profile)', option: 'g-vendor'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -152,11 +141,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-vendor'
+    option: 'b-vendor'
     weight: 2
 
   # 'NX04-015 NVIDIA shader cache policy'
-  - !status: {status: 'NX04-015 NVIDIA shader cache policy', option: 'g-vendor'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -165,11 +153,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-vendor'
+    option: 'b-vendor'
     weight: 2
 
   # 'NX04-016 NVIDIA per-game profile framework'
-  - !status: {status: 'NX04-016 NVIDIA per-game profile framework', option: 'g-vendor'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -178,11 +165,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-vendor'
+    option: 'b-vendor'
     weight: 2
 
   # 'NX04-017 AMD Radeon Anti-Lag (per-profile)'
-  - !status: {status: 'NX04-017 AMD Radeon Anti-Lag (per-profile)', option: 'g-vendor'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -191,11 +177,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-vendor'
+    option: 'b-vendor'
     weight: 2
 
   # 'NX04-018 AMD Radeon Chill (per-profile)'
-  - !status: {status: 'NX04-018 AMD Radeon Chill (per-profile)', option: 'g-vendor'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -204,11 +189,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-vendor'
+    option: 'b-vendor'
     weight: 2
 
   # 'NX04-019 AMD Enhanced Sync (per-profile)'
-  - !status: {status: 'NX04-019 AMD Enhanced Sync (per-profile)', option: 'g-vendor'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -217,11 +201,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-vendor'
+    option: 'b-vendor'
     weight: 2
 
   # 'NX04-020 AMD Wait for Vertical Refresh (per-profile)'
-  - !status: {status: 'NX04-020 AMD Wait for Vertical Refresh (per-profile)', option: 'g-vendor'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -230,11 +213,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-vendor'
+    option: 'b-vendor'
     weight: 2
 
   # 'NX04-021 AMD Surface Format Optimization'
-  - !status: {status: 'NX04-021 AMD Surface Format Optimization', option: 'g-vendor'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -243,11 +225,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-vendor'
+    option: 'b-vendor'
     weight: 2
 
   # 'NX04-022 AMD per-game profile framework + shader cache'
-  - !status: {status: 'NX04-022 AMD per-game profile framework + shader cache', option: 'g-vendor'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -256,11 +237,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-vendor'
+    option: 'b-vendor'
     weight: 2
 
   # 'NX04-023 Intel graphics / Arc settings framework'
-  - !status: {status: 'NX04-023 Intel graphics / Arc settings framework', option: 'g-vendor'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -269,5 +249,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-vendor'
+    option: 'b-vendor'
     weight: 2

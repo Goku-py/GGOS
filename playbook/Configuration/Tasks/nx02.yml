@@ -1,5 +1,5 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX02.json (Gaming & Esports). Playbook version 0.8.0.
+# Source: registry/NX02.json (Gaming & Esports). Playbook version 0.9.0.
 # Every action is option-gated (option name = lowercase tweak id): unselected
 # tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
 ---
@@ -13,7 +13,6 @@ actions:
   - !status: {status: 'NX02 Gaming & Esports: applying selected tweaks'}
 
   # 'NX02-001 Windows Game Mode configuration'
-  - !status: {status: 'NX02-001 Windows Game Mode configuration', option: 'g-gamemode'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -24,7 +23,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-gamemode'
+    option: 'b-gaming'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -36,11 +35,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-gamemode'
+    option: 'b-gaming'
     weight: 2
 
   # 'NX02-002 Xbox Game Bar configuration'
-  - !status: {status: 'NX02-002 Xbox Game Bar configuration', option: 'g-gamemode'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -51,11 +49,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-gamemode'
+    option: 'b-gaming'
     weight: 2
 
   # 'NX02-003 Disable Game DVR'
-  - !status: {status: 'NX02-003 Disable Game DVR', option: 'g-gamemode'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -66,7 +63,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-gamemode'
+    option: 'b-gaming'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -78,7 +75,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-gamemode'
+    option: 'b-gaming'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -90,11 +87,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-gamemode'
+    option: 'b-gaming'
     weight: 2
 
   # 'NX02-004 Disable background game recording'
-  - !status: {status: 'NX02-004 Disable background game recording', option: 'g-gamemode'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -105,11 +101,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-gamemode'
+    option: 'b-gaming'
     weight: 2
 
   # 'NX02-005 Optimizations for windowed games'
-  - !status: {status: 'NX02-005 Optimizations for windowed games', option: 'g-gamemode'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -119,11 +114,10 @@ actions:
     runas: currentUserElevated
     errorAction: Notify
     builds: ['>=26100']
-    option: 'g-gamemode'
+    option: 'b-gaming'
     weight: 2
 
   # 'NX02-006 Game Mode notification suppression'
-  - !status: {status: 'NX02-006 Game Mode notification suppression', option: 'g-gamemode'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -134,11 +128,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-gamemode'
+    option: 'b-gaming'
     weight: 2
 
   # 'NX02-007 Game capture configuration'
-  - !status: {status: 'NX02-007 Game capture configuration', option: 'g-gamemode'}
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
   - !powerShell:
@@ -149,7 +142,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-gamemode'
+    option: 'b-gaming'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -161,7 +154,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-gamemode'
+    option: 'b-gaming'
     weight: 2
   # Journaled write (ADR-006): Invoke-NxRegistryTweak captures the exact original,
   # journals BEFORE mutating, verifies, and restores the original on failure.
@@ -173,11 +166,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-gamemode'
+    option: 'b-gaming'
     weight: 2
 
   # 'NX02-008 Xbox Gaming Services management'
-  - !status: {status: 'NX02-008 Xbox Gaming Services management', option: 'g-gamemode'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -186,11 +178,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-gamemode'
+    option: 'b-gaming'
     weight: 2
 
   # 'NX02-012 Game launcher detection registry'
-  - !status: {status: 'NX02-012 Game launcher detection registry', option: 'g-gamemode'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -199,5 +190,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-gamemode'
+    option: 'b-gaming'
     weight: 2

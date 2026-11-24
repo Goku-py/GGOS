@@ -1,5 +1,5 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX19.json (CPU Topology & Scheduling). Playbook version 0.8.0.
+# Source: registry/NX19.json (CPU Topology & Scheduling). Playbook version 0.9.0.
 # Every action is option-gated (option name = lowercase tweak id): unselected
 # tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
 ---
@@ -13,7 +13,6 @@ actions:
   - !status: {status: 'NX19 CPU Topology & Scheduling: applying selected tweaks'}
 
   # 'NX19-001 CPU topology detection & report engine'
-  - !status: {status: 'NX19-001 CPU topology detection & report engine', option: 'g-cpu'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -22,11 +21,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-cpu'
+    option: 'b-gaming'
     weight: 2
 
   # 'NX19-002 CPU Set derivation engine'
-  - !status: {status: 'NX19-002 CPU Set derivation engine', option: 'g-cpu'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -35,11 +33,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-cpu'
+    option: 'b-gaming'
     weight: 2
 
   # 'NX19-005 Per-process priority policy'
-  - !status: {status: 'NX19-005 Per-process priority policy', option: 'g-cpu'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -48,11 +45,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-cpu'
+    option: 'b-gaming'
     weight: 2
 
   # 'NX19-006 Scheduling profile: Competitive'
-  - !status: {status: 'NX19-006 Scheduling profile: Competitive', option: 'g-cpu'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -61,11 +57,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-cpu'
+    option: 'b-gaming'
     weight: 2
 
   # 'NX19-007 Scheduling profile: Balanced gaming'
-  - !status: {status: 'NX19-007 Scheduling profile: Balanced gaming', option: 'g-cpu'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -74,11 +69,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-cpu'
+    option: 'b-gaming'
     weight: 2
 
   # 'NX19-008 Scheduling profile: Streaming'
-  - !status: {status: 'NX19-008 Scheduling profile: Streaming', option: 'g-cpu'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -87,11 +81,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-cpu'
+    option: 'b-gaming'
     weight: 2
 
   # 'NX19-009 Scheduling profile: Productivity'
-  - !status: {status: 'NX19-009 Scheduling profile: Productivity', option: 'g-cpu'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -100,11 +93,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-cpu'
+    option: 'b-gaming'
     weight: 2
 
   # 'NX19-010 Scheduling profile: Custom builder'
-  - !status: {status: 'NX19-010 Scheduling profile: Custom builder', option: 'g-cpu'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -113,5 +105,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-cpu'
+    option: 'b-gaming'
     weight: 2

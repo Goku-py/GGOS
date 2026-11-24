@@ -1,5 +1,5 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX05.json (Memory Management). Playbook version 0.8.0.
+# Source: registry/NX05.json (Memory Management). Playbook version 0.9.0.
 # Every action is option-gated (option name = lowercase tweak id): unselected
 # tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
 ---
@@ -13,7 +13,6 @@ actions:
   - !status: {status: 'NX05 Memory Management: applying selected tweaks'}
 
   # 'NX05-001 Normalize pagefile to system-managed'
-  - !status: {status: 'NX05-001 Normalize pagefile to system-managed', option: 'g-memory'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -22,11 +21,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-memory'
+    option: 'b-storage'
     weight: 2
 
   # 'NX05-005 Memory pressure & commit monitoring report'
-  - !status: {status: 'NX05-005 Memory pressure & commit monitoring report', option: 'g-memory'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -35,11 +33,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-memory'
+    option: 'b-storage'
     weight: 2
 
   # 'NX05-006 Standby memory diagnostic report'
-  - !status: {status: 'NX05-006 Standby memory diagnostic report', option: 'g-memory'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -48,11 +45,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-memory'
+    option: 'b-storage'
     weight: 2
 
   # 'NX05-009 Crash dump configuration'
-  - !status: {status: 'NX05-009 Crash dump configuration', option: 'g-memory'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -61,11 +57,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-memory'
+    option: 'b-storage'
     weight: 2
 
   # 'NX05-011 Memory diagnostics suite'
-  - !status: {status: 'NX05-011 Memory diagnostics suite', option: 'g-memory'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -74,5 +69,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-memory'
+    option: 'b-storage'
     weight: 2

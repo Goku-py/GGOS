@@ -2,6 +2,14 @@
 
 All notable changes to the NEXTRIX repository. Dates are ISO. Statuses follow the verification ladder in `TWEAK_CLASSIFICATION.md`.
 
+## 2026-11-24 - Bundle selection UI (v0.9.0)
+
+- **Wizard selection reduced to 2 pages of bundles + the Undo page** (3 pages, 12 options total): Windows cleanup, Gaming & performance, Privacy & app cleanup, Maintenance (pre-selected), plus optional Network & DNS, Input & USB, GPU guidance (read-only), Storage & memory maintenance.
+- **Bundle options apply their journaled tweak groups.** The underlying tweaks keep identical per-tweak journaling and rollback; only the selection surface is bundled. presetExcluded (advanced/troubleshooting) entries remain CLI-only with explicit consent.
+- **Less detail during install:** per-tweak `!status` lines were removed from the progress stream (one category-level line remains); the playbook intro and Details were trimmed to essentials (no category dump).
+- AME limits still enforced by the generator (Description 50-85 chars, labels <= 40 chars, <= 4 options/page, <= 8 pages) - build fails on violation.
+- **No NEXTRIX modification applied to any machine.**
+
 ## 2026-11-23 - Wizard UX redesign (v0.8.0)
 
 - **Selection UI rebuilt to match the platform, not the registry:** the AME wizard now exposes **7 pages / 23 curated groups** instead of 76 per-tweak pages. Research basis: AME docs (CheckboxPage Description 50-85 chars, short option text, max 4 options/page) and the established playbooks (ReviOS/XOS/Sapphire/UltraOS: 4-8 pages, 16-25 options; documented in the release notes of this version).

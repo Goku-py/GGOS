@@ -1,5 +1,5 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX06.json (Storage & Filesystem). Playbook version 0.8.0.
+# Source: registry/NX06.json (Storage & Filesystem). Playbook version 0.9.0.
 # Every action is option-gated (option name = lowercase tweak id): unselected
 # tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
 ---
@@ -13,7 +13,6 @@ actions:
   - !status: {status: 'NX06 Storage & Filesystem: applying selected tweaks'}
 
   # 'NX06-001 Storage inventory & SSD/HDD/NVMe classification'
-  - !status: {status: 'NX06-001 Storage inventory & SSD/HDD/NVMe classification', option: 'g-storage'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -22,11 +21,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-storage'
+    option: 'b-storage'
     weight: 2
 
   # 'NX06-002 TRIM enable & verification'
-  - !status: {status: 'NX06-002 TRIM enable & verification', option: 'g-storage'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -35,11 +33,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-storage'
+    option: 'b-storage'
     weight: 2
 
   # 'NX06-003 Optimize Drives schedule configuration'
-  - !status: {status: 'NX06-003 Optimize Drives schedule configuration', option: 'g-storage'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -48,11 +45,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-storage'
+    option: 'b-storage'
     weight: 2
 
   # 'NX06-004 Storage Sense policy configuration'
-  - !status: {status: 'NX06-004 Storage Sense policy configuration', option: 'g-storage'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -61,11 +57,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-storage'
+    option: 'b-storage'
     weight: 2
 
   # 'NX06-005 Temporary files cleanup (on-demand)'
-  - !status: {status: 'NX06-005 Temporary files cleanup (on-demand)', option: 'g-storage'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -74,11 +69,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-storage'
+    option: 'b-storage'
     weight: 2
 
   # 'NX06-006 Windows Update cache cleanup (on-demand)'
-  - !status: {status: 'NX06-006 Windows Update cache cleanup (on-demand)', option: 'g-storage'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -87,11 +81,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-storage'
+    option: 'b-storage'
     weight: 2
 
   # 'NX06-007 Delivery Optimization cache cleanup (on-demand)'
-  - !status: {status: 'NX06-007 Delivery Optimization cache cleanup (on-demand)', option: 'g-storage'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -100,11 +93,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-storage'
+    option: 'b-storage'
     weight: 2
 
   # 'NX06-008 NTFS last-access update policy'
-  - !status: {status: 'NX06-008 NTFS last-access update policy', option: 'g-storage'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -113,11 +105,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-storage'
+    option: 'b-storage'
     weight: 2
 
   # 'NX06-009 NTFS 8.3 short-name creation policy'
-  - !status: {status: 'NX06-009 NTFS 8.3 short-name creation policy', option: 'g-storage'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -126,11 +117,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-storage'
+    option: 'b-storage'
     weight: 2
 
   # 'NX06-011 Write caching policy (per-device)'
-  - !status: {status: 'NX06-011 Write caching policy (per-device)', option: 'g-storage'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -139,11 +129,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-storage'
+    option: 'b-storage'
     weight: 2
 
   # 'NX06-012 Disk device power management (storage D3 in Modern Standby)'
-  - !status: {status: 'NX06-012 Disk device power management (storage D3 in Modern Standby)', option: 'g-storage'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -152,11 +141,10 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-storage'
+    option: 'b-storage'
     weight: 2
 
   # 'NX06-013 Drive health (SMART) report'
-  - !status: {status: 'NX06-013 Drive health (SMART) report', option: 'g-storage'}
   - !powerShell:
     command: |
       foreach ($m in (Get-ChildItem -LiteralPath . -Filter 'Nx*.ps1' -File | Sort-Object -Property Name)) { . $m.FullName }
@@ -165,5 +153,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'g-storage'
+    option: 'b-storage'
     weight: 2

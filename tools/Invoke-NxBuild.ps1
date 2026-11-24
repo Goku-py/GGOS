@@ -652,13 +652,37 @@ $UiIdOverrides = @{
     'NX11-001' = 'g-startup'; 'NX11-002' = 'g-startup'; 'NX11-003' = 'g-startup'; 'NX11-004' = 'g-startup'
     'NX13-005' = 'g-permissions'; 'NX13-011' = 'g-permissions'; 'NX13-014' = 'g-permissions'
 }
+$UiBundles = [ordered]@{
+    'b-windows' = 'Windows cleanup bundle'
+    'b-gaming'  = 'Gaming & performance bundle'
+    'b-privacy' = 'Privacy & app cleanup bundle'
+    'b-maint'   = 'Maintenance bundle (recommended)'
+    'b-network' = 'Network & DNS tuning bundle'
+    'b-input'   = 'Input & USB tuning bundle'
+    'b-vendor'  = 'GPU vendor guidance (read-only)'
+    'b-storage' = 'Storage & memory maintenance'
+}
+$UiBundleGroups = @{
+    'b-windows' = @('g-suggestions','g-search','g-updates','g-visual')
+    'b-gaming'  = @('g-gamemode','g-windowed','g-gpusched','g-cpu','g-power')
+    'b-privacy' = @('g-telemetry','g-permissions','g-startup','g-services','g-debloat')
+    'b-maint'   = @('g-maint','g-hardware','g-security')
+    'b-network' = @('g-eth','g-wifi','g-netdiag')
+    'b-input'   = @('g-input')
+    'b-vendor'  = @('g-vendor')
+    'b-storage' = @('g-memory','g-storage')
+}
+$UiGroupBundle = @{}
+foreach ($bk in $UiBundleGroups.Keys) {
+    foreach ($g in @($UiBundleGroups[$bk])) {
+        if ($UiGroupBundle.ContainsKey($g)) { throw "UI: group '$g' mapped to two bundles" }
+        $UiGroupBundle[$g] = $bk
+    }
+}
+$UiDefaultChecked = @{ 'b-maint' = $true }
 $UiPages = @(
-    @{ desc = 'Choose optional Windows experience adjustments. Every change is journaled.'; groups = @('g-suggestions','g-search','g-updates','g-visual') }
-    @{ desc = 'Choose gaming and display options. Changes are reversible via the state journal.'; groups = @('g-gamemode','g-windowed','g-gpusched','g-vendor') }
-    @{ desc = 'Choose performance and power options. Each setting is journaled and can be undone.'; groups = @('g-cpu','g-power','g-memory','g-storage') }
-    @{ desc = 'Choose network and input options. Adapter changes are per-device and reversible.'; groups = @('g-eth','g-wifi','g-netdiag','g-input') }
-    @{ desc = 'Choose background and privacy options. Privacy is never sold as a speed boost.'; groups = @('g-startup','g-services','g-telemetry','g-permissions') }
-    @{ desc = 'Choose cleanup, security and hardware options. Reports first; changes on request.'; groups = @('g-debloat','g-security','g-hardware','g-maint') }
+    @{ desc = 'Choose the bundles you want. Everything is journaled and can be undone.'; bundles = @('b-windows','b-gaming','b-privacy','b-maint') }
+    @{ desc = 'Optional extras. Select only what your hardware or workload needs.'; bundles = @('b-network','b-input','b-vendor','b-storage') }
 )
 
 foreach ($c in $categories) {
@@ -763,7 +787,7 @@ foreach ($c in $categories) {
             tweak = $t
             option = ([string]$t.id).ToLowerInvariant()
             group = $groupId
-            groupOption = $groupId
+            groupOption = $(if ($UiGroupBundle.ContainsKey($groupId)) { [string]$UiGroupBundle[$groupId] } else { $groupId })
             wizardInclude = $wizardInclude
             wizardExcludeReason = $excludeReason
             checked = (-not [bool]$t.presetExcluded)
@@ -908,24 +932,17 @@ function New-NxPlaybookConf($Model) {
     $L.Add('    <Title>' + (ConvertTo-NxXmlText ("NEXTRIX v" + $Model.version)) + '</Title>')
     $L.Add('    <ShortDescription>' + (ConvertTo-NxXmlText 'Selective, journaled Windows 11 configuration with NEXTRIX-owned rollback.') + '</ShortDescription>')
     $L.Add('    <Description><![CDATA[')
-    $L.Add('NEXTRIX applies only the tweaks you select. Nothing runs automatically beyond the mandatory')
-    $L.Add('pre-flight capture (journal initialization, hardware and build reports, a System Restore point')
-    $L.Add('and targeted backups).')
+    $L.Add('NEXTRIX applies only what you select. A short pre-flight (journal, hardware and build')
+    $L.Add('reports, restore point, targeted backups) runs first, then the selected bundles are applied.')
     $L.Add('')
-    $L.Add('This build carries the following categories from the NEXTRIX tweak registry:')
-    $L.Add((Get-NxCategorySummaryLine $Model) + '.')
-    $L.Add('')
-    $L.Add('Every applied change is journaled by the bundled NxCore engine, and rollback (one tweak, one')
-    $L.Add('category, one profile, or everything) is provided by NEXTRIX itself: the playbook platform has')
-    $L.Add('no uninstall. Windows Update and security features stay on by default.')
-    $L.Add('')
-    $L.Add('No performance claims are made. Validate every change on your own hardware.]]>')
+    $L.Add('Every change is journaled by the bundled NxCore engine and can be rolled back per tweak,')
+    $L.Add('category, profile or entirely. Windows Update and security features stay on by default.')
+    $L.Add('No performance claims are made - validate on your own hardware.]]>')
     $L.Add('    </Description>')
-    $L.Add('    <Details>' + (ConvertTo-NxXmlText ("Generated from the NEXTRIX tweak registry by tools/Invoke-NxBuild.ps1. Targets Windows 11 23H2-26H2 (builds 22631, 26100, 26200, 26300). Requirements: Internet, PluggedIn. UseKernelDriver false. Journal-based rollback at %ProgramData%\NEXTRIX\Journal. Wizard tested against: AME Beta v0.8.4.")) + '</Details>')
+    $L.Add('    <Details>' + (ConvertTo-NxXmlText ('Windows 11 23H2-26H2 (22631, 26100, 26200, 26300). Requirements: Internet, PluggedIn. Journal at %ProgramData%\NEXTRIX\Journal. Wizard: AME Beta v0.8.4.')) + '</Details>')
     $L.Add('    <ProgressText><![CDATA[')
-    $L.Add('NEXTRIX runs the pre-flight capture first (journal, hardware/build reports, restore point, targeted')
-    $L.Add('backups), then applies only the options you selected. Unselected tweaks are not touched. The')
-    $L.Add('journal at %ProgramData%\NEXTRIX\Journal records every change for rollback.]]>')
+    $L.Add('NEXTRIX captures your current state (journal, reports, restore point, backups), then applies')
+    $L.Add('only the bundles you selected. Every change is journaled for rollback.]]>')
     $L.Add('    </ProgressText>')
     $L.Add("    <Version>$($Model.version)</Version>")
     $L.Add('    <SupportedBuilds>')
@@ -952,23 +969,27 @@ function New-NxPlaybookConf($Model) {
     $L.Add("    <Git>$NxGitUrl</Git>")
     $L.Add('    <FeaturePages>')
 
-    # Curated group pages (see $UiPages). AME rules enforced: CheckboxPage
+    # Bundle pages (see $UiBundles/$UiPages). AME rules enforced: CheckboxPage
     # Description 50-85 chars, short option Text, max 4 options/page, <= 8 pages.
-    $includedGroups = @()
+    $includedBundles = @()
     foreach ($page in $UiPages) {
         $pageNo++
         $desc = [string]$page.desc
         if ($desc.Length -lt 50 -or $desc.Length -gt 85) { throw "UI page description length $($desc.Length) outside AME 50-85: '$desc'" }
         $opts = @()
-        foreach ($g in @($page.groups)) {
+        foreach ($b in @($page.bundles)) {
             $count = 0
-            foreach ($cat in $Model.categories) { $count += @($cat.selectable | Where-Object { $_.wizardInclude -and $_.group -eq $g }).Count }
+            foreach ($cat in $Model.categories) {
+                foreach ($g in @($UiBundleGroups[[string]$b])) {
+                    $count += @($cat.selectable | Where-Object { $_.wizardInclude -and $_.group -eq $g }).Count
+                }
+            }
             if ($count -eq 0) { continue }
-            $gText = [string]$UiGroupText[[string]$g]
-            if ([string]::IsNullOrWhiteSpace($gText)) { throw "UI group '$g' has no display text" }
-            if ($gText.Length -gt 40) { throw "UI option text over 40 chars: '$gText'" }
-            $opts += @{ name = [string]$g; text = $gText; checked = [bool]$UiDefaultChecked[[string]$g] }
-            $includedGroups += [string]$g
+            $bText = [string]$UiBundles[[string]$b]
+            if ([string]::IsNullOrWhiteSpace($bText)) { throw "UI bundle '$b' has no display text" }
+            if ($bText.Length -gt 40) { throw "UI option text over 40 chars: '$bText'" }
+            $opts += @{ name = [string]$b; text = $bText; checked = [bool]$UiDefaultChecked[[string]$b] }
+            $includedBundles += [string]$b
         }
         if ($opts.Count -eq 0) { continue }
         if ($opts.Count -gt 4) { throw "UI page exceeds 4 options (AME engine limit): '$desc'" }
@@ -987,7 +1008,7 @@ function New-NxPlaybookConf($Model) {
     }
     foreach ($cat in $Model.categories) {
         foreach ($e in @($cat.selectable | Where-Object { $_.wizardInclude })) {
-            if ($includedGroups -notcontains [string]$e.group) { throw "UI: $($e.tweak.id) mapped to group '$($e.group)' which is on no page" }
+            if ($includedBundles -notcontains [string]$e.groupOption) { throw "UI: $($e.tweak.id) mapped to bundle '$($e.groupOption)' which is on no page" }
         }
     }
     if ($pageNo -gt 8) { throw "UI page count $pageNo exceeds the 8-page budget" }
@@ -1124,7 +1145,6 @@ function New-NxCategoryYml($Model, $Cat) {
         $presetMark = ''
         $L.Add('')
         $L.Add('  # ' + (ConvertTo-NxYq ("$($t.id) $($t.name)")) + $presetMark)
-        $L.Add('  - !status: {status: ' + (ConvertTo-NxYq ("$($t.id) $($t.name)")) + ', option: ' + (ConvertTo-NxYq $option) + '}')
         foreach ($item in $entry.items) {
             if ($item.kind -eq 'powerShell') {
                 if ($item.command -like 'Invoke-NxRegistryTweak*') {
