@@ -1,7 +1,7 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX12.json (Windows Debloating). Playbook version 0.9.1.
-# Every action is option-gated (option name = lowercase tweak id): unselected
-# tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
+# Source: registry/NX12.json (Windows Debloating). Playbook version 0.9.2.
+# Every action is option-gated (option name = the use-case bundle): unselected
+# bundles never run. Advanced/troubleshooting entries are CLI-only and absent.
 ---
 title: 'NEXTRIX NX12 - Windows Debloating'
 description: >
@@ -21,7 +21,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-debloat'
     weight: 2
 
   # 'NX12-008 Removal scope control (per-user / all-users)'
@@ -33,7 +33,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-debloat'
     weight: 2
 
   # 'NX12-010 Removal history & reversibility ledger'
@@ -45,7 +45,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-debloat'
     weight: 2
 
   # 'NX12-011 Reinstallation helper (Store-based)'
@@ -57,7 +57,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-debloat'
     weight: 2
 
   # 'NX12-014 AppX dependency graph verification engine'
@@ -69,7 +69,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-debloat'
     weight: 2
 
   # 'NX12-001 Consumer app inventory & selective removal'
@@ -81,7 +81,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-debloat'
     weight: 2
 
   # 'NX12-003 OEM/promotional third-party app removal'
@@ -93,7 +93,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-debloat'
     weight: 2
 
   # 'NX12-004 Phone Link removal (optional)'
@@ -105,7 +105,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-debloat'
     weight: 2
 
   # 'NX12-005 Xbox app removal (optional)'
@@ -117,7 +117,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-debloat'
     weight: 2
 
   # 'NX12-006 Copilot / AI feature configuration'
@@ -129,7 +129,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-debloat'
     weight: 2
 
   # 'NX12-007 Communication apps optional removal'
@@ -141,7 +141,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-debloat'
     weight: 2
 
   # 'NX12-009 Provisioned package removal control'
@@ -153,7 +153,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-debloat'
     weight: 2
 
   # 'NX12-012 Windows capabilities selective removal'
@@ -165,7 +165,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-debloat'
     weight: 2
 
   # 'NX12-013 New-user app provisioning policy'
@@ -177,5 +177,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-debloat'
     weight: 2

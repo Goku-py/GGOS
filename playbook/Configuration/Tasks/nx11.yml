@@ -1,7 +1,7 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX11.json (Background Activity & Services). Playbook version 0.9.1.
-# Every action is option-gated (option name = lowercase tweak id): unselected
-# tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
+# Source: registry/NX11.json (Background Activity & Services). Playbook version 0.9.2.
+# Every action is option-gated (option name = the use-case bundle): unselected
+# bundles never run. Advanced/troubleshooting entries are CLI-only and absent.
 ---
 title: 'NEXTRIX NX11 - Background Activity & Services'
 description: >
@@ -21,7 +21,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-startup'
     weight: 2
 
   # 'NX11-002 Per-app background permissions (UWP)'
@@ -33,7 +33,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-startup'
     weight: 2
 
   # 'NX11-003 Edge background mode disable'
@@ -45,7 +45,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-startup'
     weight: 2
 
   # 'NX11-004 Edge startup boost disable'
@@ -57,7 +57,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-startup'
     weight: 2
 
   # 'NX11-005 Scheduled task inventory report'
@@ -69,7 +69,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-startup'
     weight: 2
 
   # 'NX11-006 Selective scheduled task management'
@@ -81,7 +81,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-startup'
     weight: 2
 
   # 'NX11-007 Resource-heavy process identification report'
@@ -93,7 +93,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-startup'
     weight: 2
 
   # 'NX11-011 Print Spooler configuration'
@@ -105,7 +105,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-startup'
     weight: 2
 
   # 'NX11-015 Windows Error Reporting configuration'
@@ -117,7 +117,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-startup'
     weight: 2
 
   # 'NX11-019 Service dependency inspection engine'
@@ -129,7 +129,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-startup'
     weight: 2
 
   # 'NX11-008 Windows Search service configuration'
@@ -141,7 +141,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-startup'
     weight: 2
 
   # 'NX11-009 SysMain service configuration'
@@ -153,7 +153,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-startup'
     weight: 2
 
   # 'NX11-010 Xbox services configuration'
@@ -165,7 +165,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-startup'
     weight: 2
 
   # 'NX11-012 Bluetooth service configuration'
@@ -177,7 +177,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-startup'
     weight: 2
 
   # 'NX11-013 Fax service configuration'
@@ -189,7 +189,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-startup'
     weight: 2
 
   # 'NX11-014 Remote Registry configuration'
@@ -201,7 +201,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-startup'
     weight: 2
 
   # 'NX11-016 Maps-related services configuration'
@@ -213,7 +213,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-startup'
     weight: 2
 
   # 'NX11-017 DiagTrack (Connected User Experiences) configuration'
@@ -225,7 +225,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-startup'
     weight: 2
 
   # 'NX11-018 Third-party service inventory & selective configuration'
@@ -237,5 +237,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-privacy'
+    option: 'b-startup'
     weight: 2

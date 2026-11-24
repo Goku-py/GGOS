@@ -19,7 +19,7 @@
                                          Overhaul false, honest no-claims texts.
       Configuration/main.yml             entry point: pre-flight FIRST, per-category
                                          task files in wave order (NX16 first),
-                                         rollback surface last.
+                                         completion status last.
       Configuration/Tasks/nxcore.yml     unconditional pre-flight (!powerShell
                                          Invoke-NxPreFlight, errorAction Halt -
                                          capture-completeness gate, ADR-006).
@@ -32,11 +32,10 @@
                                          registry actions -> journaled !powerShell
                                          (Invoke-NxRegistryTweak: capture ->
                                          journal -> apply -> verify -> journal).
-      Configuration/Tasks/rollback.yml   the four rollback scopes (Invoke-NxRollback
-                                         -TweakId/-Category/-Profile/-All), option
-                                         gated, default off. The playbook platform
-                                         has no uninstall (ADR-006); NxJournal/
-                                         NxRollback is the sole rollback authority.
+      (no rollback task file)            rollback is CLI-only: Invoke-NxRollback
+                                         through the bundled NxCore. The playbook
+                                         platform has no uninstall (ADR-006) and
+                                         the wizard deliberately has no undo page.
       Executables/nxcore-manifest.json   what packaging must bundle (with SHA256 pins):
                                          src/nxcore/**/*.ps1 plus the NX18 session
                                          subsystem (src/nxsession/NX18.ps1). The
@@ -49,8 +48,8 @@
       - apply actions whose function is Invoke-NxPreFlight are NOT user options;
         they are the mandatory pre-flight (no mutation without verified capture).
       - apply actions whose function is Invoke-NxRollback are NOT per-category
-        options; they are the undo surface in rollback.yml, always default off
-        (running rollback right after apply by default would undo the apply).
+        options; rollback is a CLI-only operation and is never emitted as a
+        wizard option or a playbook task.
 
     Safety: static text generation only. This script never executes the generated
     playbook, never downloads anything, and never mutates the host beyond writing
@@ -92,8 +91,8 @@ $NxJournalDirArg    = '(Join-Path $env:ProgramData ''NEXTRIX\Journal'')'
 # Executables dir (exeDir: true). The foreach STATEMENT form runs in the current
 # scope, so function definitions persist. Verified on Windows PowerShell 5.1.
 $NxLoaderLine       = 'foreach ($m in (Get-ChildItem -LiteralPath . -Filter ''Nx*.ps1'' -File | Sort-Object -Property Name)) { . $m.FullName }'
-# Fixed option names for the four rollback scopes (the undo surface is structural,
-# not per-registry): scope order tweakid, category, profile, all.
+# Canonical rollback scope names, retained for CLI documentation and reporting
+# only: rollback is not an install-time surface (no wizard page, no task file).
 $NxRollbackScopes   = @(
     @{ key = 'tweakid';  option = 'nx-rollback-tweakid';  param = 'tweakId'; fallback = '<tweak>'; label = 'Undo ONE tweak' },
     @{ key = 'category'; option = 'nx-rollback-category'; param = 'category'; fallback = '<NXcc>';  label = 'Undo ONE category' },
@@ -599,40 +598,12 @@ $model = @{
 }
 
 # ---------------------------------------------------------------- UI model
-# The AME wizard is a selection surface, not a tweak browser: established
-# playbooks expose 4-8 pages with ~16-25 grouped options (ReviOS/XOS/Sapphire/
-# UltraOS). NEXTRIX groups the non-presetExcluded tweaks into curated groups and
-# leaves presetExcluded (advanced/troubleshooting) to the CLI with explicit
-# consent. AME engine rules enforced below: CheckboxPage Description 50-85 chars,
-# short Option Text, max 4 options per page, <= 8 pages.
-$UiGroupText = [ordered]@{
-    'g-suggestions' = 'Reduce suggestions & promotions'
-    'g-search'      = 'Search & indexing settings'
-    'g-updates'     = 'Update & maintenance preferences'
-    'g-visual'      = 'Look and feel'
-    'g-gamemode'    = 'Game Mode & game capture'
-    'g-windowed'    = 'Windowed games & presentation'
-    'g-gpusched'    = 'GPU scheduling & display features'
-    'g-vendor'      = 'GPU vendor guidance (read-only)'
-    'g-cpu'         = 'CPU & scheduler reports'
-    'g-power'       = 'Power plan & sleep behavior'
-    'g-memory'      = 'Memory configuration'
-    'g-storage'     = 'Storage maintenance'
-    'g-eth'         = 'Ethernet adapter tuning'
-    'g-wifi'        = 'Wi-Fi & DNS settings'
-    'g-netdiag'     = 'Network diagnostics & repair'
-    'g-input'       = 'Input & USB devices'
-    'g-startup'     = 'Startup & background apps'
-    'g-services'    = 'Services & scheduled tasks'
-    'g-telemetry'   = 'Privacy & telemetry'
-    'g-permissions' = 'App permissions'
-    'g-debloat'     = 'Optional app removal (plans)'
-    'g-security'    = 'Security status & hardening'
-    'g-hardware'    = 'Hardware & driver reports'
-    'g-maint'       = 'Maintenance & recovery'
-    'g-session'     = 'In-game session manager'
-}
-$UiDefaultChecked = @{ 'g-maint' = $true; 'g-hardware' = $true }
+# The AME wizard is a selection surface, not a tweak browser. NEXTRIX maps the
+# non-presetExcluded tweaks to curated groups, then folds those groups into
+# use-case bundles (three selection pages). presetExcluded (advanced/
+# troubleshooting) stays CLI-only with explicit consent. AME engine rules
+# enforced below: CheckboxPage Description 50-85 chars, short Option Text,
+# max 4 options per page, hard 4-page budget.
 $UiCategoryDefault = @{
     'NX01' = 'g-suggestions'; 'NX02' = 'g-gamemode'; 'NX03' = 'g-cpu'; 'NX04' = 'g-gpusched'
     'NX05' = 'g-memory'; 'NX06' = 'g-storage'; 'NX07' = 'g-eth'; 'NX08' = 'g-input'
@@ -652,25 +623,35 @@ $UiIdOverrides = @{
     'NX11-001' = 'g-startup'; 'NX11-002' = 'g-startup'; 'NX11-003' = 'g-startup'; 'NX11-004' = 'g-startup'
     'NX13-005' = 'g-permissions'; 'NX13-011' = 'g-permissions'; 'NX13-014' = 'g-permissions'
 }
+# Use-case bundles: each bundle absorbs one or more UI groups. A group belongs to
+# exactly one bundle, so every emitted action has exactly one option gate.
 $UiBundles = [ordered]@{
-    'b-windows' = 'Windows cleanup bundle'
-    'b-gaming'  = 'Gaming & performance bundle'
-    'b-privacy' = 'Privacy & app cleanup bundle'
-    'b-maint'   = 'Maintenance bundle (recommended)'
-    'b-network' = 'Network & DNS tuning bundle'
-    'b-input'   = 'Input & USB tuning bundle'
-    'b-vendor'  = 'GPU vendor guidance (read-only)'
-    'b-storage' = 'Storage & memory maintenance'
+    'b-game-mode' = 'Game Mode & Game Bar'
+    'b-gpu'       = 'GPU & display tuning'
+    'b-cpu-power' = 'CPU, power & memory'
+    'b-input'     = 'Input & USB devices'
+    'b-windows'   = 'Windows cleanup'
+    'b-storage'   = 'Storage & filesystem'
+    'b-network'   = 'Network & DNS'
+    'b-maint'     = 'Maintenance & recovery'
+    'b-privacy'   = 'Privacy & telemetry'
+    'b-startup'   = 'Startup & background apps'
+    'b-debloat'   = 'Optional app removal (plans)'
+    'b-security'  = 'Security & hardware reports'
 }
 $UiBundleGroups = @{
-    'b-windows' = @('g-suggestions','g-search','g-updates','g-visual')
-    'b-gaming'  = @('g-gamemode','g-windowed','g-gpusched','g-cpu','g-power')
-    'b-privacy' = @('g-telemetry','g-permissions','g-startup','g-services','g-debloat')
-    'b-maint'   = @('g-maint','g-hardware','g-security')
-    'b-network' = @('g-eth','g-wifi','g-netdiag')
-    'b-input'   = @('g-input')
-    'b-vendor'  = @('g-vendor')
-    'b-storage' = @('g-memory','g-storage')
+    'b-game-mode' = @('g-gamemode','g-windowed')
+    'b-gpu'       = @('g-gpusched','g-vendor')
+    'b-cpu-power' = @('g-cpu','g-power','g-memory')
+    'b-input'     = @('g-input')
+    'b-windows'   = @('g-suggestions','g-search','g-updates','g-visual')
+    'b-storage'   = @('g-storage')
+    'b-network'   = @('g-eth','g-wifi','g-netdiag')
+    'b-maint'     = @('g-maint')
+    'b-privacy'   = @('g-telemetry','g-permissions')
+    'b-startup'   = @('g-startup','g-services')
+    'b-debloat'   = @('g-debloat')
+    'b-security'  = @('g-security','g-hardware')
 }
 $UiGroupBundle = @{}
 foreach ($bk in $UiBundleGroups.Keys) {
@@ -680,9 +661,13 @@ foreach ($bk in $UiBundleGroups.Keys) {
     }
 }
 $UiDefaultChecked = @{ 'b-maint' = $true }
+# Three selection pages = the maximum useful surface. The playbook info screen
+# plus these pages is four screens total; AME hard limits (4 options/page,
+# Description 50-85 chars) are enforced below.
 $UiPages = @(
-    @{ desc = 'Choose the bundles you want. Everything is journaled and can be undone.'; bundles = @('b-windows','b-gaming','b-privacy','b-maint') }
-    @{ desc = 'Optional extras. Select only what your hardware or workload needs.'; bundles = @('b-network','b-input','b-vendor','b-storage') }
+    @{ desc = 'Gaming PCs: pick only the tuning you want for your hardware and games.'; bundles = @('b-game-mode','b-gpu','b-cpu-power','b-input') }
+    @{ desc = 'Everyday desktops and laptops: cleanup, storage, network and maintenance.'; bundles = @('b-windows','b-storage','b-network','b-maint') }
+    @{ desc = 'Privacy, background apps and reports: choose only what you want changed.'; bundles = @('b-privacy','b-startup','b-debloat','b-security') }
 )
 
 foreach ($c in $categories) {
@@ -935,9 +920,9 @@ function New-NxPlaybookConf($Model) {
     $L.Add('NEXTRIX applies only what you select. A short pre-flight (journal, hardware and build')
     $L.Add('reports, restore point, targeted backups) runs first, then the selected bundles are applied.')
     $L.Add('')
-    $L.Add('Every change is journaled by the bundled NxCore engine and can be rolled back per tweak,')
-    $L.Add('category, profile or entirely. Windows Update and security features stay on by default.')
-    $L.Add('No performance claims are made - validate on your own hardware.]]>')
+    $L.Add('Every change is journaled by the bundled NxCore engine; undo runs from the command')
+    $L.Add('line (per tweak, category, profile or all). Windows Update and security features stay on')
+    $L.Add('by default. No performance claims are made - validate on your own hardware.]]>')
     $L.Add('    </Description>')
     $L.Add('    <Details>' + (ConvertTo-NxXmlText ('Windows 11 23H2-26H2 (22631, 26100, 26200, 26300). Requirements: Internet, PluggedIn. Journal at %ProgramData%\NEXTRIX\Journal. Wizard: AME Beta v0.8.4.')) + '</Details>')
     $L.Add('    <ProgressText><![CDATA[')
@@ -970,8 +955,9 @@ function New-NxPlaybookConf($Model) {
     $L.Add("    <Git>$NxGitUrl</Git>")
     $L.Add('    <FeaturePages>')
 
-    # Bundle pages (see $UiBundles/$UiPages). AME rules enforced: CheckboxPage
-    # Description 50-85 chars, short option Text, max 4 options/page, <= 8 pages.
+    # Use-case bundle pages (see $UiBundles/$UiPages). AME rules enforced:
+    # CheckboxPage Description 50-85 chars, short option Text, max 4 options/page,
+    # and a hard 4-page budget (3 selection pages + the playbook info screen).
     $includedBundles = @()
     foreach ($page in $UiPages) {
         $pageNo++
@@ -1012,22 +998,12 @@ function New-NxPlaybookConf($Model) {
             if ($includedBundles -notcontains [string]$e.groupOption) { throw "UI: $($e.tweak.id) mapped to bundle '$($e.groupOption)' which is on no page" }
         }
     }
-    if ($pageNo -gt 8) { throw "UI page count $pageNo exceeds the 8-page budget" }
+    if ($pageNo -gt 4) { throw "UI page count $pageNo exceeds the 4-page budget" }
 
-    # rollback page (always last: the undo surface)
-    $L.Add('        <CheckboxPage IsRequired="true" Description="' + (ConvertTo-NxXmlAttr 'Undo only: check a scope to undo journaled changes; leave unchecked.') + '">')
-    $L.Add('            <Options>')
-    foreach ($scope in $Model.rollback) {
-        $text = $scope.label
-        if ($null -ne $scope.registryId) { $text = "$($scope.registryId) $($scope.label)" }
-        if ($scope.key -ne 'all') { $text = $text + ' (set the target in Tasks/rollback.yml first)' }
-        $L.Add('                <CheckboxOption IsChecked="false">')
-        $L.Add('                    <Text>' + (ConvertTo-NxXmlText $text) + '</Text>')
-        $L.Add('                    <Name>' + (ConvertTo-NxXmlText $scope.option) + '</Name>')
-        $L.Add('                </CheckboxOption>')
-    }
-    $L.Add('            </Options>')
-    $L.Add('        </CheckboxPage>')
+    # Rollback is intentionally NOT a wizard page: undoing applied changes is a
+    # CLI action (Invoke-NxRollback through the bundled NxCore), not something a
+    # user ticks during install. The playbook platform has no uninstall (ADR-006).
+
     $L.Add('    </FeaturePages>')
     $L.Add('</Playbook>')
     return ($L -join "`r`n") + "`r`n"
@@ -1040,17 +1016,17 @@ function New-NxMainYml($Model) {
     $L.Add('# Runtime contract (ADR-006): NxJournal/NxRollback is the sole rollback authority;')
     $L.Add('# this playbook is apply-and-select only - the platform provides no uninstall.')
     $L.Add('# Order: (1) MANDATORY NxCore pre-flight, (2) per-category task files in wave')
-    $L.Add('# order (NX16 first: the recovery substrate), (3) rollback undo surface')
-    $L.Add('# (option-gated, default off). Bundled NxCore modules are declared in')
+    $L.Add('# order (NX16 first: the recovery substrate). Rollback is deliberately NOT a')
+    $L.Add('# playbook action: undoing changes is a CLI operation (Invoke-NxRollback).')
+    $L.Add('# Bundled NxCore modules are declared in')
     $L.Add('# Executables/nxcore-manifest.json and copied into Executables/ at packaging')
     $L.Add('# time (the generator does not copy binaries).')
     $L.Add('---')
     $L.Add("title: 'NEXTRIX root playbook file'")
     $L.Add('description: >')
     $L.Add('  Pre-flight capture first (journal, hardware/build reports, restore point, targeted')
-    $L.Add('  backups), then the selected per-category tweaks in wave order, then the rollback')
-    $L.Add('  undo surface. Nothing runs without an explicitly selected option except the')
-    $L.Add('  mandatory pre-flight.')
+    $L.Add('  backups), then the selected per-category tweaks in wave order. Nothing runs')
+    $L.Add('  without an explicitly selected option except the mandatory pre-flight.')
     $L.Add('actions:')
     $L.Add('  # 1) MANDATORY pre-flight: capture completeness before any mutation.')
     $pfId = 'structural'
@@ -1066,16 +1042,11 @@ function New-NxMainYml($Model) {
         $nPf = @($cat.preflightRouted).Count
         $nRb = @($cat.rollbackRouted).Count
         $L.Add("  # 2.$wavePos) Category $($cat.name) ($($cat.categoryName)) - wave position $wavePos")
-        $L.Add("  #    $nSel selectable option(s), $nPf routed to the pre-flight, $nRb routed to the rollback surface.")
+        $L.Add("  #    $nSel selectable option(s), $nPf routed to the pre-flight, $nRb CLI-only rollback entries (not applied).")
         $L.Add('  - !status: {status: ' + (ConvertTo-NxYq ("$($cat.name) $($cat.categoryName)")) + '}')
         $L.Add('  - !task: {path: ' + (ConvertTo-NxYq ("Tasks/$($cat.name.ToLowerInvariant()).yml")) + '}')
         $L.Add('')
     }
-    $L.Add('  # 3) Rollback undo surface (ADR-006): option-gated, default off. A no-op when')
-    $L.Add('  #    no rollback scope is selected.')
-    $L.Add("  - !status: {status: 'NEXTRIX rollback surface (no-op unless selected)'}")
-    $L.Add("  - !task: {path: 'Tasks/rollback.yml'}")
-    $L.Add('')
     $L.Add('  - !status: {status: ' + (ConvertTo-NxYq 'NEXTRIX complete - journal: %ProgramData%\NEXTRIX\Journal') + '}')
     return ($L -join "`r`n") + "`r`n"
 }
@@ -1120,12 +1091,12 @@ function New-NxCategoryYml($Model, $Cat) {
     $nRb = @($Cat.rollbackRouted).Count
     $L.Add('# NEXTRIX category task file. GENERATED FILE, do not edit by hand.')
     $L.Add("# Source: registry/$($Cat.file) ($($Cat.categoryName)). Playbook version $($Model.version).")
-    $L.Add('# Every action is option-gated (option name = lowercase tweak id): unselected')
-    $L.Add('# tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).')
+    $L.Add('# Every action is option-gated (option name = the use-case bundle): unselected')
+    $L.Add('# bundles never run. Advanced/troubleshooting entries are CLI-only and absent.')
     if ($nPf -gt 0 -or $nRb -gt 0) {
         $routed = @()
         if ($nPf -gt 0) { $routed += (@($Cat.preflightRouted | ForEach-Object { "$($_.id) -> Tasks/nxcore.yml (unconditional pre-flight)" }) -join ', ') }
-        if ($nRb -gt 0) { $routed += (@($Cat.rollbackRouted | ForEach-Object { "$($_.id) -> Tasks/rollback.yml (undo surface)" }) -join ', ') }
+        if ($nRb -gt 0) { $routed += (@($Cat.rollbackRouted | ForEach-Object { "$($_.id) -> CLI-only rollback (not an install action)" }) -join ', ') }
         $L.Add('# Routed out of this file: ' + ($routed -join '; '))
     }
     $L.Add('---')
@@ -1133,7 +1104,7 @@ function New-NxCategoryYml($Model, $Cat) {
     $L.Add('description: >')
     $L.Add("  Generated from registry/$($Cat.file): $nSel selectable tweak option(s)")
     if ($nPf -gt 0) { $L.Add("  and $nPf tweak(s) routed to the mandatory pre-flight") }
-    if ($nRb -gt 0) { $L.Add("  and $nRb tweak(s) routed to the rollback undo surface") }
+    if ($nRb -gt 0) { $L.Add("  and $nRb CLI-only rollback entries (rollback is never an install action)") }
     $L.Add('  (option names are curated UI group ids). Function actions run the journaled')
     $L.Add('  NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak')
     $L.Add('  pipeline (capture -> journal -> apply -> verify), never a raw engine write.')
@@ -1165,49 +1136,6 @@ function New-NxCategoryYml($Model, $Cat) {
                 $L.Add('    weight: 2')
             }
         }
-    }
-    return ($L -join "`r`n") + "`r`n"
-}
-
-function New-NxRollbackYml($Model) {
-    $L = New-NxLineList
-    $declaredIds = @()
-    foreach ($scope in $Model.rollback) { if ($null -ne $scope.registryId) { $declaredIds += $scope.registryId } }
-    $srcNote = 'Registry sources: ' + $(if ($declaredIds.Count -gt 0) { ($declaredIds -join ', ') } else { 'none declared (structural emission)' })
-    $L.Add('# NEXTRIX rollback (undo surface). GENERATED FILE, do not edit by hand.')
-    $L.Add("# $srcNote.")
-    $L.Add('# The playbook platform provides NO uninstall (ADR-006); NxJournal/NxRollback')
-    $L.Add('# is the sole rollback authority. All four scope options are default-UNCHECKED:')
-    $L.Add('# rollback runs ONLY when a scope is explicitly selected.')
-    $L.Add('# HONEST LIMITATION: the wizard option surface cannot collect free-text')
-    $L.Add('# parameters. The three parameterized scopes carry the registry placeholders')
-    $L.Add("# ('<tweak>', '<NXcc>', '<Pn>'). Replace the placeholder in the")
-    $L.Add('# command below with a concrete journal target (tweak id / category prefix /')
-    $L.Add('# profile tag), or invoke Invoke-NxRollback directly from the bundled NxCore.')
-    $L.Add('# The -All scope needs no parameter and runs as-is.')
-    $L.Add('---')
-    $L.Add("title: 'NEXTRIX rollback (undo surface)'")
-    $L.Add('description: >')
-    $L.Add('  Four journal-based rollback scopes, option-gated, default off. Requires an')
-    $L.Add('  initialized NEXTRIX journal (%ProgramData%\NEXTRIX\Journal). Every step is')
-    $L.Add('  verified; divergence from the journaled state is reported, never clobbered.')
-    $L.Add('actions:')
-    $L.Add("  - !status: {status: 'Rollback undo surface (runs only when a scope is selected)'}")
-    foreach ($scope in $Model.rollback) {
-        $statusId = $scope.option
-        if ($null -ne $scope.registryId) { $statusId = $scope.registryId }
-        $L.Add('')
-        $L.Add('  - !status: {status: ' + (ConvertTo-NxYq ("$statusId $($scope.label)")) + ', option: ' + (ConvertTo-NxYq $scope.option) + '}')
-        $L.Add('  - !powerShell:')
-        $L.Add('    command: |')
-        $L.Add("      $NxLoaderLine")
-        $L.Add("      $($scope.call)")
-        $L.Add('    exeDir: true')
-        $L.Add('    wait: true')
-        $L.Add('    runas: currentUserElevated')
-        $L.Add('    errorAction: Notify')
-        $L.Add('    option: ' + (ConvertTo-NxYq $scope.option))
-        $L.Add('    weight: 4')
     }
     return ($L -join "`r`n") + "`r`n"
 }
@@ -1271,7 +1199,6 @@ $renderedFiles += @{ path = 'Configuration\Tasks\nxcore.yml'; content = (New-NxP
 foreach ($cat in $model.categories) {
     $renderedFiles += @{ path = "Configuration\Tasks\$($cat.name.ToLowerInvariant()).yml"; content = (New-NxCategoryYml $model $cat) }
 }
-$renderedFiles += @{ path = 'Configuration\Tasks\rollback.yml'; content = (New-NxRollbackYml $model) }
 $renderedFiles += @{ path = 'Executables\nxcore-manifest.json'; content = ((New-NxManifestJson $model $inventory $engineFiles $regFiles) + "`r`n") }
 
 # ---- dry run: print the resolved action graph, write nothing ----
@@ -1293,7 +1220,6 @@ if ($DryRun) {
         Write-Output ("  $pos. Configuration/Tasks/$($cat.name.ToLowerInvariant()).yml - $($cat.name) $($cat.categoryName) [$nT tweak(s): $nSel option(s)]")
         $pos++
     }
-    Write-Output ("  $pos. Configuration/Tasks/rollback.yml - undo surface [$(@($model.rollback).Count) scope(s)]")
     Write-Output ''
     foreach ($cat in $model.categories) {
         Write-Output "Category $($cat.name) - $($cat.categoryName) (registry/$($cat.file)):"
@@ -1324,7 +1250,7 @@ if ($DryRun) {
         }
         Write-Output ''
     }
-    Write-Output "Rollback scopes (Tasks/rollback.yml):"
+    Write-Output "Rollback (CLI-only; deliberately not a wizard page):"
     foreach ($scope in $model.rollback) {
         $src = 'structural'
         if ($null -ne $scope.registryId) { $src = $scope.registryId }
@@ -1368,7 +1294,7 @@ foreach ($rf in $renderedFiles) {
 
 Write-Output ''
 Write-Output "Playbook '$NxName' v$Version generated from $($regFiles.Count) registry file(s), $($allTweaks.Count) tweak(s)."
-Write-Output ("Options: " + (@($model.categories | ForEach-Object { "$($_.name)=$(@($_.selectable).Count)" }) -join ', ') + "; rollback scopes: $(@($model.rollback).Count) (all default off).")
+Write-Output ("Options: " + (@($model.categories | ForEach-Object { "$($_.name)=$(@($_.selectable).Count)" }) -join ', ') + "; rollback: CLI-only (no wizard undo page).")
 $journaledWrites = 0
 foreach ($cat in $model.categories) { foreach ($e in $cat.selectable) { foreach ($i in $e.items) { if ($i.command -like 'Invoke-NxRegistryTweak*') { $journaledWrites++ } } } }
 Write-Output "Journaled registry writes: $journaledWrites (Invoke-NxRegistryTweak; no raw !registryValue actions)."

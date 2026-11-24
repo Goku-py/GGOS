@@ -683,8 +683,8 @@ function New-NxDependencyMarkdown {
     $L.Add('Structural engine wiring (verified by function definition, not an entry-to-entry dependency):')
     $L.Add('')
     $L.Add('- `NX16-004` applies `Invoke-NxPreFlight`; the generator routes that function to the unconditional `Tasks/nxcore.yml` pre-flight (errorAction Halt) instead of a user option.')
-    $L.Add('- `NX16-013`..`NX16-016` apply `Invoke-NxRollback`; the generator routes those four scopes to `Tasks/rollback.yml`, all default-off.')
-    $L.Add('- `NX16-014`/`NX16-015`/`NX16-016` depend on `NX16-013` (journal read/restore primitives), which is why the rollback surface is ordered after the pre-flight capture.')
+    $L.Add('- `NX16-013`..`NX16-016` apply `Invoke-NxRollback`; they are CLI-only and deliberately not emitted as wizard options or playbook tasks.')
+    $L.Add('- `NX16-014`/`NX16-015`/`NX16-016` depend on `NX16-013` (journal read/restore primitives). Rollback runs after the apply session, against the journal.')
     $L.Add('')
     if (@($unresolvedFns).Count -gt 0) {
         $L.Add('### 3.3 Applied functions not found in `src` at export time')

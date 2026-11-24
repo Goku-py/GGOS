@@ -1,14 +1,14 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX16.json (Maintenance & Recovery). Playbook version 0.9.1.
-# Every action is option-gated (option name = lowercase tweak id): unselected
-# tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
-# Routed out of this file: NX16-004 -> Tasks/nxcore.yml (unconditional pre-flight); NX16-013 -> Tasks/rollback.yml (undo surface), NX16-014 -> Tasks/rollback.yml (undo surface), NX16-015 -> Tasks/rollback.yml (undo surface), NX16-016 -> Tasks/rollback.yml (undo surface)
+# Source: registry/NX16.json (Maintenance & Recovery). Playbook version 0.9.2.
+# Every action is option-gated (option name = the use-case bundle): unselected
+# bundles never run. Advanced/troubleshooting entries are CLI-only and absent.
+# Routed out of this file: NX16-004 -> Tasks/nxcore.yml (unconditional pre-flight); NX16-013 -> CLI-only rollback (not an install action), NX16-014 -> CLI-only rollback (not an install action), NX16-015 -> CLI-only rollback (not an install action), NX16-016 -> CLI-only rollback (not an install action)
 ---
 title: 'NEXTRIX NX16 - Maintenance & Recovery'
 description: >
   Generated from registry/NX16.json: 12 selectable tweak option(s)
   and 1 tweak(s) routed to the mandatory pre-flight
-  and 4 tweak(s) routed to the rollback undo surface
+  and 4 CLI-only rollback entries (rollback is never an install action)
   (option names are curated UI group ids). Function actions run the journaled
   NxCore engine; registry actions run the journaled Invoke-NxRegistryTweak
   pipeline (capture -> journal -> apply -> verify), never a raw engine write.

@@ -1,7 +1,7 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX05.json (Memory Management). Playbook version 0.9.1.
-# Every action is option-gated (option name = lowercase tweak id): unselected
-# tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
+# Source: registry/NX05.json (Memory Management). Playbook version 0.9.2.
+# Every action is option-gated (option name = the use-case bundle): unselected
+# bundles never run. Advanced/troubleshooting entries are CLI-only and absent.
 ---
 title: 'NEXTRIX NX05 - Memory Management'
 description: >
@@ -21,7 +21,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-storage'
+    option: 'b-cpu-power'
     weight: 2
 
   # 'NX05-005 Memory pressure & commit monitoring report'
@@ -33,7 +33,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-storage'
+    option: 'b-cpu-power'
     weight: 2
 
   # 'NX05-006 Standby memory diagnostic report'
@@ -45,7 +45,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-storage'
+    option: 'b-cpu-power'
     weight: 2
 
   # 'NX05-009 Crash dump configuration'
@@ -57,7 +57,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-storage'
+    option: 'b-cpu-power'
     weight: 2
 
   # 'NX05-011 Memory diagnostics suite'
@@ -69,5 +69,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-storage'
+    option: 'b-cpu-power'
     weight: 2

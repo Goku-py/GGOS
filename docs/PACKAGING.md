@@ -92,7 +92,7 @@ build/package/NEXTRIX-v0.6.0/
   playbook.conf
   Configuration/
     main.yml
-    Tasks/  nx01.yml .. nx20.yml, nxcore.yml, rollback.yml      (22 task files)
+    Tasks/  nx01.yml .. nx20.yml, nxcore.yml      (21 task files)
   Executables/
     nxcore-manifest.json
     NxCoreBootstrap.ps1
@@ -160,11 +160,11 @@ Rules:
 3. Satisfy the declared requirements: `Internet` and `PluggedIn`. The playbook deliberately declares no `DefenderToggled`, `NoAntivirus` or `UCPDDisabled` requirement, and `UseKernelDriver` is `false`.
 4. The wizard runs the mandatory pre-flight first: journal initialization, hardware/build reports, a System Restore point and targeted backups. A pre-flight failure halts the playbook (capture-completeness gate).
 5. Only selected options run. `presetExcluded` entries are default-unchecked. Registry writes go through the journaled `Invoke-NxRegistryTweak` pipeline; function actions run the bundled NxCore engine.
-6. Rollback is NEXTRIX-owned: `Tasks/rollback.yml` exposes the four journal scopes (tweak, category, profile, all), default off. **The wizard has no uninstall**; the journal at `%ProgramData%\NEXTRIX\Journal` is the rollback authority.
+6. Rollback is NEXTRIX-owned and CLI-only: the installer has no undo page. After install, run `Invoke-NxRollback` from the bundled NxCore (`Executables/NxCore/`) with `-TweakId`, `-Category`, `-Profile` or `-All`. **The wizard has no uninstall**; the journal at `%ProgramData%\NEXTRIX\Journal` is the rollback authority.
 
 Owner-facing limitations to state honestly:
 
-- The wizard option surface cannot collect free-text parameters, so the parameterized rollback scopes ship with placeholders (`<tweak>`, `<NXcc>`, `<Pn>`) that must be replaced in `Tasks/rollback.yml`, or rollback must be invoked directly from the bundled NxCore.
+- The installer does not expose rollback (deliberately: undo is a post-install CLI action, not an install-time checkbox). Pass the target on the command line; the bundled engine reads the journal at `%ProgramData%\NEXTRIX\Journal`.
 - Playbook verification is discretionary and is lost on any modification. NEXTRIX does not claim verified status.
 
 ---

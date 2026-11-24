@@ -2,6 +2,14 @@
 
 All notable changes to the NEXTRIX repository. Dates are ISO. Statuses follow the verification ladder in `TWEAK_CLASSIFICATION.md`.
 
+## 2026-11-24 - Use-case selection, 3 pages, no undo page (v0.9.2)
+
+- **The Undo page is gone from the installer.** Rollback was never an install-time choice; it is a post-install CLI action (`Invoke-NxRollback` from the bundled NxCore). The playbook no longer emits a rollback page or `Tasks/rollback.yml`.
+- **Selection rebuilt around use cases: 3 pages / 12 checkboxes.** Page 1 Gaming: Game Mode & Game Bar, GPU & display tuning, CPU/power/memory, Input & USB. Page 2 Everyday: Windows cleanup, Storage & filesystem, Network & DNS, Maintenance & recovery (pre-selected). Page 3 Privacy & reporting: Privacy & telemetry, Startup & background apps, Optional app removal (plans), Security & hardware reports.
+- **Hard 4-page budget** (3 selection pages + the playbook info screen), max 4 options/page, Description 50-85 chars, labels <= 40 chars. The generator fails the build on any violation.
+- Underlying tweaks are unchanged: every action is still journaled per tweak by NxCore; only the selection surface is bundled. presetExcluded (advanced/troubleshooting) entries remain CLI-only with explicit consent.
+- **No NEXTRIX modification applied to any machine.**
+
 ## 2026-11-24 - Upgrade support (v0.9.1)
 
 - **AME upgrades are now allowed:** `playbook.conf` declares `UpgradableFrom: any`, so installing v0.9.1 over an older NEXTRIX playbook no longer shows "NEXTRIX does not allow upgrades".

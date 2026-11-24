@@ -249,7 +249,7 @@ Record in the evidence: playbook `-Version`, the hash manifest, the AME Wizard v
 Two packaging facts affect the test:
 
 - The generator inventories `src/nxcore` only. `src/nxsession/NX18.ps1` must be bundled separately for NX18 runtime tests (`KNOWN_ISSUES.md` 16). The playbook's NX18 options are informational probes until that packaging step.
-- Per-tweak/category/profile rollback calls in the generated `rollback.yml` carry editable placeholders; `-All` is fully functional (`KNOWN_ISSUES.md` 10). For a precise single-tweak rollback, use `Invoke-NxRollback -TweakId` directly.
+- Rollback is CLI-only (the installer has no undo page). Run `Invoke-NxRollback -TweakId`/`-Category`/`-Profile`/`-All` from the bundled NxCore (`KNOWN_ISSUES.md` 10).
 
 ### 2.7 Exporting the evidence bundle (NX16-017)
 

@@ -1,7 +1,7 @@
 # NEXTRIX category task file. GENERATED FILE, do not edit by hand.
-# Source: registry/NX20.json (Hardware & Driver Management). Playbook version 0.9.1.
-# Every action is option-gated (option name = lowercase tweak id): unselected
-# tweaks never run. presetExcluded tweaks are default-UNCHECKED (mechanical).
+# Source: registry/NX20.json (Hardware & Driver Management). Playbook version 0.9.2.
+# Every action is option-gated (option name = the use-case bundle): unselected
+# bundles never run. Advanced/troubleshooting entries are CLI-only and absent.
 ---
 title: 'NEXTRIX NX20 - Hardware & Driver Management'
 description: >
@@ -21,7 +21,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-maint'
+    option: 'b-security'
     weight: 2
 
   # 'NX20-002 GPU vendor & driver capability report'
@@ -33,7 +33,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-maint'
+    option: 'b-security'
     weight: 2
 
   # 'NX20-003 NVIDIA driver management (inventory, guidance, profile inspection)'
@@ -45,7 +45,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-maint'
+    option: 'b-security'
     weight: 2
 
   # 'NX20-004 AMD driver management (equivalent)'
@@ -57,7 +57,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-maint'
+    option: 'b-security'
     weight: 2
 
   # 'NX20-005 Intel driver management (equivalent)'
@@ -69,7 +69,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-maint'
+    option: 'b-security'
     weight: 2
 
   # 'NX20-006 Network driver inspection & version report'
@@ -81,7 +81,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-maint'
+    option: 'b-security'
     weight: 2
 
   # 'NX20-007 USB hardware inventory report'
@@ -93,7 +93,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-maint'
+    option: 'b-security'
     weight: 2
 
   # 'NX20-008 Installed driver history report'
@@ -105,7 +105,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-maint'
+    option: 'b-security'
     weight: 2
 
   # 'NX20-009 Hardware compatibility report generator'
@@ -117,7 +117,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-maint'
+    option: 'b-security'
     weight: 2
 
   # 'NX20-010 Device configuration inspection'
@@ -129,7 +129,7 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-maint'
+    option: 'b-security'
     weight: 2
 
   # 'NX20-011 BIOS/version currency guidance (report only)'
@@ -141,5 +141,5 @@ actions:
     wait: true
     runas: currentUserElevated
     errorAction: Notify
-    option: 'b-maint'
+    option: 'b-security'
     weight: 2
