@@ -955,6 +955,7 @@ function New-NxPlaybookConf($Model) {
     $L.Add('        <!-- 26H2 -->')
     $L.Add('        <string>26300</string>')
     $L.Add('    </SupportedBuilds>')
+    $L.Add('    <UpgradableFrom>any</UpgradableFrom>')
     $L.Add('    <Requirements>')
     $L.Add('        <Requirement>Internet</Requirement>')
     $L.Add('        <Requirement>PluggedIn</Requirement>')

@@ -1,7 +1,7 @@
 {
     "manifestVersion":  1,
     "generatedBy":  "tools/Invoke-NxBuild.ps1",
-    "nextrixVersion":  "0.9.0",
+    "nextrixVersion":  "0.9.1",
     "playbookUniqueId":  "8550805b-2928-46a0-8daf-2e1732b55421",
     "destination":  "Executables/NxCore/",
     "instruction":  "Packaging: tools/New-NxPackage.ps1 stages every file listed below (flat, filename preserved) into Executables/NxCore/ and writes Executables/NxCoreBootstrap.ps1 at the Executables root. The generated tasks keep the FLAT loader contract: each !powerShell action dot-sources every Nx*.ps1 in Executables/ (exeDir: true), so the bootstrap is the only file the loader sees; it loads the NxCore/ tree in dependency order, including src/nxsession/NX18.ps1 (the session subsystem, outside src/nxcore). The generator does NOT copy binaries (ADR-006: hash-pinned artifacts, zero floating downloads at install time).",
@@ -20,8 +20,8 @@
                   },
                   {
                       "source":  "src/nxcore/NxApply.ps1",
-                      "sha256":  "e5ccf936b918b671ec8e4e1fe00a06a944f632141cc0b11f2e2145c87538eef1",
-                      "bytes":  16005,
+                      "sha256":  "6b41b7af5ecbae736ee3c06bb6ef550b06ebb173b1672b478d958580b58b61e0",
+                      "bytes":  16857,
                       "stageTo":  "Executables/NxCore/"
                   },
                   {
@@ -38,8 +38,8 @@
                   },
                   {
                       "source":  "src/nxcore/functions/NX16.ps1",
-                      "sha256":  "068265f0f6023bad4bcffbfa56a4a33fe2eb33101a3ea4998228b7e45c6c16ed",
-                      "bytes":  95173,
+                      "sha256":  "976d4566d10aa3f973e6b28445386bd58d29aa3c39ba22f4b4572a7450cc6c65",
+                      "bytes":  95752,
                       "stageTo":  "Executables/NxCore/"
                   },
                   {

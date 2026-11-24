@@ -178,8 +178,8 @@ try {
     Assert-Nx 'preflight: journal armed at temp root' (Test-Path (Join-Path $jrnH 'manifest.json'))
     $rH2 = Invoke-NxPreFlight -JournalRoot $jrnH -BackupRoot $bkpH
     $jiStep = @($rH2.steps | Where-Object { $_.name -eq 'journal-init' })[0]
-    Assert-Nx 'preflight: capture-refusal respected on second run' ($jiStep.outcome -eq 'Failed' -and $jiStep.detail -match 'CAPTURE_REFUSAL_EXISTING_JOURNAL')
-    Assert-Nx 'preflight: gate closed when capture-refused (allComplete false)' ($rH2.allComplete -eq $false)
+    Assert-Nx 'preflight: existing journal is reused on second run (upgrade-safe)' ($jiStep.outcome -eq 'Complete' -and $jiStep.detail -match 'reused')
+    Assert-Nx 'preflight: gate open on reuse (allComplete true, journalReused flagged)' ($rH2.allComplete -eq $true -and $rH2.journalReused -eq $true)
 
     # ------------------------------------------------------------------------
     # I. Invoke-NxComponentCleanup - plan by default, never /ResetBase.

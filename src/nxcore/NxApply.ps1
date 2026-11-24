@@ -193,6 +193,16 @@ function Invoke-NxRegistryTweak {
         $summary | Add-Member -NotePropertyName planned -NotePropertyValue $true
         $summary.steps = $steps.ToArray(); return $summary
     }
+    # Idempotency (upgrade/re-run safety): if the live state already equals the
+    # target, journal a skip and do NOT write - the first session's stock originals
+    # stay authoritative for rollback.
+    if (Test-NxCurrentEqualsDescriptor -Descriptor $orig -Kind $Kind -Value $value) {
+        $null = Add-NxJournalEntry -Path $JournalRoot -TweakId $TweakId -TweakVersion $TweakVersion -Operation 'skip' -Approval $Approval -Original $orig -Modified $modified -Result 'AlreadyAtState' -Verification 'NotRun' -Profiles $Profiles
+        $steps.Add([pscustomobject]@{ step = 8; name = 'apply'; outcome = 'AlreadyAtState'; detail = 'current state already equals the target (upgrade/re-run safe)' })
+        $summary | Add-Member -NotePropertyName skipped -NotePropertyValue $true
+        $summary.steps = $steps.ToArray()
+        return $summary
+    }
     $null = Add-NxJournalEntry -Path $JournalRoot -TweakId $TweakId -TweakVersion $TweakVersion -Operation 'apply' -Approval $Approval -Original $orig -Modified $modified -Result 'InProgress' -Verification 'NotRun' -Profiles $Profiles
     try {
         Set-NxRegistryValue -Path $Path -Name $Name -Kind $Kind -Value $value

@@ -981,12 +981,20 @@ function Invoke-NxPreFlight {
     $startedUtc = (Get-Date).ToUniversalTime().ToString('o')
     $setPath = New-NxBackupSetPath -Root $BackupRoot
 
-    # 1. Journal init - capture-refusal is a GATE FAILURE, never silently forced through.
+    # 1. Journal init.
+    #    First run: initialize (capture armed).
+    #    Upgrade/re-run: an existing NEXTRIX journal is REUSED - never reinitialized -
+    #    so the stock originals recorded by the first session stay authoritative
+    #    (stacking detection honored; idempotent writes skip already-applied targets).
+    $journalReused = $false
     $seq++
     try {
         $j = Initialize-NxJournal -Path $JournalRoot
         if ($j.created) {
             $steps += New-NxStep $seq 'journal-init' 'Complete' 'journal initialized - capture armed'
+        } elseif ([string]$j.reason -eq 'CAPTURE_REFUSAL_EXISTING_JOURNAL') {
+            $steps += New-NxStep $seq 'journal-init' 'Complete' 'existing journal reused - stock originals preserved from the first session (upgrade/re-run safe)'
+            $journalReused = $true
         } else {
             $steps += New-NxStep $seq 'journal-init' 'Failed' ('capture-refusal: ' + [string]$j.reason + ' - resolve/verify the existing journal before starting a new apply session (no mutation without verified prior state)')
         }
@@ -1102,6 +1110,7 @@ function Invoke-NxPreFlight {
         backupSetPath = $setPath
         steps = $steps
         allComplete = ($failedSteps.Count -eq 0)
+        journalReused = $journalReused
         gateNote = 'the caller MUST gate all mutations on allComplete - no mutation without verified prior state (XOS capture-gate pattern, r1)'
         generatedUtc = (Get-Date).ToUniversalTime().ToString('o')
         startedUtc = $startedUtc

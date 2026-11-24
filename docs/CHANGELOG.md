@@ -2,6 +2,14 @@
 
 All notable changes to the NEXTRIX repository. Dates are ISO. Statuses follow the verification ladder in `TWEAK_CLASSIFICATION.md`.
 
+## 2026-11-24 - Upgrade support (v0.9.1)
+
+- **AME upgrades are now allowed:** `playbook.conf` declares `UpgradableFrom: any`, so installing v0.9.1 over an older NEXTRIX playbook no longer shows "NEXTRIX does not allow upgrades".
+- **Existing journals are reused, never reinitialized**, on upgrade/re-run: `Invoke-NxPreFlight` treats a present NEXTRIX journal as Complete with `journalReused=true`; the stock originals from the first session stay authoritative for rollback (stacking detection preserved).
+- **Idempotent registry writes:** `Invoke-NxRegistryTweak` now detects an already-at-target state, journals a `skip` (AlreadyAtState) and writes nothing - upgrades cannot overwrite first-session originals.
+- Tests updated: NX16 63/63 (second-run reuse + gate-open assertions), journal 11/11, registry 282 clean.
+- **No NEXTRIX modification applied to any machine.**
+
 ## 2026-11-24 - Bundle selection UI (v0.9.0)
 
 - **Wizard selection reduced to 2 pages of bundles + the Undo page** (3 pages, 12 options total): Windows cleanup, Gaming & performance, Privacy & app cleanup, Maintenance (pre-selected), plus optional Network & DNS, Input & USB, GPU guidance (read-only), Storage & memory maintenance.
